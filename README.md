@@ -1,2 +1,3 @@
-# pixel_ai
-Scripts related to the analysis of images without segmentation at a pixel/patches level resolution using deep learning
+# Pixel_AI
+
+This repository contains scripts designed for image analysis at a pixel/patch-level resolution using deep learning methods.
