@@ -23,7 +23,7 @@ from utils import ProgressMeter, AverageMeter, save_checkpoint, TiffDataset
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 epochs = 30
-batch_size = 1024
+batch_size = 4096
 lr = 0.00001
 latent_dims = 32
 hidden_dims = [32, 64, 128, 256, 512]
