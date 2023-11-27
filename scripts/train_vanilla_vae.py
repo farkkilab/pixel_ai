@@ -24,12 +24,12 @@ from utils import ProgressMeter, AverageMeter, save_checkpoint, TiffDataset
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 epochs = 30
 batch_size = 4096
-lr = 0.00001
+lr = 0.0001
 latent_dims = 32
 hidden_dims = [32, 64, 128, 256, 512]
-best_loss_val = 999999
+best_loss_val = 99999999
 transform_to_image = T.ToPILImage()
-cores_folder = 'TMA_18_810/'
+cores_folder = 'TMA_18_810/core1/'
 files_path='/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/{0}'.format(cores_folder)
 input_dimensions = (32, 32)#(sample_file.shape[0],sample_file.shape[1])
 def train_test(model, optimizer,loader, epoch,train):
@@ -100,6 +100,8 @@ for epoch in range(epochs):
     print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
     print('Loss test '+str(loss_test))
     is_best = loss_test < best_loss_val
+    if is_best:
+        best_loss_val = loss_test
     save_checkpoint({
         'epoch': epoch + 1,
         'state_dict': model.state_dict(),
