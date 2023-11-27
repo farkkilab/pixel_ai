@@ -29,8 +29,9 @@ latent_dims = 32
 hidden_dims = [32, 64, 128, 256, 512]
 best_loss_val = 99999999
 transform_to_image = T.ToPILImage()
-cores_folder = 'TMA_18_810/core1/'
+cores_folder = 'TMA_18_810/'
 files_path='/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/{0}'.format(cores_folder)
+model_name = "allcores_randompatches"
 input_dimensions = (32, 32)#(sample_file.shape[0],sample_file.shape[1])
 def train_test(model, optimizer,loader, epoch,train):
     batch_time = AverageMeter('Time', ':6.3f')
@@ -64,12 +65,11 @@ def train_test(model, optimizer,loader, epoch,train):
 
         losses.update(loss['loss'].item(), images.size(0))
         batch_time.update(time.time() - end)
-
         #if i % 100 == 0:
     progress.display(i)
     return losses.avg
 
-pathlib.Path("saved_models/{0}/images".format(cores_folder)).mkdir(parents=True, exist_ok=True)
+#pathlib.Path("saved_models/{0}/images".format(cores_folder)).mkdir(parents=True, exist_ok=True)
 patches_files = [os.path.join(r, fn)
         for r, ds, fs in os.walk(files_path)
         for fn in fs if fn.endswith('.tiff')]
@@ -107,4 +107,4 @@ for epoch in range(epochs):
         'state_dict': model.state_dict(),
         'best_loss_val': best_loss_val,
         'optimizer': optimizer.state_dict(),
-    }, is_best, '{0}_vae.pth.tar'.format(cores_folder))
+    }, is_best, '{0}_vae.pth.tar'.format(model_name))

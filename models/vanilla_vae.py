@@ -75,7 +75,7 @@ class VanillaVAE(BaseVAE):
                             nn.LeakyReLU(),
                             nn.Conv2d(hidden_dims[-1], out_channels= initial_in_channels,
                                       kernel_size= 3, padding= 1),
-                            nn.ReLU())
+                            nn.Tanh())
 
     def encode(self, input: Tensor) -> List[Tensor]:
         """

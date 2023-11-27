@@ -76,7 +76,7 @@ class TiffDataset(Dataset):
             idx = idx.tolist()
         im_tiff = tifffile.imread(self.tiff_files[idx],
                                   maxworkers=6)
-        sample = torch.from_numpy(im_tiff.astype(np.float32))
+        sample = torch.from_numpy(im_tiff.astype(np.uint8)/256).float()
         #array_expression = np.array([array_expression])
         #array_expression = array_expression.astype('float32').reshape(-1, 1657)
         #array_expression = np.pad(array_expression, (0, 7), 'constant')
