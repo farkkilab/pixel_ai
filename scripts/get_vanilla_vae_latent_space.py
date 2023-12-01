@@ -17,6 +17,7 @@ from collections import Counter
 from os.path import dirname, join, abspath
 sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 from models.vanilla_vae import VanillaVAE
+from utils import ProgressMeter, AverageMeter, save_checkpoint, TiffDataset
 
 
 # declaring the model
@@ -50,6 +51,11 @@ patches_files = [os.path.join(r, fn)
         for fn in fs if fn.endswith('.tiff')]
 tiff_dataset = TiffDataset(files=patches_files,transform=T.Resize(input_dimensions))
 
+data_loader = torch.utils.data.DataLoader(
+    tiff_dataset, batch_size=batch_size, 
+    shuffle=None, pin_memory=True, 
+    sampler=None
+    )
 
 # Try to generate Latent space :/
 for i, images in enumerate(data_loader):
