@@ -1,4 +1,4 @@
-import torch; torch.manual_seed(0)
+import torch
 import torch.nn as nn
 import csv
 import gzip
@@ -22,7 +22,7 @@ from utils import ProgressMeter, AverageMeter, save_checkpoint, TiffDataset
 
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-epochs = 120
+epochs = 30
 batch_size = 4096
 lr = 0.001
 latent_dims = 32
@@ -55,7 +55,7 @@ def train_test(model, optimizer,loader, epoch,train):
         images = images.cuda()
         x_hat = model(images)
         loss = model.module.loss_function(*x_hat,
-                                              M_N=0.00025)
+                                              M_N=0.0008)
         model.train()
         loss['loss'].backward()
         optimizer.step()
