@@ -6,7 +6,7 @@ sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 from utils import create_random_patches
 
 
-patch_size = (32, 32)
+patch_size = (128, 128)
 output_path = '/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/TMA_18_810/'
 cores_ignore_18_810 = open('../data/not_good_quality_crops.txt').read().splitlines()
 cores_ignore_18_810 = [core.split('/')[-1].lower() for core in cores_ignore_18_810]
