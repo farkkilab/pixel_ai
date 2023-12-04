@@ -86,7 +86,10 @@ class TiffDataset(Dataset):
         if self.transform:
             sample = self.transform(sample)
 
-        return sample
+        if self.files_names:
+            return sample, self.files_names[idx]
+        else:
+            return sample
 
 def create_random_patches(image_path, patch_size, output_folder):
     # Load the TIFF image
