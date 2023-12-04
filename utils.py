@@ -76,7 +76,8 @@ class TiffDataset(Dataset):
             idx = idx.tolist()
         im_tiff = tifffile.imread(self.tiff_files[idx],
                                   maxworkers=6)
-        sample = torch.from_numpy(im_tiff.astype(np.uint8)/256).float()
+        info = np.iinfo(im_tiff.dtype)
+        sample = torch.from_numpy(im_tiff/info.max).float()
         #array_expression = np.array([array_expression])
         #array_expression = array_expression.astype('float32').reshape(-1, 1657)
         #array_expression = np.pad(array_expression, (0, 7), 'constant')
@@ -85,7 +86,10 @@ class TiffDataset(Dataset):
         if self.transform:
             sample = self.transform(sample)
 
-        return sample
+        if self.files_names:
+            return sample, self.files_names[idx]
+        else:
+            return sample
 
 def create_random_patches(image_path, patch_size, output_folder):
     # Load the TIFF image
