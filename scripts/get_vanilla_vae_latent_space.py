@@ -32,11 +32,11 @@ transform_to_image = T.ToPILImage()
 cores_folder = 'TMA_18_810/'
 files_path='/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/{0}'.format(cores_folder)
 model_path='/data/projects/pixel_project/saved_models'
-model_name = "allcores_randompatches"
+model_name = "allcores_randompatches_vae"
 input_dimensions = (32, 32)
 
 model = VanillaVAE(in_channels=38,latent_dim=latent_dims,input_dimensions=input_dimensions,hidden_dims=hidden_dims).to(device) # GPU
-checkpoint = torch.load('{}/vae.pth.tar'.format(model_path))
+checkpoint = torch.load('{}/.pth.tar'.format(model_path))
 for key in list(checkpoint['state_dict'].keys()):
     if 'module.' in key:
         checkpoint['state_dict'][key.replace('module.', '')] = checkpoint['state_dict'][key]
@@ -65,4 +65,4 @@ for i, images in enumerate(data_loader):
     z = x_hat[4]
     value = z.cpu().detach().numpy()
 
-np.save('../data/latent_space.npy', value)
+np.save('../data/{}latent_space.npy'.format(model_name), value)
