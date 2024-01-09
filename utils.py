@@ -55,7 +55,7 @@ def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
 class TiffDataset(Dataset):
     """Face Landmarks dataset."""
 
-    def __init__(self, files, files_names=None,transform=None):
+    def __init__(self, files, files_names=None,transform=None, channels=None):
         """
         Args:
             csv_file (string): Path to the csv file with annotations.
@@ -66,6 +66,7 @@ class TiffDataset(Dataset):
         self.tiff_files = files
         self.files_names = files_names
         self.transform = transform
+        self.channels = channels
 
     def __len__(self):
         return len(self.tiff_files)
@@ -77,7 +78,10 @@ class TiffDataset(Dataset):
         im_tiff = tifffile.imread(self.tiff_files[idx],
                                   maxworkers=6)
         info = np.iinfo(im_tiff.dtype)
-        sample = torch.from_numpy(im_tiff/info.max).float()
+        if self.channels:
+            sample = torch.from_numpy(im_tiff[self.channels,:,:]/info.max).float()
+        else:
+            sample = torch.from_numpy(im_tiff / info.max).float()
         #array_expression = np.array([array_expression])
         #array_expression = array_expression.astype('float32').reshape(-1, 1657)
         #array_expression = np.pad(array_expression, (0, 7), 'constant')

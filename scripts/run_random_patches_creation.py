@@ -8,12 +8,13 @@ from utils import create_random_patches
 
 patch_size = (128, 128)
 output_path = '/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/TMA_18_810/'
-cores_ignore_18_810 = open('../data/not_good_quality_crops.txt').read().splitlines()
-cores_ignore_18_810 = [core.split('/')[-1].lower() for core in cores_ignore_18_810]
+# With newer images, we dont need to exclude cores anymore
+#cores_ignore_18_810 = open('data/not_good_quality_crops.txt').read().splitlines()
+#cores_ignore_18_810 = [core.split('/')[-1].lower() for core in cores_ignore_18_810]
 
 if __name__ == "__main__":
      # List of files to process
-    files_to_process = [file for file in glob.glob("/data/projects/pixel_project/datasets/NKI_project_TMAs/TMA_18_810/Channels_all/*.tif") if file not in cores_ignore_18_810]
+    files_to_process = [file for file in glob.glob("/data/projects/pixel_project/datasets/NKI_project_TMAs/TMA_18_810/Channels_all/*.tif")]
     for file_name in files_to_process:
         pathlib.Path(output_path+file_name.split('.')[0]).mkdir(parents=True, exist_ok=True)
 
