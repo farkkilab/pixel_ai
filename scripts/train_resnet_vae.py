@@ -16,7 +16,7 @@ import ipdb
 import pathlib
 from os.path import dirname, join, abspath
 sys.path.insert(0, abspath(join(dirname(__file__), '..')))
-from models.vanilla_vae import VanillaVAE
+from models.resnet_vae import ResNetVAE
 from utils import ProgressMeter, AverageMeter, save_checkpoint, TiffDataset
 
 
@@ -27,8 +27,8 @@ epochs = 250
 batch_size = 256
 lr = 0.001
 latent_dims = 8
-#channels = [0, 1, 2]
-channels = [0, 1, 2, 25, 27, 29]
+channels = [0, 1, 2]
+#channels = [0, 1, 2, 25, 27, 29]
 in_channels = len(channels)
 hidden_dims = [ 16, 32, 64, 128, 256]
 best_loss_val = 99999999
@@ -41,7 +41,7 @@ model_name = "allcores_randompatches_{0}".format(str(channels))
 input_dimensions = (128, 128)#(sample_file.shape[0],sample_file.shape[1])
 config={
     "learning_rate": lr,
-    "architecture": "vanilla-VAE",
+    "architecture": "ResNet-VAE",
     "epochs": epochs,
     "batch_size": batch_size,
     "latent_dims": latent_dims,
@@ -50,7 +50,7 @@ config={
     "input_dimensions": input_dimensions,
     "kld_weight" :kld_weight
     }
-wandb.init(project='pixel_ai', name=model_name, resume="allow",config=config)
+wandb.init(project='pixel_ai', name=model_name, resume="allow",config=config,mode="disabled")
 def train_test(model, optimizer,loader, epoch,train):
     batch_time = AverageMeter('Time', ':6.3f')
     data_time = AverageMeter('Data', ':6.3f')
@@ -73,8 +73,8 @@ def train_test(model, optimizer,loader, epoch,train):
         data_time.update(time.time() - end)
         images = images[0].cuda()
         x_hat = model(images)
-        loss = model.loss_function(*x_hat,
-                                              M_N=kld_weight)
+        loss = model.loss_function(x_recon=x_hat[0],x=x_hat[1],mu=x_hat[2],log_var=x_hat[3],
+                                              kld_weight=kld_weight)
         #model.train()
         loss['loss'].backward()
         optimizer.step()
@@ -101,7 +101,8 @@ patches_files_train, patches_files_test = train_test_split(patches_files, test_s
 #matrix_files_train = [file for file in patches_files_train['full_path_file_name'].to_list() if file.endswith(".npy")]
 #matrix_files_test = [file for file in patches_files_test['full_path_file_name'].to_list() if file.endswith(".npy")]
 
-model = VanillaVAE(in_channels=in_channels,latent_dim=latent_dims,input_dimensions=input_dimensions,hidden_dims=hidden_dims).to(device) # GPU
+model = ResNetVAE(in_channels=in_channels,latent_dim=latent_dims, input_dimensions=input_dimensions).to(device) # GPU
+#model = ResNetVAE(in_channels=in_channels,latent_dim=latent_dims,input_dimensions=input_dimensions,hidden_dims=hidden_dims).to(device) # GPU
 #model = nn.DataParallel(model)
 
 optimizer = torch.optim.Adam(model.parameters(),lr=lr)
