@@ -1,7 +1,8 @@
 import torch
-from models import BaseVAE
+from models.base import BaseVAE
 from torch import nn
 from torch.nn import functional as F
+import ipdb
 from .types_ import *
 
 
@@ -11,6 +12,7 @@ class VanillaVAE(BaseVAE):
     def __init__(self,
                  in_channels: int,
                  latent_dim: int,
+                 input_dimensions: tuple,
                  hidden_dims: List = None,
                  **kwargs) -> None:
         super(VanillaVAE, self).__init__()
@@ -20,7 +22,8 @@ class VanillaVAE(BaseVAE):
         modules = []
         if hidden_dims is None:
             hidden_dims = [32, 64, 128, 256, 512]
-
+        self.hidden_dims = hidden_dims
+        initial_in_channels = in_channels
         # Build Encoder
         for h_dim in hidden_dims:
             modules.append(
@@ -31,16 +34,16 @@ class VanillaVAE(BaseVAE):
                     nn.LeakyReLU())
             )
             in_channels = h_dim
-
+        self.input_dimensions = input_dimensions
         self.encoder = nn.Sequential(*modules)
-        self.fc_mu = nn.Linear(hidden_dims[-1]*4, latent_dim)
-        self.fc_var = nn.Linear(hidden_dims[-1]*4, latent_dim)
+        self.fc_mu = nn.Linear(int(self.hidden_dims[-1]*((self.input_dimensions[0]/(2**5))*(self.input_dimensions[1]/(2**5)))), latent_dim)
+        self.fc_var = nn.Linear(int(self.hidden_dims[-1]*((self.input_dimensions[0]/(2**5))*(self.input_dimensions[1]/(2**5)))), latent_dim)
 
 
         # Build Decoder
         modules = []
 
-        self.decoder_input = nn.Linear(latent_dim, hidden_dims[-1] * 4)
+        self.decoder_input = nn.Linear(latent_dim, int(self.hidden_dims[-1]*((self.input_dimensions[0]/(2**5))*(self.input_dimensions[1]/(2**5)))))
 
         hidden_dims.reverse()
 
@@ -70,7 +73,7 @@ class VanillaVAE(BaseVAE):
                                                output_padding=1),
                             nn.BatchNorm2d(hidden_dims[-1]),
                             nn.LeakyReLU(),
-                            nn.Conv2d(hidden_dims[-1], out_channels= 3,
+                            nn.Conv2d(hidden_dims[-1], out_channels= initial_in_channels,
                                       kernel_size= 3, padding= 1),
                             nn.Tanh())
 
@@ -99,7 +102,7 @@ class VanillaVAE(BaseVAE):
         :return: (Tensor) [B x C x H x W]
         """
         result = self.decoder_input(z)
-        result = result.view(-1, 512, 2, 2)
+        result = result.view(-1, self.hidden_dims[0], int(self.input_dimensions[0]/(2**5)), int(self.input_dimensions[1]/(2**5)))
         result = self.decoder(result)
         result = self.final_layer(result)
         return result
@@ -119,7 +122,7 @@ class VanillaVAE(BaseVAE):
     def forward(self, input: Tensor, **kwargs) -> List[Tensor]:
         mu, log_var = self.encode(input)
         z = self.reparameterize(mu, log_var)
-        return  [self.decode(z), input, mu, log_var]
+        return  [self.decode(z), input, mu, log_var, z]
 
     def loss_function(self,
                       *args,
@@ -139,11 +142,10 @@ class VanillaVAE(BaseVAE):
         kld_weight = kwargs['M_N'] # Account for the minibatch samples from the dataset
         recons_loss =F.mse_loss(recons, input)
 
-
         kld_loss = torch.mean(-0.5 * torch.sum(1 + log_var - mu ** 2 - log_var.exp(), dim = 1), dim = 0)
 
         loss = recons_loss + kld_weight * kld_loss
-        return {'loss': loss, 'Reconstruction_Loss':recons_loss.detach(), 'KLD':-kld_loss.detach()}
+        return {'loss': loss, 'Reconstruction_Loss':recons_loss.detach(), 'KLD':kld_loss.detach()}
 
     def sample(self,
                num_samples:int,
