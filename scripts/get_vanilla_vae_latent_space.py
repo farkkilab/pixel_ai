@@ -35,6 +35,7 @@ kld_weight = 0.000025
 input_dimensions = (128, 128)
 transform_to_image = T.ToPILImage()
 cores_folder = 'TMA_18_810/'
+patches_statistics_df = pd.read_csv('/home/matiasai/pixel_ai/data/patch_size_128_stat_channel0.csv')
 files_path='/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/{0}'.format(cores_folder)
 model_path='/data/projects/pixel_project/saved_models'
 model_name = "model_best_allcores_randompatches_[0, 1, 2, 25, 27, 29]"
@@ -51,9 +52,15 @@ model.load_state_dict(checkpoint['state_dict'])
 model.eval()
 
 # load the patches
+
 patches_files = [os.path.join(r, fn)
         for r, ds, fs in os.walk(files_path)
         for fn in fs if fn.endswith('.tiff')]
+patches_statistics_df.sort_values(by=['Median'], ascending=False, inplace=True)
+patches_statistics_df = patches_statistics_df[patches_statistics_df['Core']!='core124']
+highest_median_pathes = ['/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/TMA_18_810/{0}/{1}'.format(row['Core'],row['Patch']) for i, row in patches_statistics_df.head(500).iterrows()]
+patches_files = [file for file in patches_files if file in highest_median_pathes]
+
 tiff_dataset = TiffDataset(files=patches_files, 
 transform=T.Resize(input_dimensions), 
 channels=channels) # random.choices(patches_files, k=4000)
