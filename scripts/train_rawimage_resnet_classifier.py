@@ -29,11 +29,12 @@ batch_size = 256
 latent_dims = 8
 channels = [0, 1, 2]
 in_channels = len(channels)
-num_classes = 2
+num_classes = 1
 hidden_dims = [16, 32, 64, 128, 256]
 epochs = 30
 USE_GPU = True
 lr = 0.001
+best_loss_val = 99999999
 transform_to_image = T.ToPILImage()
 
 patches_labels_df = pd.read_csv('../data/patches_labels.csv')
@@ -94,7 +95,13 @@ for name, param in resnet50_model.named_parameters(): # freeze the parameters of
         print(name, param.requires_grad)
         param.requires_grad=False
 in_features = resnet50_model.fc.in_features
-resnet50_model.fc = torch.nn.Linear(in_features, num_classes) # change the number of classes in the final Linear layer
+resnet50_model.fc = torch.nn.Sequential(
+    torch.nn.Linear(
+        in_features=in_features,
+        out_features=num_classes
+    ),
+    torch.nn.Sigmoid()
+) # change the number of classes in the final Linear layer
 resnet50_model.cuda()
 print("Done setting ResNet50 model!")
 
@@ -131,12 +138,12 @@ def train_test(model, optimizer, loader, epoch, train):
         optimizer.zero_grad()
 
         y = model(images)
-        loss = criterion(y, labels.view(-1, 1).float()) # ?
+        loss = criterion(y.squeeze(1), labels.float())
         loss.backward()
         optimizer.step()
 
         threshold = 0.5
-        binary_predictions = [1 if y >= threshold else 0 for prob in predictions.squeeze(1).cpu().tolist()]
+        binary_predictions = [1 if prob >= threshold else 0 for prob in y.squeeze(1).cpu().tolist()]
         losses.update(loss.item(), images.size(0))
         acc.update(accuracy_score(binary_predictions, labels.cpu()),images.size(0))
         f1.update(f1_score(labels.cpu(), binary_predictions, average='macro'), images.size(0))
@@ -145,27 +152,41 @@ def train_test(model, optimizer, loader, epoch, train):
         progress.display(i)
     return losses.avg, acc.avg, f1.avg
 
+# ipdb.set_trace()
+# start a new wandb run to track this script
+wandb.init(
+    # set the wandb project where this run will be logged
+    project="resnet-core-classifier",
+    # we can set run_names (for the future tests)
+    # track hyperparameters and run metadata
+    config={
+    "architecture": "ResNet50",
+    "dataset": "TMA_18_810",
+    "epochs": 30,
+    }
+)
 
 for epoch in range(epochs):
     loss_train, acc_train, f1_train = train_test(resnet50_model, optimizer, train_loader, epoch, train=True)
     loss_test, acc_test, f1_test = train_test(resnet50_model, optimizer, test_loader, epoch, train=False)
     print("Accuracy training: "+str(acc_train))
     print("Accuracy test: "+str(acc_test))
-    #wandb.log({"loss_train": loss_train, "loss_test": loss_test,
-    #           "lr": optimizer.param_groups[0]['lr'],
-    #           "epoch": epoch})
+    wandb.log({"loss_train": loss_train, "loss_test": loss_test,
+              "Accuracy training": acc_train, "Accuracy test": acc_test, "lr": optimizer.param_groups[0]['lr'],
+              "epoch": epoch})
+    
     scheduler.step()
     print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
     print('Loss test '+str(loss_test))
-    #is_best = loss_test < best_loss_val
-    #if is_best:
+    # is_best = loss_test < best_loss_val
+    # if is_best:
     #    best_loss_val = loss_test
-    #save_checkpoint({
+    # save_checkpoint({
     #    'epoch': epoch + 1,
-    #    'state_dict': model.state_dict(),
+    #    'state_dict': resnet50_model.state_dict(),
     #    'best_loss_val': best_loss_val,
     #    'optimizer': optimizer.state_dict(),
-    #}, is_best, '{0}_vae.pth.tar'.format(model_name))
+    # }, is_best, '{0}_resnet.pth.tar'.format(model_name))
 
 
 
