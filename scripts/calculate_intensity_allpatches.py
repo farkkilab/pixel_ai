@@ -9,46 +9,47 @@ import pandas as pd
 import pathlib
 import matplotlib.pyplot as plt
 import multiprocessing
+import ipdb
 import os, sys
 import torchvision.transforms as T
-dir2 = os.path.abspath('')
-dir1 = os.path.dirname(dir2)
-if not dir1 in sys.path: sys.path.append(dir1)
-from utils import create_random_patches, ProgressMeter, AverageMeter, save_checkpoint, TiffDataset
 from os.path import dirname, join, abspath
-sys.path.insert(0, abspath(join(dirname("__file__"), '..')))
+sys.path.insert(0, abspath(join(dirname(__file__), '..')))
+from utils import get_patch_stats, ProgressMeter, AverageMeter, save_checkpoint, TiffDataset
 
-PIL.Image.MAX_IMAGE_PIXELS = 933120000
-
-cores_folder = 'TMA_18_810/'
-files_path='/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/{0}'.format(cores_folder)
-input_dimensions = (32, 32)
-batch_size = 4096
 
 if __name__ == "__main__":
-    patches_files = [os.path.join(r, fn)
-            for r, ds, fs in os.walk(files_path)
-            for fn in fs if fn.endswith('.tiff')]
-    tiff_dataset = TiffDataset(files=patches_files, files_names=patches_files, transform=T.Resize(input_dimensions))
+    patches_path = '/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/'
+    patches_files = []
+    patches_directories = [d for d in os.listdir(patches_path) if
+                           os.path.isdir(os.path.join(patches_path, d)) and d.startswith('TMA')]
+    for slide in patches_directories:
+        files_path = '/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/{0}'.format(
+            slide)
+        patches_files.extend([os.path.join(r, fn)
+                              for r, ds, fs in os.walk(files_path)
+                              for fn in fs if fn.endswith('.tiff')])
 
-    data_loader = torch.utils.data.DataLoader(
-        tiff_dataset, batch_size=batch_size, 
-        shuffle=None, pin_memory=True, 
-        sampler=None
-        )
 
-    dapi_stat = []
 
-    for i, (image, filenames) in enumerate(data_loader): 
-        for name in filenames: 
-            im_core_patch = tifffile.imread(name)
-            dapi_stat.append((np.median(im_core_patch[0,:,:].flatten()), 
-                            np.mean(im_core_patch[0,:,:].flatten()), 
-                            np.std(im_core_patch[0,:,:].flatten()), 
-                            name.split('/')[-1].lower(), 
-                            name.split('/')[-2].lower()))
+    for file in patches_files:
+        get_patch_stats(file)
 
-    d = pd.DataFrame(dapi_stat, columns=("Median", "Mean", "Std", "Patch", "Core"))
+
+    num_processes = 28
+
+    # Create a multiprocessing Pool
+    pool = multiprocessing.Pool(processes=num_processes)
+
+    # Use the Pool.starmap function to distribute the work among processes
+    patches_results = pool.starmap(get_patch_stats,
+                 [(file,) for file in patches_files])
+
+    # Close the Pool to free up resources
+    pool.close()
+    pool.join()
+
+
+    patches_stats_df = pd.DataFrame(patches_results, columns=("Median", "Mean", "Std", "Patch", "Core", "Slide"))
 
     # save the file
-    d.to_csv("../data/patch_stat_channel0.csv")
+    patches_stats_df.to_csv("data/patch_size_128_stat_channel0.csv")
