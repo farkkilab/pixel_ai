@@ -23,8 +23,8 @@ from utils import ProgressMeter, AverageMeter, save_checkpoint, TiffDataset
 
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-epochs = 30
-batch_size = 2048
+epochs = 250
+batch_size = 32
 lr = 0.0001
 latent_dims = 8
 channels = [0, 1, 2]
@@ -34,9 +34,9 @@ hidden_dims = [ 16, 32, 64, 128, 256]
 best_loss_val = 99999999
 kld_weight = 0.000025
 transform_to_image = T.ToPILImage()
-patches_statistics_df = pd.read_csv('data/patch_size_128_stat_channel0.csv')
-model_name = "allcores_randompatches_{0}".format(str(channels))
-input_dimensions = (128, 128)#(sample_file.shape[0],sample_file.shape[1])
+files_path='/data/projects/pixel_project/datasets/NKI_project_TMAs/TMA_18_810/Channels_all/'
+model_name = "allcores_fullcore_{0}".format(str(channels))
+input_dimensions = (512, 512)#(sample_file.shape[0],sample_file.shape[1])
 config={
     "learning_rate": lr,
     "architecture": "vanilla-VAE",
@@ -48,6 +48,7 @@ config={
     "input_dimensions": input_dimensions,
     "kld_weight" :kld_weight
     }
+wandb.init(project='pixel_ai', name=model_name, resume="allow",config=config)
 def train_test(model, optimizer,loader, epoch,train):
     batch_time = AverageMeter('Time', ':6.3f')
     data_time = AverageMeter('Data', ':6.3f')
@@ -70,7 +71,7 @@ def train_test(model, optimizer,loader, epoch,train):
         data_time.update(time.time() - end)
         images = images[0].cuda()
         x_hat = model(images)
-        loss = model.module.loss_function(*x_hat,
+        loss = model.loss_function(*x_hat,
                                               M_N=kld_weight)
         #model.train()
         loss['loss'].backward()
@@ -86,47 +87,21 @@ def train_test(model, optimizer,loader, epoch,train):
     return losses.avg
 
 #pathlib.Path("saved_models/{0}/images".format(cores_folder)).mkdir(parents=True, exist_ok=True)
-patches_path = '/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/'
-patches_files = []
-patches_directories = [d for d in os.listdir(patches_path) if
-                             os.path.isdir(os.path.join(patches_path, d)) and d.startswith('TMA')]
-for slide in patches_directories:
-
-    files_path='/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/{0}'.format(slide)
-    patches_files.extend([os.path.join(r, fn)
-            for r, ds, fs in os.walk(files_path)
-            for fn in fs if fn.endswith('.tiff')])
-patches_statistics_df.sort_values(by=['Median'], ascending=False, inplace=True)
-patches_statistics_df = patches_statistics_df[patches_statistics_df['Core']!='core124']
-patches_path = '/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/'
-patches_files = []
-patches_directories = [d for d in os.listdir(patches_path) if
-                       os.path.isdir(os.path.join(patches_path, d)) and d.startswith('TMA')]
-for slide in patches_directories:
-    files_path = '/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/{0}'.format(
-        slide)
-    patches_files.extend([os.path.join(r, fn)
-                          for r, ds, fs in os.walk(files_path)
-                          for fn in fs if fn.endswith('.tiff')])
-
-highest_median_pathes = ['/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/{0}/{1}/{2}'.format(row['Slide'], row['Core'],row['Patch']) for i, row in patches_statistics_df[patches_statistics_df['Mean']>1000].iterrows()]
-#patches_files = [file for file in patches_files if file in highest_median_pathes]
-patches_files_train, patches_files_test = train_test_split(patches_files, test_size=0.1, random_state=42)
-config['total_patches'] = len(patches_files)
-config['train_patches'] = len(patches_files_train)
-config['test_patches'] = len(patches_files_test)
-wandb.init(project='pixel_ai', name=model_name, resume="allow",config=config)
+cores_files = [os.path.join(r, fn)
+        for r, ds, fs in os.walk(files_path)
+        for fn in fs if fn.endswith('.tif')]
+cores_files_train, cores_files_test = train_test_split(cores_files, test_size=0.1, random_state=42)
 
 #matrix_files_train = [file for file in patches_files_train['full_path_file_name'].to_list() if file.endswith(".npy")]
 #matrix_files_test = [file for file in patches_files_test['full_path_file_name'].to_list() if file.endswith(".npy")]
 
 model = VanillaVAE(in_channels=in_channels,latent_dim=latent_dims,input_dimensions=input_dimensions,hidden_dims=hidden_dims).to(device) # GPU
-model = nn.DataParallel(model)
+#model = nn.DataParallel(model)
 
 optimizer = torch.optim.Adam(model.parameters(),lr=lr)
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.1)
-tiff_dataset_train = TiffDataset(files=patches_files_train,files_names=patches_files_train, channels=channels)
-tiff_dataset_test = TiffDataset(files=patches_files_test,files_names=patches_files_test, channels=channels)
+tiff_dataset_train = TiffDataset(files=cores_files_train,transform=T.Resize([512,512]),files_names=cores_files_train, channels=channels)
+tiff_dataset_test = TiffDataset(files=cores_files_test,transform=T.Resize([512,512]),files_names=cores_files_test, channels=channels)
 
 train_sampler = None
 train_loader = torch.utils.data.DataLoader(
