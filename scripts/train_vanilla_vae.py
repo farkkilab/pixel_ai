@@ -109,8 +109,8 @@ for slide in patches_directories:
                           for r, ds, fs in os.walk(files_path)
                           for fn in fs if fn.endswith('.tiff')])
 
-highest_median_pathes = ['/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/{0}/{1}/{2}'.format(row['Slide'], row['Core'],row['Patch']) for i, row in patches_statistics_df[patches_statistics_df['Mean']>1000].iterrows()]
-#patches_files = [file for file in patches_files if file in highest_median_pathes]
+highest_median_pathes = ['/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/{0}/{1}/{2}'.format(row['Slide'], row['Core'],row['Patch']) for i, row in patches_statistics_df[patches_statistics_df['Mean']>500].iterrows()]
+patches_files = [file for file in patches_files if file in highest_median_pathes]
 patches_files_train, patches_files_test = train_test_split(patches_files, test_size=0.1, random_state=42)
 config['total_patches'] = len(patches_files)
 config['train_patches'] = len(patches_files_train)
