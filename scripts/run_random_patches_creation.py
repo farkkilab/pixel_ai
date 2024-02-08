@@ -35,7 +35,7 @@ if __name__ == "__main__":
             pathlib.Path(output_path_core+pathlib.Path(file_name).stem).mkdir(parents=True, exist_ok=True)
 
         # Number of processes to run in parallel
-        num_processes = 16
+        num_processes = multiprocessing.cpu_count()
 
         # Create a multiprocessing Pool
         pool = multiprocessing.Pool(processes=num_processes)
