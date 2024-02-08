@@ -11,9 +11,9 @@ from utils import create_random_patches
 
 patch_size = (128, 128)
 parser = argparse.ArgumentParser()
-parser.add_argument("output_path", type=Path,
+parser.add_argument("--output_path", type=Path,
                     default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/")
-parser.add_argument("slides_path", type=Path,
+parser.add_argument("--slides_path", type=Path,
                     default="/data/projects/pixel_project/datasets/NKI_project_TMAs/")
 
 p = parser.parse_args()
