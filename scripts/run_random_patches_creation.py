@@ -30,6 +30,7 @@ if __name__ == "__main__":
                              os.path.isdir(os.path.join(slides_path, d)) and d.startswith('TMA')]
     for slide in slides_directories:
         files_to_process = [file for file in glob.glob(str(slides_path)+slide+"/Channels_all/*.tif")]
+        ipdb.set_trace()
         output_path_core = str(output_path)+slide+"/"
         for file_name in files_to_process:
             pathlib.Path(output_path_core+pathlib.Path(file_name).stem).mkdir(parents=True, exist_ok=True)
