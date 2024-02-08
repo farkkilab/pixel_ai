@@ -12,9 +12,9 @@ from utils import create_random_patches
 patch_size = (128, 128)
 parser = argparse.ArgumentParser()
 parser.add_argument("--output_path", type=Path,
-                    default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/")
+                    default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated")
 parser.add_argument("--slides_path", type=Path,
-                    default="/data/projects/pixel_project/datasets/NKI_project_TMAs/")
+                    default="/data/projects/pixel_project/datasets/NKI_project_TMAs")
 
 p = parser.parse_args()
 output_path = p.output_path
@@ -29,9 +29,8 @@ if __name__ == "__main__":
     slides_directories = [d for d in os.listdir(slides_path) if
                              os.path.isdir(os.path.join(slides_path, d)) and d.startswith('TMA')]
     for slide in slides_directories:
-        files_to_process = [file for file in glob.glob(str(slides_path)+slide+"/Channels_all/*.tif")]
-        ipdb.set_trace()
-        output_path_core = str(output_path)+slide+"/"
+        files_to_process = [file for file in glob.glob(str(slides_path)+'/'+slide+"/Channels_all/*.tif")]
+        output_path_core = str(output_path)+'/'+slide+"/"
         for file_name in files_to_process:
             pathlib.Path(output_path_core+pathlib.Path(file_name).stem).mkdir(parents=True, exist_ok=True)
 
