@@ -9,4 +9,4 @@ export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 module load pytorch/2.1
 source venv/bin/activate
-srun python scripts/calculate_intensity_allpatches.py --output_path --patches_path /scratch/project_2003009/NKI_project_TMAs/patches/randomly_generated/
+srun python scripts/calculate_intensity_allpatches.py --patches_path /scratch/project_2003009/NKI_project_TMAs/patches/randomly_generated/
