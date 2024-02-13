@@ -14,6 +14,8 @@ import os, sys, glob
 from sklearn.model_selection import train_test_split
 import ipdb
 import pathlib
+import argparse
+from pathlib import Path
 from os.path import dirname, join, abspath
 sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 from models.vanilla_vae import VanillaVAE
@@ -21,6 +23,14 @@ from utils import ProgressMeter, AverageMeter, save_checkpoint, TiffDataset
 
 
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--patches_path", type=Path,
+                    default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/")
+
+
+
+p = parser.parse_args()
+patches_path = p.patches_path
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 epochs = 100
@@ -86,30 +96,19 @@ def train_test(model, optimizer,loader, epoch,train):
     return losses.avg
 
 #pathlib.Path("saved_models/{0}/images".format(cores_folder)).mkdir(parents=True, exist_ok=True)
-patches_path = '/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/'
 patches_files = []
 patches_directories = [d for d in os.listdir(patches_path) if
                              os.path.isdir(os.path.join(patches_path, d)) and d.startswith('TMA')]
 for slide in patches_directories:
 
-    files_path='/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/{0}'.format(slide)
+    files_path= patches_path+slide
     patches_files.extend([os.path.join(r, fn)
             for r, ds, fs in os.walk(files_path)
             for fn in fs if fn.endswith('.tiff')])
 patches_statistics_df.sort_values(by=['Median'], ascending=False, inplace=True)
 patches_statistics_df = patches_statistics_df[patches_statistics_df['Core']!='core124']
-patches_path = '/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/'
-patches_files = []
-patches_directories = [d for d in os.listdir(patches_path) if
-                       os.path.isdir(os.path.join(patches_path, d)) and d.startswith('TMA')]
-for slide in patches_directories:
-    files_path = '/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/{0}'.format(
-        slide)
-    patches_files.extend([os.path.join(r, fn)
-                          for r, ds, fs in os.walk(files_path)
-                          for fn in fs if fn.endswith('.tiff')])
 
-highest_median_pathes = ['/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/{0}/{1}/{2}'.format(row['Slide'], row['Core'],row['Patch']) for i, row in patches_statistics_df[patches_statistics_df['Mean']>500].iterrows()]
+highest_median_pathes = [patches_path+'{0}/{1}/{2}'.format(row['Slide'], row['Core'],row['Patch']) for i, row in patches_statistics_df[patches_statistics_df['Mean']>500].iterrows()]
 patches_files = [file for file in patches_files if file in highest_median_pathes]
 patches_files_train, patches_files_test = train_test_split(patches_files, test_size=0.1, random_state=42)
 config['total_patches'] = len(patches_files)
