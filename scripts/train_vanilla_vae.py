@@ -101,7 +101,7 @@ patches_directories = [d for d in os.listdir(patches_path) if
                              os.path.isdir(os.path.join(patches_path, d)) and d.startswith('TMA')]
 for slide in patches_directories:
 
-    files_path= patches_path+slide
+    files_path= str(patches_path)+"/"+slide
     patches_files.extend([os.path.join(r, fn)
             for r, ds, fs in os.walk(files_path)
             for fn in fs if fn.endswith('.tiff')])
