@@ -2,7 +2,7 @@
 #SBATCH --job-name=create_patches
 #SBATCH --account=project_2003009
 #SBATCH --time=02:00:00
-#SBATCH --partition=gpumedium
+#SBATCH --partition=gpu
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=128
 #SBATCH --gres=gpu:a100:4
