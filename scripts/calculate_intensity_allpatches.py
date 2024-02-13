@@ -12,19 +12,24 @@ import multiprocessing
 import ipdb
 import os, sys
 import torchvision.transforms as T
+import argparse
+from pathlib import Path
 from os.path import dirname, join, abspath
 sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 from utils import get_patch_stats, ProgressMeter, AverageMeter, save_checkpoint, TiffDataset
 
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--patches_path", type=Path,
+                    default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/")
+p = parser.parse_args()
+patches_path = p.patches_path
 if __name__ == "__main__":
-    patches_path = '/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/'
     patches_files = []
     patches_directories = [d for d in os.listdir(patches_path) if
                            os.path.isdir(os.path.join(patches_path, d)) and d.startswith('TMA')]
     for slide in patches_directories:
-        files_path = '/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/randomly_generated/{0}'.format(
-            slide)
+        files_path = patches_path+slide
         patches_files.extend([os.path.join(r, fn)
                               for r, ds, fs in os.walk(files_path)
                               for fn in fs if fn.endswith('.tiff')])
@@ -35,7 +40,7 @@ if __name__ == "__main__":
         get_patch_stats(file)
 
 
-    num_processes = 28
+    num_processes = 128
 
     # Create a multiprocessing Pool
     pool = multiprocessing.Pool(processes=num_processes)
