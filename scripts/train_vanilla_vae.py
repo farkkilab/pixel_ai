@@ -108,7 +108,7 @@ for slide in patches_directories:
 patches_statistics_df.sort_values(by=['Median'], ascending=False, inplace=True)
 patches_statistics_df = patches_statistics_df[patches_statistics_df['Core']!='core124']
 
-highest_median_pathes = [patches_path+'{0}/{1}/{2}'.format(row['Slide'], row['Core'],row['Patch']) for i, row in patches_statistics_df[patches_statistics_df['Mean']>500].iterrows()]
+highest_median_pathes = [str(patches_path)+'/{0}/{1}/{2}'.format(row['Slide'], row['Core'],row['Patch']) for i, row in patches_statistics_df[patches_statistics_df['Mean']>500].iterrows()]
 patches_files = [file for file in patches_files if file in highest_median_pathes]
 patches_files_train, patches_files_test = train_test_split(patches_files, test_size=0.1, random_state=42)
 config['total_patches'] = len(patches_files)
