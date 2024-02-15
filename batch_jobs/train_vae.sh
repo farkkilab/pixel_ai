@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH --job-name=create_patches
+#SBATCH --job-name=vae_training
 #SBATCH --account=project_2003009
 #SBATCH --time=02:00:00
-#SBATCH --partition=gpusmall
+#SBATCH --partition=gpumedium
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=64
-#SBATCH --gres=gpu:a100:2
+#SBATCH --cpus-per-task=32
+#SBATCH --gres=gpu:a100:4
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
