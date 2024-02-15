@@ -34,7 +34,7 @@ patches_path = p.patches_path
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 epochs = 100
-batch_size = 4096
+batch_size = 16384
 lr = 0.0001
 latent_dims = 8
 channels = [0, 1, 2]
