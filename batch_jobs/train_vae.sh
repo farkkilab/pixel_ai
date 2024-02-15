@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=vae_training
 #SBATCH --account=project_2003009
-#SBATCH --time=24:00:00
+#SBATCH --time=2:00:00
 #SBATCH --partition=gpusmall
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=32
