@@ -7,10 +7,10 @@
 #SBATCH --cpus-per-task=32
 #SBATCH --gres=gpu:a100:1,nvme:500
 
-cp /scratch/project_2003009/NKI_project_TMAs/patches $LOCAL_SCRATCH
+cp -r /scratch/project_2003009/NKI_project_TMAs/patches $LOCAL_SCRATCH
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 module load pytorch/2.1
 source venv/bin/activate
-srun python -m cProfile -o vanilla_vae_profile scripts/train_vanilla_vae.py --patches_path $LOCAL_SCRATCH/randomly_generated/
+srun python -m cProfile -o vanilla_vae_profile scripts/train_vanilla_vae.py --patches_path $LOCAL_SCRATCH/patches/randomly_generated/
