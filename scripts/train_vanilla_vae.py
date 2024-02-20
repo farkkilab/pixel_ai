@@ -130,11 +130,11 @@ tiff_dataset_test = TiffDataset(files=patches_files_test,files_names=patches_fil
 train_sampler = None
 train_loader = torch.utils.data.DataLoader(
         tiff_dataset_train, batch_size=batch_size, shuffle=(train_sampler is None),
-         pin_memory=True, sampler=train_sampler)
+         pin_memory=True, sampler=train_sampler, num_workers=32)
 test_sampler = None
 test_loader = torch.utils.data.DataLoader(
         tiff_dataset_test, batch_size=batch_size, shuffle=(test_sampler is None),
-         pin_memory=True, sampler=test_sampler)
+         pin_memory=True, sampler=test_sampler, num_workers=32)
 for epoch in range(epochs):
     loss_train = train_test(model,optimizer, train_loader,epoch,train=True)
     loss_test = train_test(model,optimizer, test_loader, epoch, train=False)
