@@ -13,4 +13,4 @@ export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 module load pytorch/2.1
 source venv/bin/activate
-srun kernprof -l scripts/train_vanilla_vae.py --patches_path $LOCAL_SCRATCH/patches/randomly_generated/
+srun ~/.local/bin/kernprof -l scripts/train_vanilla_vae.py --patches_path $LOCAL_SCRATCH/patches/randomly_generated/
