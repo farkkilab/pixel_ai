@@ -70,7 +70,7 @@ def main():
     patches_path = p.patches_path
 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    epochs = 1
+    epochs = 100
     batch_size = 8192
     lr = 0.0001
     latent_dims = 8
