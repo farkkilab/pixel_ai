@@ -2,10 +2,10 @@
 #SBATCH --job-name=vae_training
 #SBATCH --account=project_2003009
 #SBATCH --time=36:00:00
-#SBATCH --partition=gpusmall
+#SBATCH --partition=gpumedium
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=32
-#SBATCH --gres=gpu:a100:1,nvme:500
+#SBATCH --cpus-per-task=128
+#SBATCH --gres=gpu:a100:4,nvme:500
 
 cp -r /scratch/project_2003009/NKI_project_TMAs/patches $LOCAL_SCRATCH
 
