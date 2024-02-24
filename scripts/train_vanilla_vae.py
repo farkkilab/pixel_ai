@@ -71,7 +71,7 @@ def main():
 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     epochs = 1
-    batch_size = 128
+    batch_size = 8192
     lr = 0.0001
     latent_dims = 8
     channels = [0, 1, 2]
@@ -132,11 +132,11 @@ def main():
     train_sampler = None
     train_loader = torch.utils.data.DataLoader(
             tiff_dataset_train, batch_size=batch_size, shuffle=(train_sampler is None),
-             pin_memory=True, sampler=train_sampler, num_workers=32)
+             pin_memory=True, sampler=train_sampler, num_workers=128)
     test_sampler = None
     test_loader = torch.utils.data.DataLoader(
             tiff_dataset_test, batch_size=batch_size, shuffle=(test_sampler is None),
-             pin_memory=True, sampler=test_sampler, num_workers=32)
+             pin_memory=True, sampler=test_sampler, num_workers=128)
     for epoch in range(epochs):
         loss_train = train_test(model,optimizer, train_loader,epoch,train=True, kld_weight=kld_weight)
         loss_test = train_test(model,optimizer, test_loader, epoch, train=False, kld_weight=kld_weight)
