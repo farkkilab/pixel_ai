@@ -21,8 +21,7 @@ sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 from models.vanilla_vae import VanillaVAE
 from utils import ProgressMeter, AverageMeter, save_checkpoint, TiffDataset
 
-
-def train_test(model, optimizer,loader, epoch,train):
+def train_test(model, optimizer,loader, epoch,train, kld_weight):
     batch_time = AverageMeter('Time', ':6.3f')
     data_time = AverageMeter('Data', ':6.3f')
     losses = AverageMeter('Loss', ':.20f')
@@ -46,7 +45,6 @@ def train_test(model, optimizer,loader, epoch,train):
         x_hat = model(images)
         loss = model.module.loss_function(*x_hat,
                                               M_N=kld_weight)
-        #model.train()
         loss['loss'].backward()
         optimizer.step()
         optimizer.zero_grad()
@@ -60,7 +58,6 @@ def train_test(model, optimizer,loader, epoch,train):
     return losses.avg
 
 
-@profile
 def main():
 
     parser = argparse.ArgumentParser()
@@ -74,7 +71,7 @@ def main():
 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     epochs = 1
-    batch_size = 2048
+    batch_size = 128
     lr = 0.0001
     latent_dims = 8
     channels = [0, 1, 2]
@@ -103,25 +100,26 @@ def main():
     patches_files = []
     patches_directories = [d for d in os.listdir(patches_path) if
                                  os.path.isdir(os.path.join(patches_path, d)) and d.startswith('TMA')]
-    for slide in patches_directories:
+    patches_statistics_df.sort_values(by=['Median'], ascending=False, inplace=True)
+    patches_statistics_df = patches_statistics_df[patches_statistics_df['Core'] != 'core124']
+    highest_median_pathes = [str(patches_path) + '/{0}/{1}/{2}'.format(row['Slide'], row['Core'], row['Patch']) for
+                             i, row in patches_statistics_df[patches_statistics_df['Mean'] > 500].iterrows()]
+    for i, slide in enumerate(patches_directories):
 
         files_path= str(patches_path)+"/"+slide
         patches_files.extend([os.path.join(r, fn)
                 for r, ds, fs in os.walk(files_path)
-                for fn in fs if fn.endswith('.tiff')])
-    patches_statistics_df.sort_values(by=['Median'], ascending=False, inplace=True)
-    patches_statistics_df = patches_statistics_df[patches_statistics_df['Core']!='core124']
+                for fn in fs if fn.endswith('.tiff') and os.path.join(r, fn) in highest_median_pathes])
+        if i>1:
+            break
 
-    highest_median_pathes = [str(patches_path)+'/{0}/{1}/{2}'.format(row['Slide'], row['Core'],row['Patch']) for i, row in patches_statistics_df[patches_statistics_df['Mean']>500].iterrows()]
-    patches_files = [file for file in patches_files if file in highest_median_pathes]
+
+
     patches_files_train, patches_files_test = train_test_split(patches_files, test_size=0.1, random_state=42)
     config['total_patches'] = len(patches_files)
     config['train_patches'] = len(patches_files_train)
     config['test_patches'] = len(patches_files_test)
     wandb.init(project='pixel_ai', name=model_name, resume="allow",config=config)
-
-    #matrix_files_train = [file for file in patches_files_train['full_path_file_name'].to_list() if file.endswith(".npy")]
-    #matrix_files_test = [file for file in patches_files_test['full_path_file_name'].to_list() if file.endswith(".npy")]
 
     model = VanillaVAE(in_channels=in_channels,latent_dim=latent_dims,input_dimensions=input_dimensions,hidden_dims=hidden_dims).to(device) # GPU
     model = nn.DataParallel(model)
@@ -140,8 +138,8 @@ def main():
             tiff_dataset_test, batch_size=batch_size, shuffle=(test_sampler is None),
              pin_memory=True, sampler=test_sampler, num_workers=32)
     for epoch in range(epochs):
-        loss_train = train_test(model,optimizer, train_loader,epoch,train=True)
-        loss_test = train_test(model,optimizer, test_loader, epoch, train=False)
+        loss_train = train_test(model,optimizer, train_loader,epoch,train=True, kld_weight=kld_weight)
+        loss_test = train_test(model,optimizer, test_loader, epoch, train=False, kld_weight=kld_weight)
         wandb.log({"loss_train": loss_train, "loss_test": loss_test,
                    "lr": optimizer.param_groups[0]['lr'],
                    "epoch": epoch})
@@ -177,7 +175,6 @@ def main():
             train_image_input_list.append(img_input)
             if i_batch >10:
                 break
-    print(files_names)
 
     wandb.log({"train_image_input_list": [wandb.Image(image) for image in train_image_input_list],
                "train_image_reconstructed_list": [wandb.Image(image) for image in train_image_reconstructed_list]})

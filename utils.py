@@ -76,13 +76,9 @@ class TiffDataset(Dataset):
     def __getitem__(self, idx):
         if torch.is_tensor(idx):
             idx = idx.tolist()
-        im_tiff = tifffile.imread(self.tiff_files[idx],
-                                  maxworkers=6)
+        im_tiff = tifffile.imread(self.tiff_files[idx],key=self.channels,maxworkers=32)
         info = np.iinfo(im_tiff.dtype)
-        if self.channels:
-            sample = torch.from_numpy(im_tiff[self.channels,:,:]/info.max).float()
-        else:
-            sample = torch.from_numpy(im_tiff / info.max).float()
+        sample = torch.from_numpy(im_tiff / info.max).float()
         #array_expression = np.array([array_expression])
         #array_expression = array_expression.astype('float32').reshape(-1, 1657)
         #array_expression = np.pad(array_expression, (0, 7), 'constant')
