@@ -110,8 +110,6 @@ def main():
         patches_files.extend([os.path.join(r, fn)
                 for r, ds, fs in os.walk(files_path)
                 for fn in fs if fn.endswith('.tiff') and os.path.join(r, fn) in highest_median_pathes])
-        if i>1:
-            break
 
 
 
