@@ -5,9 +5,10 @@
 #SBATCH --partition=gpumedium
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=128
-#SBATCH --gres=gpu:a100:4,nvme:500
+#SBATCH --gres=gpu:a100:4,nvme:1000
 
-cp -r /scratch/project_2003009/NKI_project_TMAs $LOCAL_SCRATCH
+rsync -av --progress /scratch/project_2003009/NKI_project_TMAs $LOCAL_SCRATCH --exclude patches
+
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
