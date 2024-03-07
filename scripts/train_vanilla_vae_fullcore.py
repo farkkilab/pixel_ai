@@ -65,7 +65,7 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--cores_path", type=Path,
-                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/TMA_18_810/Channels_all/")
+                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/")
 
 
 
@@ -104,7 +104,7 @@ def main():
         files_path = str(cores_path) + "/" + slide + "/Channels_all"
         cores_files.extend([os.path.join(r, fn)
                               for r, ds, fs in os.walk(files_path)
-                              for fn in fs if fn.endswith('.tiff')])
+                              for fn in fs if fn.endswith('.tif')])
     cores_files_train, cores_files_test = train_test_split(cores_files, test_size=0.1, random_state=42)
     config['total_patches'] = len(cores_files)
     config['train_images'] = len(cores_files_train)
