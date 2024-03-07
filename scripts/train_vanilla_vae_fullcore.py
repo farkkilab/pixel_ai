@@ -124,11 +124,11 @@ def main():
     train_sampler = None
     train_loader = torch.utils.data.DataLoader(
             tiff_dataset_train, batch_size=batch_size, shuffle=(train_sampler is None),
-             pin_memory=True, sampler=train_sampler, num_workers=128)
+             pin_memory=True, sampler=train_sampler, num_workers=64)
     test_sampler = None
     test_loader = torch.utils.data.DataLoader(
             tiff_dataset_test, batch_size=batch_size, shuffle=(test_sampler is None),
-             pin_memory=True, sampler=test_sampler, num_workers=128)
+             pin_memory=True, sampler=test_sampler, num_workers=64)
     for epoch in range(epochs):
         loss_train = train_test(model,optimizer, train_loader,epoch,train=True,kld_weight=kld_weight)
         loss_test = train_test(model,optimizer, test_loader, epoch, train=False,kld_weight=kld_weight)
