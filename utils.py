@@ -76,13 +76,9 @@ class TiffDataset(Dataset):
     def __getitem__(self, idx):
         if torch.is_tensor(idx):
             idx = idx.tolist()
-        im_tiff = tifffile.imread(self.tiff_files[idx],
-                                  maxworkers=6)
+        im_tiff = tifffile.imread(self.tiff_files[idx],key=self.channels,maxworkers=32)
         info = np.iinfo(im_tiff.dtype)
-        if self.channels:
-            sample = torch.from_numpy(im_tiff[self.channels,:,:]/info.max).float()
-        else:
-            sample = torch.from_numpy(im_tiff / info.max).float()
+        sample = torch.from_numpy(im_tiff / info.max).float()
         #array_expression = np.array([array_expression])
         #array_expression = array_expression.astype('float32').reshape(-1, 1657)
         #array_expression = np.pad(array_expression, (0, 7), 'constant')
@@ -127,3 +123,17 @@ def create_random_patches(image_path, patch_size, output_folder):
             # Save the patch as a new TIFF file
             patch_filename = f"{output_folder}/patch_{top_left_y}_{top_left_x}.tiff"
             tifffile.imwrite(patch_filename, patch)
+
+
+def get_patch_stats(patch_path):
+    with tifffile.TiffFile(patch_path) as tif:
+        patch_image = tif.asarray()
+
+    #patch_image = tifffile.imread(patch_path)
+    patch_file = patch_path.split('/')[-1].lower()
+    patch_core = patch_path.split('/')[-2].lower()
+    patch_slide = patch_path.split('/')[-3]
+    median = np.median(patch_image[0, :, :])
+    mean = np.mean(patch_image[0, :, :])
+    standard_deviation = np.std(patch_image[0, :, :])
+    return median, mean, standard_deviation, patch_file, patch_core, patch_slide
