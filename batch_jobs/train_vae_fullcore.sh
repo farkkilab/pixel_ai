@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=vaefullcore_training
 #SBATCH --account=project_2003009
-#SBATCH --time=36:00:00
+#SBATCH --time=20:00:00
 #SBATCH --partition=gpumedium
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=128
