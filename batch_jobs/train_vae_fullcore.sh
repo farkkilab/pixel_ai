@@ -2,7 +2,7 @@
 #SBATCH --job-name=vaefullcore_training
 #SBATCH --account=project_2003009
 #SBATCH --time=1:00:00
-#SBATCH --partition=gpumedium
+#SBATCH --partition=gpusmall
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=128
 #SBATCH --gres=gpu:a100:1,nvme:1000
