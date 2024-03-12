@@ -114,7 +114,7 @@ def main():
     #matrix_files_test = [file for file in patches_files_test['full_path_file_name'].to_list() if file.endswith(".npy")]
 
     model = VanillaVAE(in_channels=in_channels,latent_dim=latent_dims,input_dimensions=input_dimensions,hidden_dims=hidden_dims).to(device) # GPU
-    #model = nn.DataParallel(model)
+    model = nn.DataParallel(model)
 
     optimizer = torch.optim.Adam(model.parameters(),lr=lr)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.1)
