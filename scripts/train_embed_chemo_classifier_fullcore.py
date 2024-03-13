@@ -135,9 +135,9 @@ def main():
         patch_file_label_df = cores_chemo_labels_df[(cores_chemo_labels_df['cycif.slide']==core_file)&(cores_chemo_labels_df['cycif.core.id']==core_file)]
         if not patch_file_label_df.empty:
             # If contains NACT, is a sample collected after chemotherapy exposure
-            if patch_file_label_df.iloc[0]['label'].contains('NACT'):
+            if patch_file_label_df.iloc[0]['label'].str.lower().str.contains('nact'):
                 cores_labels.append(0)
-            elif patch_file_label_df.iloc[0]['label'] == 'HRP':
+            else:
                 cores_labels.append(1)
 
     indices_train, indices_test  = train_test_split(range(len(cores_files)), test_size=0.1, random_state=42)
