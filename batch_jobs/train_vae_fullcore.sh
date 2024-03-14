@@ -4,7 +4,7 @@
 #SBATCH --time=1:00:00
 #SBATCH --partition=gpusmall
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=128
+#SBATCH --cpus-per-task=32
 #SBATCH --gres=gpu:a100:1,nvme:600
 
 rsync -av --progress /scratch/project_2003009/NKI_project_TMAs $LOCAL_SCRATCH --exclude patches
