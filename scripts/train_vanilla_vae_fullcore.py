@@ -74,7 +74,7 @@ def main():
     #pathlib.Path("saved_models/{0}/images".format(cores_folder)).mkdir(parents=True, exist_ok=True)
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     epochs = 250
-    batch_size = 32
+    batch_size = 128
     lr = 0.0001
     latent_dims = 8
     channels = [0, 1, 2]
@@ -117,7 +117,7 @@ def main():
     model = nn.DataParallel(model)
 
     optimizer = torch.optim.Adam(model.parameters(),lr=lr)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.1)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
     tiff_dataset_train = TiffDataset(files=cores_files_train,transform=T.Resize([1024,1024]),files_names=cores_files_train, channels=channels)
     tiff_dataset_test = TiffDataset(files=cores_files_test,transform=T.Resize([1024,1024]),files_names=cores_files_test, channels=channels)
 
