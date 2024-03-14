@@ -1,242 +1,1064 @@
-"patient","Molecular.profile2","therapy_sequence"
-"T13-06809","HRD","NACT"
-"T15-01390","HRP","NACT"
-"T15-05197","HRP","NACT"
-"T15-01004","CCNE1amp","NACT"
-"T15-00190","Other","PDS followed by NACT"
-"T15-01120","HRD","NACT"
-"T15-06880","Other","NACT"
-"T15-07324","Other","NACT"
-"T08-06460","Other","NACT"
-"T11-05988","HRD","Primairy debulking"
-"T11-07721","CCNE1amp","NACT"
-"T11-07732","Other","NACT"
-"T11-09554","Other","NACT"
-"T10-07055","Other","NACT"
-"T15-02971","HRP","NACT"
-"T14-06878","Other","NACT"
-"T14-07272","HRP","NACT"
-"T14-06063","HRP","NACT"
-"T15-02435","HRP","NACT"
-"T14-04611","HRP","NACT"
-"T15-02030","Other","NACT"
-"T12-11175","CCNE1amp","Primairy debulking"
-"T13-03237","HRP","NACT"
-"T13-03576","CCNE1amp","Primairy debulking"
-"T14-04368","HRD","NACT"
-"T14-00015","Other","NACT"
-"T14-05538","HRP","NACT"
-"T12-05811","Other","Primairy debulking"
-"T13-07247","HRP","Primairy debulking"
-"T13-08331","HRD","NACT"
-"T08-03800","Other","NACT"
-"T12-04543","Other","PDS followed by NACT"
-"T09-06052","HRP","NACT"
-"T10-03664","CCNE1amp","NACT"
-"T10-04867","HRP","NACT"
-"T10-04936","HRP","NACT"
-"T11-01730","Other","NACT"
-"T11-02608","Other","NACT"
-"T11-02711","HRP","NACT"
-"T11-03079","Other","NACT"
-"T08-05713","HRP","NACT"
-"T10-02297","Other","NACT"
-"T10-05777","HRP","NACT"
-"T10-06224","HRP","PDS followed by NACT"
-"T10-06413","CCNE1amp","NACT"
-"T10-07543","HRD","NACT"
-"T10-11370","HRD","NACT"
-"T10-02917","HRD","Primairy debulking"
-"T08-06732","Other","Only debulking"
-"T10-00308","Other","NACT"
-"T10-00351","CCNE1amp","Primairy debulking"
-"T10-08770","Other","NACT"
-"T10-09501","Other","NACT"
-"T11-00478","HRD","NACT"
-"T12-12786","HRD","NACT"
-"T13-01032","CCNE1amp","NACT"
-"T13-01162","Other","NACT"
-"T13-01282","Other","NACT"
-"T13-05666","Other","NACT"
-"T13-06122","Other","NACT"
-"T13-06362","HRP","NACT"
-"T13-06886","Other","NACT"
-"T13-07419","HRD","NACT"
-"T12-07385","Other","NACT"
-"T12-09389","Other","NACT followed by re-debulking"
-"T12-09627","Other","NACT"
-"T12-09947","HRD","NACT"
-"T12-09959","Other","NACT"
-"T12-10722","HRD","NACT"
-"T12-11220","Other","NACT"
-"T12-11335","HRP","NACT"
-"T12-11657","HRD","NACT"
-"T12-11980","HRD","NACT followed by re-debulking"
-"T12-12085","HRP","NACT"
-"T11-01287","CCNE1amp","NACT"
-"T11-05162","Other","NACT"
-"T12-02243","Other","NACT"
-"T11-09648","Other","NACT"
-"T12-03299","Other","NACT"
-"T12-05100","HRD","NACT"
-"T12-06984","HRP","NACT"
-"T14-00110","CCNE1amp","NACT"
-"T14-03217","HRP","NACT"
-"T14-04551","HRD","NACT"
-"T14-04654","HRD","NACT"
-"T14-04805","HRP","NACT"
-"T14-08045","HRP","NACT"
-"T15-04286","CCNE1amp","NACT"
-"T15-05371","HRP","NACT"
-"T15-05904","Other","NACT"
-"T15-06488","HRP","NACT"
-"T15-06641","CCNE1amp","NACT"
-"T15-08258","Other","NACT"
-"T17-61082","HRP","Primairy debulking"
-"T17-61083","Other","PDS followed by NACT"
-"T17-61087","HRD","Primairy debulking"
-"T17-61088","HRP","Primairy debulking"
-"T17-61089","HRP","Primairy debulking"
-"T11-11158","CCNE1amp","NACT"
-"T11-11535","Other","NACT"
-"T16-01500","HRD","NACT"
-"T17-61093","CCNE1amp","Primairy debulking"
-"T17-61095","Other","Primairy debulking"
-"T17-61096","HRP","Primairy debulking"
-"T17-61068","CCNE1amp","PDS followed by NACT"
-"T17-61070","CCNE1amp","Primairy debulking"
-"T17-61071","HRP","Primairy debulking"
-"T17-61076","CCNE1amp","Primairy debulking"
-"T17-61077","Other","PDS followed by NACT"
-"T17-61078","Other","Primairy debulking"
-"T17-61079","HRP","Primairy debulking"
-"T17-61080","Other","PDS followed by NACT"
-"T11-08703","HRP","NACT"
-"T13-01837","Other","NACT followed by re-debulking"
-"T13-02436","CCNE1amp","NACT"
-"T13-03807","HRP","NACT"
-"T13-04015","Other","NACT"
-"T13-04828","HRD","NACT"
-"T17-20510","HRD","Primairy debulking"
-"T17-61141","HRP","Primairy debulking"
-"T17-61142","HRD","Primairy debulking"
-"T17-61143","HRD","Primairy debulking"
-"T17-61159","HRP","Primairy debulking"
-"T17-61161","CCNE1amp","Primairy debulking"
-"T17-61162","CCNE1amp","Primairy debulking"
-"T17-61164","HRD","Primairy debulking"
-"T17-61165","Other","Primairy debulking"
-"T17-61167","Other","Primairy debulking"
-"T17-61172","HRD","Primairy debulking"
-"T17-61173","HRP","Primairy debulking"
-"T17-61174","Other","Primairy debulking"
-"T17-61176","HRP","Primairy debulking"
-"T15-05487","HRP","NACT"
-"T17-60988","Other","Primairy debulking"
-"T17-60990","Other","PDS followed by NACT"
-"T17-61001","HRP","PDS followed by NACT"
-"T17-61144","HRP","Primairy debulking"
-"T17-61145","Other","Primairy debulking"
-"T17-61146","HRD","Primairy debulking"
-"T17-61148","Other","Primairy debulking"
-"T17-61151","CCNE1amp","Primairy debulking"
-"T17-61152","Other","Primairy debulking"
-"T17-61153","HRD","Primairy debulking"
-"T17-61154","Other","Primairy debulking"
-"T17-61155","HRP","Primairy debulking"
-"T17-61156","Other","Primairy debulking"
-"T17-61157","HRP","Primairy debulking"
-"T17-61189","HRD","Primairy debulking"
-"T17-61193","Other","Primairy debulking"
-"T17-61194","Other","Primairy debulking"
-"T17-61196","HRD","Primairy debulking"
-"T17-61198","CCNE1amp","Primairy debulking"
-"T17-61199","Other","Primairy debulking"
-"T17-61205","HRD","Primairy debulking"
-"T17-61195","Other","Primairy debulking"
-"T17-61210","Other","Primairy debulking"
-"T17-61211","Other","Primairy debulking"
-"T17-61214","CCNE1amp","Primairy debulking"
-"T17-61216","Other","Primairy debulking"
-"T17-61208","HRD","Primairy debulking"
-"T09-01152","Other","NACT"
-"T10-09944","Other","NACT"
-"T12-06667","HRP","NACT followed by re-debulking"
-"T14-05476","Other","NACT"
-"T13-05762","Other","NACT"
-"T17-61171","BRCAmut/met","Primairy debulking"
-"T13-08998","BRCAmut/met","Primairy debulking"
-"T17-61084","BRCAmut/met","Primairy debulking"
-"T17-61085","BRCAmut/met","Primairy debulking"
-"T13-00499","BRCAmut/met","NACT"
-"T17-61086","BRCAmut/met","Primairy debulking"
-"T17-61147","BRCAmut/met","Primairy debulking"
-"T10-08884","BRCAmut/met","NACT"
-"T12-02604","BRCAmut/met","NACT"
-"T15-03851","BRCAmut/met","NACT"
-"T13-02551","BRCAmut/met","NACT"
-"T10-11026","BRCAmut/met","NACT"
-"T17-61091","BRCAmut/met","Primairy debulking"
-"T17-61092","BRCAmut/met","Primairy debulking"
-"T15-05386","BRCAmut/met","Primairy debulking"
-"T15-08222","BRCAmut/met","Primairy debulking"
-"T13-00368","BRCAmut/met","Primairy debulking"
-"T15-06700","BRCAmut/met","NACT"
-"T12-07130","BRCAmut/met","NACT"
-"T10-03884","BRCAmut/met","NACT"
-"T09-08643","BRCAmut/met","Primairy debulking"
-"T13-04724","BRCAmut/met","NACT"
-"T17-61094","BRCAmut/met","Primairy debulking"
-"T17-61188","BRCAmut/met","Primairy debulking"
-"T15-02569","BRCAmut/met","NACT"
-"T13-08368","BRCAmut/met","NACT"
-"T17-61166","BRCAmut/met","Primairy debulking"
-"T17-61190","BRCAmut/met","Primairy debulking"
-"T15-03096","BRCAmut/met","NACT"
-"T14-05219","BRCAmut/met","NACT"
-"T14-05414","BRCAmut/met","NACT"
-"T09-06945","BRCAmut/met","NACT"
-"T14-07035","BRCAmut/met","NACT"
-"T17-61160","BRCAmut/met","Primairy debulking"
-"T17-61177","BRCAmut/met","Primairy debulking"
-"T15-02253","BRCAmut/met","NACT"
-"T12-01978","BRCAmut/met","NACT"
-"T15-04527","BRCAmut/met","NACT"
-"T13-00443","BRCAmut/met","Primairy debulking"
-"T13-01641","BRCAmut/met","NACT"
-"T10-09951","BRCAmut/met","Primairy debulking"
-"T13-07570","Other","NACT"
-"T17-61097","BRCAmut/met","Primairy debulking"
-"T10-10609","BRCAmut/met","NACT"
-"T10-02206","BRCAmut/met","NACT"
-"T10-03313","BRCAmut/met","Primairy debulking"
-"T08-05863","BRCAmut/met","NACT"
-"T14-22038","BRCAmut/met","Primairy debulking"
-"T17-61072","BRCAmut/met","Primairy debulking"
-"T16-03150","BRCAmut/met","NACT"
-"T17-61197","BRCAmut/met","Primairy debulking"
-"T17-61168","BRCAmut/met","Primairy debulking"
-"T10-08405","BRCAmut/met","NACT"
-"T15-09807","BRCAmut/met","NACT"
-"T13-03404","BRCAmut/met","NACT"
-"T14-05244","BRCAmut/met","NACT"
-"T17-61169","BRCAmut/met","Primairy debulking"
-"T11-00700","Other","NACT followed by re-debulking"
-"T08-09400","Other","NACT"
-"T14-07146","Other","NACT"
-"T17-61163","BRCAmut/met","Primairy debulking"
-"T17-61191","BRCAmut/met","Primairy debulking"
-"T17-61200","BRCAmut/met","Primairy debulking"
-"T17-61149","BRCAmut/met","Primairy debulking"
-"T17-61069","BRCAmut/met","Primairy debulking"
-"T17-61212","BRCAmut/met","Primairy debulking"
-"T17-61158","BRCAmut/met","Primairy debulking"
-"T17-61090","BRCAmut/met","Primairy debulking"
-"T17-61170","BRCAmut/met","Primairy debulking"
-"T11-04810","BRCAmut/met","NACT"
-"T17-61081","BRCAmut/met","PDS followed by NACT"
-"T17-61187","BRCAmut/met","Primairy debulking"
-"T12-12043","BRCAmut/met","NACT"
-"T12-08066","Other","NACT"
-"T12-04653","BRCAmut/met","NACT"
-"T17-61192","BRCAmut/met","Primairy debulking"
+"cycif.slide","cycif.core.id","patient","Molecular.profile2","figo_stage","therapy_sequence","finalstatus","timelastfu","daystoprogression","progression"
+"TMA_34_504","core50","T13-06809","HRD","FIGO III","NACT",2,820,327,1
+"TMA_34_504","core65","T13-06809","HRD","FIGO III","NACT",2,820,327,1
+"TMA_34_504","core58","T13-06809","HRD","FIGO III","NACT",2,820,327,1
+"TMA_34_504","core72","T13-06809","HRD","FIGO III","NACT",2,820,327,1
+"TMA_31_1020","core48","T15-01390","HRP","FIGO III","NACT",2,846,272,1
+"TMA_31_1020","core46","T15-01390","HRP","FIGO III","NACT",2,846,272,1
+"TMA_31_1020","core47","T15-01390","HRP","FIGO III","NACT",2,846,272,1
+"TMA_31_1020","core49","T15-01390","HRP","FIGO III","NACT",2,846,272,1
+"TMA_34_504","core2","T15-05197","HRP","FIGO III","NACT",2,1035,262,1
+"TMA_34_504","core14","T15-05197","HRP","FIGO III","NACT",2,1035,262,1
+"TMA_34_504","core20","T15-05197","HRP","FIGO III","NACT",2,1035,262,1
+"TMA_34_504","core8","T15-05197","HRP","FIGO III","NACT",2,1035,262,1
+"TMA_34_504","core48","T15-01004","CCNE1amp","FIGO III","NACT",2,616,352,1
+"TMA_34_504","core56","T15-01004","CCNE1amp","FIGO III","NACT",2,616,352,1
+"TMA_34_504","core70","T15-01004","CCNE1amp","FIGO III","NACT",2,616,352,1
+"TMA_34_504","core63","T15-01004","CCNE1amp","FIGO III","NACT",2,616,352,1
+"TMA_31_1020","core60","T15-00190","Other","FIGO III","PDS followed by NACT",2,735,278,1
+"TMA_31_1020","core56","T15-00190","Other","FIGO III","PDS followed by NACT",2,735,278,1
+"TMA_31_1020","core61","T15-00190","Other","FIGO III","PDS followed by NACT",2,735,278,1
+"TMA_31_1020","core58","T15-00190","Other","FIGO III","PDS followed by NACT",2,735,278,1
+"TMA_41_812","core69","T15-01120","HRD","FIGO IV","NACT",2,443,210,1
+"TMA_41_812","core81","T15-01120","HRD","FIGO IV","NACT",2,443,210,1
+"TMA_41_812","core76","T15-01120","HRD","FIGO IV","NACT",2,443,210,1
+"TMA_34_504","core42","T15-06880","Other","FIGO IV","NACT",2,2069,379,0
+"TMA_34_504","core36","T15-06880","Other","FIGO IV","NACT",2,2069,379,0
+"TMA_34_504","core31","T15-06880","Other","FIGO IV","NACT",2,2069,379,0
+"TMA_34_504","core26","T15-06880","Other","FIGO IV","NACT",2,2069,379,0
+"TMA_31_1020","core30","T15-07324","Other","FIGO IV","NACT",2,397,284,1
+"TMA_31_1020","core32","T15-07324","Other","FIGO IV","NACT",2,397,284,1
+"TMA_31_1020","core29","T15-07324","Other","FIGO IV","NACT",2,397,284,1
+"TMA_31_1020","core27","T15-07324","Other","FIGO IV","NACT",2,397,284,1
+"TMA_41_812","core27","T08-06460","Other","FIGO III","NACT",2,1474,727,1
+"TMA_41_812","core30","T08-06460","Other","FIGO III","NACT",2,1474,727,1
+"TMA_41_812","core19","T08-06460","Other","FIGO III","NACT",2,1474,727,1
+"TMA_18_810","core23","T11-05988","HRD","FIGO II","Primairy debulking",2,759,349,1
+"TMA_18_810","core20","T11-05988","HRD","FIGO II","Primairy debulking",2,759,349,1
+"TMA_18_810","core22","T11-05988","HRD","FIGO II","Primairy debulking",2,759,349,1
+"TMA_18_810","core21","T11-05988","HRD","FIGO II","Primairy debulking",2,759,349,1
+"TMA_41_812","core23","T11-07721","CCNE1amp","FIGO III","NACT",2,863,337,1
+"TMA_41_812","core36","T11-07721","CCNE1amp","FIGO III","NACT",2,863,337,1
+"TMA_41_812","core29","T11-07721","CCNE1amp","FIGO III","NACT",2,863,337,1
+"TMA_41_812","core41","T11-07721","CCNE1amp","FIGO III","NACT",2,863,337,1
+"TMA_34_504","core19","T11-07732","Other","FIGO IV","NACT",2,823,80,1
+"TMA_34_504","core25","T11-07732","Other","FIGO IV","NACT",2,823,80,1
+"TMA_34_504","core13","T11-07732","Other","FIGO IV","NACT",2,823,80,1
+"TMA_34_504","core68","T11-09554","Other","FIGO IV","NACT",2,377,328,1
+"TMA_34_504","core53","T11-09554","Other","FIGO IV","NACT",2,377,328,1
+"TMA_34_504","core61","T11-09554","Other","FIGO IV","NACT",2,377,328,1
+"TMA_34_504","core74","T11-09554","Other","FIGO IV","NACT",2,377,328,1
+"TMA_33_576","core95","T10-07055","Other","FIGO III","NACT",2,749,328,1
+"TMA_33_576","core86","T10-07055","Other","FIGO III","NACT",2,749,328,1
+"TMA_33_576","core32","T10-07055","Other","FIGO III","NACT",2,749,328,1
+"TMA_33_576","core23","T10-07055","Other","FIGO III","NACT",2,749,328,1
+"TMA_33_576","core14","T10-07055","Other","FIGO III","NACT",2,749,328,1
+"TMA_33_576","core76","T10-07055","Other","FIGO III","NACT",2,749,328,1
+"TMA_33_576","core103","T10-07055","Other","FIGO III","NACT",2,749,328,1
+"TMA_33_576","core5","T10-07055","Other","FIGO III","NACT",2,749,328,1
+"TMA_45_312","core5","T15-02971","HRP","FIGO III","NACT",1,2609,1149,0
+"TMA_45_312","core9","T15-02971","HRP","FIGO III","NACT",1,2609,1149,0
+"TMA_45_312","core7","T15-02971","HRP","FIGO III","NACT",1,2609,1149,0
+"TMA_45_312","core6","T15-02971","HRP","FIGO III","NACT",1,2609,1149,0
+"TMA_45_312","core21","T14-06878","Other","FIGO IV","NACT",2,1309,746,1
+"TMA_45_312","core23","T14-06878","Other","FIGO IV","NACT",2,1309,746,1
+"TMA_45_312","core26","T14-06878","Other","FIGO IV","NACT",2,1309,746,1
+"TMA_45_312","core25","T14-06878","Other","FIGO IV","NACT",2,1309,746,1
+"TMA_45_312","core31","T14-07272","HRP","FIGO III","NACT",2,2729,568,1
+"TMA_45_312","core28","T14-07272","HRP","FIGO III","NACT",2,2729,568,1
+"TMA_45_312","core29","T14-07272","HRP","FIGO III","NACT",2,2729,568,1
+"TMA_45_312","core30","T14-07272","HRP","FIGO III","NACT",2,2729,568,1
+"TMA_45_312","core38","T14-06063","HRP","FIGO IV","NACT",2,374,261,1
+"TMA_45_312","core40","T14-06063","HRP","FIGO IV","NACT",2,374,261,1
+"TMA_45_312","core39","T14-06063","HRP","FIGO IV","NACT",2,374,261,1
+"TMA_45_312","core37","T14-06063","HRP","FIGO IV","NACT",2,374,261,1
+"TMA_45_312","core11","T15-02435","HRP","FIGO III","NACT",2,335,310,1
+"TMA_45_312","core12","T15-02435","HRP","FIGO III","NACT",2,335,310,1
+"TMA_45_312","core8","T15-02435","HRP","FIGO III","NACT",2,335,310,1
+"TMA_45_312","core10","T15-02435","HRP","FIGO III","NACT",2,335,310,1
+"TMA_45_312","core36","T14-04611","HRP","FIGO IV","NACT",2,604,372,1
+"TMA_45_312","core32","T14-04611","HRP","FIGO IV","NACT",2,604,372,1
+"TMA_45_312","core34","T14-04611","HRP","FIGO IV","NACT",2,604,372,1
+"TMA_45_312","core35","T14-04611","HRP","FIGO IV","NACT",2,604,372,1
+"TMA_45_312","core19","T15-02030","Other","FIGO IV","NACT",2,1448,488,1
+"TMA_45_312","core14","T15-02030","Other","FIGO IV","NACT",2,1448,488,1
+"TMA_45_312","core17","T15-02030","Other","FIGO IV","NACT",2,1448,488,1
+"TMA_18_810","core4","T12-11175","CCNE1amp","FIGO II","Primairy debulking",2,3127,1021,1
+"TMA_18_810","core8","T12-11175","CCNE1amp","FIGO II","Primairy debulking",2,3127,1021,1
+"TMA_18_810","core5","T12-11175","CCNE1amp","FIGO II","Primairy debulking",2,3127,1021,1
+"TMA_18_810","core6","T12-11175","CCNE1amp","FIGO II","Primairy debulking",2,3127,1021,1
+"TMA_34_504","core66","T13-03237","HRP","FIGO III","NACT",2,1540,463,1
+"TMA_34_504","core52","T13-03237","HRP","FIGO III","NACT",2,1540,463,1
+"TMA_34_504","core59","T13-03237","HRP","FIGO III","NACT",2,1540,463,1
+"TMA_42_961","core129","T13-03576","CCNE1amp","FIGO III","Primairy debulking",2,866,413,1
+"TMA_42_961","core110","T13-03576","CCNE1amp","FIGO III","Primairy debulking",2,866,413,1
+"TMA_42_961","core135","T13-03576","CCNE1amp","FIGO III","Primairy debulking",2,866,413,1
+"TMA_42_961","core120","T13-03576","CCNE1amp","FIGO III","Primairy debulking",2,866,413,1
+"TMA_41_812","core57","T14-04368","HRD","FIGO IV","NACT",2,588,462,1
+"TMA_41_812","core63","T14-04368","HRD","FIGO IV","NACT",2,588,462,1
+"TMA_41_812","core70","T14-04368","HRD","FIGO IV","NACT",2,588,462,1
+"TMA_41_812","core88","T14-00015","Other","FIGO III","NACT",2,545,520,0
+"TMA_41_812","core98","T14-00015","Other","FIGO III","NACT",2,545,520,0
+"TMA_41_812","core103","T14-00015","Other","FIGO III","NACT",2,545,520,0
+"TMA_41_812","core94","T14-00015","Other","FIGO III","NACT",2,545,520,0
+"TMA_41_812","core87","T14-05538","HRP","FIGO IV","NACT",2,283,243,1
+"TMA_41_812","core75","T14-05538","HRP","FIGO IV","NACT",2,283,243,1
+"TMA_41_812","core82","T14-05538","HRP","FIGO IV","NACT",2,283,243,1
+"TMA_41_812","core93","T14-05538","HRP","FIGO IV","NACT",2,283,243,1
+"TMA_18_810","core1","T12-05811","Other","FIGO III","Primairy debulking",2,2577,1465,0
+"TMA_18_810","core7","T12-05811","Other","FIGO III","Primairy debulking",2,2577,1465,0
+"TMA_18_810","core3","T12-05811","Other","FIGO III","Primairy debulking",2,2577,1465,0
+"TMA_18_810","core2","T12-05811","Other","FIGO III","Primairy debulking",2,2577,1465,0
+"TMA_41_812","core78","T13-07247","HRP","FIGO III","Primairy debulking",2,2729,1358,0
+"TMA_41_812","core85","T13-07247","HRP","FIGO III","Primairy debulking",2,2729,1358,0
+"TMA_41_812","core91","T13-07247","HRP","FIGO III","Primairy debulking",2,2729,1358,0
+"TMA_41_812","core97","T13-07247","HRP","FIGO III","Primairy debulking",2,2729,1358,0
+"TMA_41_812","core56","T13-08331","HRD","FIGO III","NACT",2,800,299,1
+"TMA_41_812","core45","T13-08331","HRD","FIGO III","NACT",2,800,299,1
+"TMA_41_812","core51","T13-08331","HRD","FIGO III","NACT",2,800,299,1
+"TMA_31_1020","core136","T08-03800","Other","","NACT",2,849,344,1
+"TMA_31_1020","core138","T08-03800","Other","","NACT",2,849,344,1
+"TMA_31_1020","core139","T08-03800","Other","","NACT",2,849,344,1
+"TMA_31_1020","core140","T08-03800","Other","","NACT",2,849,344,1
+"TMA_34_504","core24","T12-04543","Other","FIGO III","PDS followed by NACT",2,1225,460,1
+"TMA_34_504","core18","T12-04543","Other","FIGO III","PDS followed by NACT",2,1225,460,1
+"TMA_34_504","core12","T12-04543","Other","FIGO III","PDS followed by NACT",2,1225,460,1
+"TMA_34_504","core6","T12-04543","Other","FIGO III","PDS followed by NACT",2,1225,460,1
+"TMA_42_961","core86","T08-05880","HRP","FIGO III","Primairy debulking",2,782,503,1
+"TMA_42_961","core93","T08-05880","HRP","FIGO III","Primairy debulking",2,782,503,1
+"TMA_42_961","core76","T08-05880","HRP","FIGO III","Primairy debulking",2,782,503,1
+"TMA_42_961","core66","T08-05880","HRP","FIGO III","Primairy debulking",2,782,503,1
+"TMA_41_812","core12","T09-06052","HRP","FIGO III","NACT",2,448,394,1
+"TMA_41_812","core9","T09-06052","HRP","FIGO III","NACT",2,448,394,1
+"TMA_41_812","core17","T09-06052","HRP","FIGO III","NACT",2,448,394,1
+"TMA_41_812","core22","T09-06052","HRP","FIGO III","NACT",2,448,394,1
+"TMA_33_576","core16","T10-03664","CCNE1amp","FIGO IV","NACT",2,458,250,1
+"TMA_33_576","core6","T10-03664","CCNE1amp","FIGO IV","NACT",2,458,250,1
+"TMA_33_576","core25","T10-03664","CCNE1amp","FIGO IV","NACT",2,458,250,1
+"TMA_33_576","core34","T10-03664","CCNE1amp","FIGO IV","NACT",2,458,250,1
+"TMA_33_576","core51","T10-04867","HRP","FIGO III","NACT",2,1075,470,1
+"TMA_33_576","core60","T10-04867","HRP","FIGO III","NACT",2,1075,470,1
+"TMA_33_576","core68","T10-04867","HRP","FIGO III","NACT",2,1075,470,1
+"TMA_33_576","core42","T10-04867","HRP","FIGO III","NACT",2,1075,470,1
+"TMA_33_576","core15","T10-04936","HRP","FIGO III","NACT",2,630,418,1
+"TMA_33_576","core33","T10-04936","HRP","FIGO III","NACT",2,630,418,1
+"TMA_33_576","core7","T10-04936","HRP","FIGO III","NACT",2,630,418,1
+"TMA_33_576","core24","T10-04936","HRP","FIGO III","NACT",2,630,418,1
+"TMA_33_576","core99","T11-01730","Other","FIGO III","NACT",2,1041,455,1
+"TMA_33_576","core72","T11-01730","Other","FIGO III","NACT",2,1041,455,1
+"TMA_33_576","core82","T11-01730","Other","FIGO III","NACT",2,1041,455,1
+"TMA_33_576","core90","T11-01730","Other","FIGO III","NACT",2,1041,455,1
+"TMA_33_576","core63","T11-02608","Other","FIGO III","NACT",2,400,132,1
+"TMA_33_576","core56","T11-02608","Other","FIGO III","NACT",2,400,132,1
+"TMA_33_576","core36","T11-02608","Other","FIGO III","NACT",2,400,132,1
+"TMA_33_576","core46","T11-02608","Other","FIGO III","NACT",2,400,132,1
+"TMA_33_576","core27","T11-02711","HRP","FIGO III","NACT",2,362,362,0
+"TMA_33_576","core10","T11-02711","HRP","FIGO III","NACT",2,362,362,0
+"TMA_33_576","core18","T11-02711","HRP","FIGO III","NACT",2,362,362,0
+"TMA_33_576","core2","T11-02711","HRP","FIGO III","NACT",2,362,362,0
+"TMA_33_576","core89","T11-03079","Other","FIGO IV","NACT",2,370,315,1
+"TMA_33_576","core98","T11-03079","Other","FIGO IV","NACT",2,370,315,1
+"TMA_33_576","core71","T11-03079","Other","FIGO IV","NACT",2,370,315,1
+"TMA_33_576","core81","T11-03079","Other","FIGO IV","NACT",2,370,315,1
+"TMA_41_812","core14","T08-05713","HRP","FIGO III","NACT",2,774,500,1
+"TMA_41_812","core3","T08-05713","HRP","FIGO III","NACT",2,774,500,1
+"TMA_41_812","core6","T08-05713","HRP","FIGO III","NACT",2,774,500,1
+"TMA_41_812","core10","T08-05713","HRP","FIGO III","NACT",2,774,500,1
+"TMA_33_576","core61","T10-02297","Other","FIGO IV","NACT",2,977,529,1
+"TMA_33_576","core43","T10-02297","Other","FIGO IV","NACT",2,977,529,1
+"TMA_33_576","core52","T10-02297","Other","FIGO IV","NACT",2,977,529,1
+"TMA_33_576","core69","T10-02297","Other","FIGO IV","NACT",2,977,529,1
+"TMA_33_576","core87","T10-05777","HRP","FIGO IV","NACT",2,603,603,0
+"TMA_33_576","core77","T10-05777","HRP","FIGO IV","NACT",2,603,603,0
+"TMA_33_576","core104","T10-05777","HRP","FIGO IV","NACT",2,603,603,0
+"TMA_33_576","core96","T10-05777","HRP","FIGO IV","NACT",2,603,603,0
+"TMA_41_812","core11","T10-06224","HRP","FIGO III","PDS followed by NACT",2,760,378,1
+"TMA_41_812","core4","T10-06224","HRP","FIGO III","PDS followed by NACT",2,760,378,1
+"TMA_41_812","core7","T10-06224","HRP","FIGO III","PDS followed by NACT",2,760,378,1
+"TMA_33_576","core67","T10-06413","CCNE1amp","FIGO IV","NACT",2,294,215,1
+"TMA_33_576","core59","T10-06413","CCNE1amp","FIGO IV","NACT",2,294,215,1
+"TMA_33_576","core41","T10-06413","CCNE1amp","FIGO IV","NACT",2,294,215,1
+"TMA_33_576","core50","T10-06413","CCNE1amp","FIGO IV","NACT",2,294,215,1
+"TMA_33_576","core58","T10-07543","HRD","FIGO III","NACT",2,2097,489,1
+"TMA_33_576","core40","T10-07543","HRD","FIGO III","NACT",2,2097,489,1
+"TMA_33_576","core49","T10-07543","HRD","FIGO III","NACT",2,2097,489,1
+"TMA_33_576","core66","T10-07543","HRD","FIGO III","NACT",2,2097,489,1
+"TMA_33_576","core9","T10-11370","HRD","FIGO IV","NACT",2,630,216,1
+"TMA_33_576","core20","T10-11370","HRD","FIGO IV","NACT",2,630,216,1
+"TMA_33_576","core28","T10-11370","HRD","FIGO IV","NACT",2,630,216,1
+"TMA_42_961","core64","T10-02917","HRD","FIGO III","Primairy debulking",1,4379,2260,0
+"TMA_42_961","core92","T10-02917","HRD","FIGO III","Primairy debulking",1,4379,2260,0
+"TMA_42_961","core83","T10-02917","HRD","FIGO III","Primairy debulking",1,4379,2260,0
+"TMA_42_961","core74","T10-02917","HRD","FIGO III","Primairy debulking",1,4379,2260,0
+"TMA_41_812","core1","T08-06732","Other","FIGO III","Only debulking",2,418,95,1
+"TMA_41_812","core2","T08-06732","Other","FIGO III","Only debulking",2,418,95,1
+"TMA_41_812","core5","T08-06732","Other","FIGO III","Only debulking",2,418,95,1
+"TMA_42_961","core55","T09-08540","HRP","FIGO IV","Primairy debulking",2,2554,2184,1
+"TMA_42_961","core20","T09-08540","HRP","FIGO IV","Primairy debulking",2,2554,2184,1
+"TMA_42_961","core32","T09-08540","HRP","FIGO IV","Primairy debulking",2,2554,2184,1
+"TMA_42_961","core43","T09-08540","HRP","FIGO IV","Primairy debulking",2,2554,2184,1
+"TMA_33_576","core17","T10-00308","Other","FIGO III","NACT",2,375,286,1
+"TMA_33_576","core26","T10-00308","Other","FIGO III","NACT",2,375,286,1
+"TMA_33_576","core8","T10-00308","Other","FIGO III","NACT",2,375,286,1
+"TMA_33_576","core35","T10-00308","Other","FIGO III","NACT",2,375,286,1
+"TMA_42_961","core134","T10-00351","CCNE1amp","FIGO III","Primairy debulking",2,520,334,1
+"TMA_42_961","core121","T10-00351","CCNE1amp","FIGO III","Primairy debulking",2,520,334,1
+"TMA_42_961","core130","T10-00351","CCNE1amp","FIGO III","Primairy debulking",2,520,334,1
+"TMA_42_961","core137","T10-00351","CCNE1amp","FIGO III","Primairy debulking",2,520,334,1
+"TMA_33_576","core93","T10-08770","Other","FIGO IV","NACT",2,1392,457,1
+"TMA_33_576","core102","T10-08770","Other","FIGO IV","NACT",2,1392,457,1
+"TMA_33_576","core73","T10-08770","Other","FIGO IV","NACT",2,1392,457,1
+"TMA_33_576","core85","T10-08770","Other","FIGO IV","NACT",2,1392,457,1
+"TMA_33_576","core75","T10-09501","Other","FIGO IV","NACT",2,2794,1883,0
+"TMA_33_576","core101","T10-09501","Other","FIGO IV","NACT",2,2794,1883,0
+"TMA_33_576","core92","T10-09501","Other","FIGO IV","NACT",2,2794,1883,0
+"TMA_33_576","core84","T10-09501","Other","FIGO IV","NACT",2,2794,1883,0
+"TMA_33_576","core91","T11-00478","HRD","FIGO IV","NACT",1,4171,468,1
+"TMA_33_576","core83","T11-00478","HRD","FIGO IV","NACT",1,4171,468,1
+"TMA_33_576","core74","T11-00478","HRD","FIGO IV","NACT",1,4171,468,1
+"TMA_33_576","core100","T11-00478","HRD","FIGO IV","NACT",1,4171,468,1
+"TMA_18_810","core62","T12-12786","HRD","FIGO IV","NACT",2,1162,645,1
+"TMA_18_810","core60","T12-12786","HRD","FIGO IV","NACT",2,1162,645,1
+"TMA_18_810","core61","T12-12786","HRD","FIGO IV","NACT",2,1162,645,1
+"TMA_18_810","core59","T12-12786","HRD","FIGO IV","NACT",2,1162,645,1
+"TMA_18_810","core64","T13-01032","CCNE1amp","FIGO III","NACT",2,1750,951,1
+"TMA_18_810","core63","T13-01032","CCNE1amp","FIGO III","NACT",2,1750,951,1
+"TMA_18_810","core66","T13-01032","CCNE1amp","FIGO III","NACT",2,1750,951,1
+"TMA_18_810","core65","T13-01032","CCNE1amp","FIGO III","NACT",2,1750,951,1
+"TMA_18_810","core69","T13-01162","Other","FIGO III","NACT",2,1604,755,1
+"TMA_18_810","core70","T13-01162","Other","FIGO III","NACT",2,1604,755,1
+"TMA_18_810","core68","T13-01162","Other","FIGO III","NACT",2,1604,755,1
+"TMA_18_810","core67","T13-01162","Other","FIGO III","NACT",2,1604,755,1
+"TMA_18_810","core47","T13-01282","Other","FIGO IV","NACT",2,447,236,1
+"TMA_18_810","core50","T13-01282","Other","FIGO IV","NACT",2,447,236,1
+"TMA_18_810","core49","T13-01282","Other","FIGO IV","NACT",2,447,236,1
+"TMA_18_810","core48","T13-01282","Other","FIGO IV","NACT",2,447,236,1
+"TMA_18_810","core28","T13-05666","Other","FIGO III","NACT",2,2324,1456,0
+"TMA_18_810","core30","T13-05666","Other","FIGO III","NACT",2,2324,1456,0
+"TMA_18_810","core29","T13-05666","Other","FIGO III","NACT",2,2324,1456,0
+"TMA_18_810","core31","T13-05666","Other","FIGO III","NACT",2,2324,1456,0
+"TMA_18_810","core34","T13-06122","Other","FIGO IV","NACT",2,2189,1408,1
+"TMA_18_810","core33","T13-06122","Other","FIGO IV","NACT",2,2189,1408,1
+"TMA_18_810","core35","T13-06122","Other","FIGO IV","NACT",2,2189,1408,1
+"TMA_18_810","core32","T13-06122","Other","FIGO IV","NACT",2,2189,1408,1
+"TMA_18_810","core14","T13-06362","HRP","FIGO IV","NACT",2,412,306,1
+"TMA_18_810","core15","T13-06362","HRP","FIGO IV","NACT",2,412,306,1
+"TMA_18_810","core13","T13-06362","HRP","FIGO IV","NACT",2,412,306,1
+"TMA_31_1020","core119","T13-06886","Other","FIGO IV","NACT",2,760,384,1
+"TMA_31_1020","core117","T13-06886","Other","FIGO IV","NACT",2,760,384,1
+"TMA_31_1020","core118","T13-06886","Other","FIGO IV","NACT",2,760,384,1
+"TMA_31_1020","core121","T13-06886","Other","FIGO IV","NACT",2,760,384,1
+"TMA_31_1020","core99","T13-07419","HRD","FIGO IV","NACT",2,1161,494,1
+"TMA_31_1020","core98","T13-07419","HRD","FIGO IV","NACT",2,1161,494,1
+"TMA_31_1020","core97","T13-07419","HRD","FIGO IV","NACT",2,1161,494,1
+"TMA_31_1020","core96","T13-07419","HRD","FIGO IV","NACT",2,1161,494,1
+"TMA_41_812","core49","T12-07385","Other","FIGO IV","NACT",2,381,248,1
+"TMA_41_812","core61","T12-07385","Other","FIGO IV","NACT",2,381,248,1
+"TMA_41_812","core42","T12-07385","Other","FIGO IV","NACT",2,381,248,1
+"TMA_41_812","core54","T12-07385","Other","FIGO IV","NACT",2,381,248,1
+"TMA_18_810","core110","T12-09389","Other","FIGO IV","NACT followed by re-debulking",2,1259,490,1
+"TMA_18_810","core112","T12-09389","Other","FIGO IV","NACT followed by re-debulking",2,1259,490,1
+"TMA_18_810","core109","T12-09389","Other","FIGO IV","NACT followed by re-debulking",2,1259,490,1
+"TMA_18_810","core111","T12-09389","Other","FIGO IV","NACT followed by re-debulking",2,1259,490,1
+"TMA_18_810","core116","T12-09627","Other","FIGO IV","NACT",2,334,267,1
+"TMA_18_810","core113","T12-09627","Other","FIGO IV","NACT",2,334,267,1
+"TMA_18_810","core115","T12-09627","Other","FIGO IV","NACT",2,334,267,1
+"TMA_18_810","core114","T12-09627","Other","FIGO IV","NACT",2,334,267,1
+"TMA_18_810","core94","T12-09947","HRD","FIGO IV","NACT",2,274,206,1
+"TMA_18_810","core97","T12-09947","HRD","FIGO IV","NACT",2,274,206,1
+"TMA_18_810","core96","T12-09947","HRD","FIGO IV","NACT",2,274,206,1
+"TMA_18_810","core95","T12-09947","HRD","FIGO IV","NACT",2,274,206,1
+"TMA_18_810","core98","T12-09959","Other","FIGO III","NACT",2,1221,447,1
+"TMA_18_810","core101","T12-09959","Other","FIGO III","NACT",2,1221,447,1
+"TMA_18_810","core100","T12-09959","Other","FIGO III","NACT",2,1221,447,1
+"TMA_18_810","core99","T12-09959","Other","FIGO III","NACT",2,1221,447,1
+"TMA_18_810","core85","T12-10722","HRD","FIGO IV","NACT",2,170,170,0
+"TMA_18_810","core84","T12-10722","HRD","FIGO IV","NACT",2,170,170,0
+"TMA_18_810","core83","T12-10722","HRD","FIGO IV","NACT",2,170,170,0
+"TMA_18_810","core82","T12-10722","HRD","FIGO IV","NACT",2,170,170,0
+"TMA_18_810","core87","T12-11220","Other","FIGO III","NACT",2,516,338,1
+"TMA_18_810","core86","T12-11220","Other","FIGO III","NACT",2,516,338,1
+"TMA_18_810","core89","T12-11220","Other","FIGO III","NACT",2,516,338,1
+"TMA_18_810","core88","T12-11220","Other","FIGO III","NACT",2,516,338,1
+"TMA_18_810","core92","T12-11335","HRP","FIGO IV","NACT",2,851,439,1
+"TMA_18_810","core91","T12-11335","HRP","FIGO IV","NACT",2,851,439,1
+"TMA_18_810","core93","T12-11335","HRP","FIGO IV","NACT",2,851,439,1
+"TMA_18_810","core90","T12-11335","HRP","FIGO IV","NACT",2,851,439,1
+"TMA_18_810","core72","T12-11657","HRD","FIGO IV","NACT",2,818,420,1
+"TMA_18_810","core73","T12-11657","HRD","FIGO IV","NACT",2,818,420,1
+"TMA_18_810","core74","T12-11657","HRD","FIGO IV","NACT",2,818,420,1
+"TMA_18_810","core71","T12-11657","HRD","FIGO IV","NACT",2,818,420,1
+"TMA_46_325","core50","T12-11980","HRD","FIGO IV","NACT followed by re-debulking",2,509,451,1
+"TMA_46_325","core46","T12-11980","HRD","FIGO IV","NACT followed by re-debulking",2,509,451,1
+"TMA_46_325","core43","T12-11980","HRD","FIGO IV","NACT followed by re-debulking",2,509,451,1
+"TMA_46_325","core41","T12-11980","HRD","FIGO IV","NACT followed by re-debulking",2,509,451,1
+"TMA_18_810","core79","T12-12085","HRP","FIGO III","NACT",2,1730,1135,1
+"TMA_18_810","core81","T12-12085","HRP","FIGO III","NACT",2,1730,1135,1
+"TMA_18_810","core80","T12-12085","HRP","FIGO III","NACT",2,1730,1135,1
+"TMA_33_576","core1","T11-01287","CCNE1amp","FIGO III","NACT",2,740,250,1
+"TMA_33_576","core29","T11-01287","CCNE1amp","FIGO III","NACT",2,740,250,1
+"TMA_33_576","core19","T11-01287","CCNE1amp","FIGO III","NACT",2,740,250,1
+"TMA_33_576","core11","T11-01287","CCNE1amp","FIGO III","NACT",2,740,250,1
+"TMA_41_812","core18","T11-05162","Other","FIGO IV","NACT",NA,612,612,1
+"TMA_41_812","core13","T11-05162","Other","FIGO IV","NACT",NA,612,612,1
+"TMA_41_812","core8","T11-05162","Other","FIGO IV","NACT",NA,612,612,1
+"TMA_18_810","core147","T12-02243","Other","FIGO III","NACT",2,878,502,1
+"TMA_18_810","core149","T12-02243","Other","FIGO III","NACT",2,878,502,1
+"TMA_18_810","core148","T12-02243","Other","FIGO III","NACT",2,878,502,1
+"TMA_18_810","core150","T12-02243","Other","FIGO III","NACT",2,878,502,1
+"TMA_41_812","core67","T11-09648","Other","FIGO III","NACT",2,667,461,1
+"TMA_41_812","core55","T11-09648","Other","FIGO III","NACT",2,667,461,1
+"TMA_41_812","core48","T11-09648","Other","FIGO III","NACT",2,667,461,1
+"TMA_41_812","core62","T11-09648","Other","FIGO III","NACT",2,667,461,1
+"TMA_18_810","core133","T12-03299","Other","FIGO III","NACT",1,3695,925,1
+"TMA_18_810","core132","T12-03299","Other","FIGO III","NACT",1,3695,925,1
+"TMA_18_810","core135","T12-03299","Other","FIGO III","NACT",1,3695,925,1
+"TMA_18_810","core136","T12-03299","Other","FIGO III","NACT",1,3695,925,1
+"TMA_18_810","core117","T12-05100","HRD","FIGO III","NACT",2,1028,346,1
+"TMA_18_810","core118","T12-05100","HRD","FIGO III","NACT",2,1028,346,1
+"TMA_18_810","core120","T12-05100","HRD","FIGO III","NACT",2,1028,346,1
+"TMA_18_810","core119","T12-05100","HRD","FIGO III","NACT",2,1028,346,1
+"TMA_18_810","core125","T12-06984","HRP","FIGO IV","NACT",2,2513,665,1
+"TMA_18_810","core129","T12-06984","HRP","FIGO IV","NACT",2,2513,665,1
+"TMA_18_810","core126","T12-06984","HRP","FIGO IV","NACT",2,2513,665,1
+"TMA_18_810","core128","T12-06984","HRP","FIGO IV","NACT",2,2513,665,1
+"TMA_31_1020","core101","T14-00110","CCNE1amp","FIGO III","NACT",2,716,321,1
+"TMA_31_1020","core103","T14-00110","CCNE1amp","FIGO III","NACT",2,716,321,1
+"TMA_31_1020","core100","T14-00110","CCNE1amp","FIGO III","NACT",2,716,321,1
+"TMA_31_1020","core102","T14-00110","CCNE1amp","FIGO III","NACT",2,716,321,1
+"TMA_31_1020","core87","T14-03217","HRP","FIGO III","NACT",1,2910,400,1
+"TMA_31_1020","core86","T14-03217","HRP","FIGO III","NACT",1,2910,400,1
+"TMA_31_1020","core91","T14-04551","HRD","FIGO IV","NACT",2,715,699,1
+"TMA_31_1020","core89","T14-04551","HRD","FIGO IV","NACT",2,715,699,1
+"TMA_31_1020","core92","T14-04551","HRD","FIGO IV","NACT",2,715,699,1
+"TMA_31_1020","core88","T14-04551","HRD","FIGO IV","NACT",2,715,699,1
+"TMA_31_1020","core95","T14-04654","HRD","FIGO III","NACT",2,468,199,1
+"TMA_31_1020","core90","T14-04654","HRD","FIGO III","NACT",2,468,199,1
+"TMA_31_1020","core93","T14-04654","HRD","FIGO III","NACT",2,468,199,1
+"TMA_31_1020","core94","T14-04654","HRD","FIGO III","NACT",2,468,199,1
+"TMA_31_1020","core74","T14-04805","HRP","FIGO IV","NACT",2,317,197,1
+"TMA_31_1020","core75","T14-04805","HRP","FIGO IV","NACT",2,317,197,1
+"TMA_31_1020","core76","T14-04805","HRP","FIGO IV","NACT",2,317,197,1
+"TMA_31_1020","core77","T14-04805","HRP","FIGO IV","NACT",2,317,197,1
+"TMA_31_1020","core55","T14-08045","HRP","FIGO III","NACT",2,1598,1012,0
+"TMA_31_1020","core59","T14-08045","HRP","FIGO III","NACT",2,1598,1012,0
+"TMA_31_1020","core57","T14-08045","HRP","FIGO III","NACT",2,1598,1012,0
+"TMA_31_1020","core54","T14-08045","HRP","FIGO III","NACT",2,1598,1012,0
+"TMA_41_812","core80","T15-04105","HRP","FIGO III","NACT",2,226,169,1
+"TMA_41_812","core90","T15-04105","HRP","FIGO III","NACT",2,226,169,1
+"TMA_41_812","core99","T15-04286","CCNE1amp","FIGO III","NACT",2,440,315,1
+"TMA_41_812","core95","T15-04286","CCNE1amp","FIGO III","NACT",2,440,315,1
+"TMA_41_812","core104","T15-04286","CCNE1amp","FIGO III","NACT",2,440,315,1
+"TMA_41_812","core101","T15-04286","CCNE1amp","FIGO III","NACT",2,440,315,1
+"TMA_31_1020","core35","T15-05371","HRP","FIGO IV","NACT",2,323,283,1
+"TMA_31_1020","core36","T15-05371","HRP","FIGO IV","NACT",2,323,283,1
+"TMA_31_1020","core37","T15-05371","HRP","FIGO IV","NACT",2,323,283,1
+"TMA_31_1020","core34","T15-05371","HRP","FIGO IV","NACT",2,323,283,1
+"TMA_34_504","core62","T15-05904","Other","FIGO IV","NACT",2,674,376,1
+"TMA_34_504","core55","T15-05904","Other","FIGO IV","NACT",2,674,376,1
+"TMA_34_504","core69","T15-05904","Other","FIGO IV","NACT",2,674,376,1
+"TMA_31_1020","core42","T15-06488","HRP","FIGO IV","NACT",2,466,418,1
+"TMA_31_1020","core44","T15-06488","HRP","FIGO IV","NACT",2,466,418,1
+"TMA_31_1020","core41","T15-06488","HRP","FIGO IV","NACT",2,466,418,1
+"TMA_31_1020","core43","T15-06488","HRP","FIGO IV","NACT",2,466,418,1
+"TMA_31_1020","core22","T15-06641","CCNE1amp","FIGO IV","NACT",2,324,231,1
+"TMA_31_1020","core23","T15-06641","CCNE1amp","FIGO IV","NACT",2,324,231,1
+"TMA_31_1020","core24","T15-06641","CCNE1amp","FIGO IV","NACT",2,324,231,1
+"TMA_31_1020","core26","T15-06641","CCNE1amp","FIGO IV","NACT",2,324,231,1
+"TMA_31_1020","core12","T15-08258","Other","FIGO III","NACT",2,630,330,1
+"TMA_31_1020","core10","T15-08258","Other","FIGO III","NACT",2,630,330,1
+"TMA_31_1020","core21","T15-08258","Other","FIGO III","NACT",2,630,330,1
+"TMA_31_1020","core15","T15-08258","Other","FIGO III","NACT",2,630,330,1
+"TMA_42_961","core117","T17-61082","HRP","FIGO III","Primairy debulking",2,1160,535,1
+"TMA_42_961","core107","T17-61082","HRP","FIGO III","Primairy debulking",2,1160,535,1
+"TMA_42_961","core94","T17-61082","HRP","FIGO III","Primairy debulking",2,1160,535,1
+"TMA_42_961","core99","T17-61082","HRP","FIGO III","Primairy debulking",2,1160,535,1
+"TMA_42_961","core59","T17-61083","Other","FIGO IV","PDS followed by NACT",2,670,412,1
+"TMA_42_961","core70","T17-61083","Other","FIGO IV","PDS followed by NACT",2,670,412,1
+"TMA_42_961","core46","T17-61083","Other","FIGO IV","PDS followed by NACT",2,670,412,1
+"TMA_42_961","core80","T17-61083","Other","FIGO IV","PDS followed by NACT",2,670,412,1
+"TMA_42_961","core24","T17-61087","HRD","FIGO III","Primairy debulking",2,2045,875,1
+"TMA_42_961","core3","T17-61087","HRD","FIGO III","Primairy debulking",2,2045,875,1
+"TMA_42_961","core12","T17-61087","HRD","FIGO III","Primairy debulking",2,2045,875,1
+"TMA_46_325","core44","T17-61088","HRP","FIGO III","Primairy debulking",2,3231,1553,0
+"TMA_46_325","core49","T17-61088","HRP","FIGO III","Primairy debulking",2,3231,1553,0
+"TMA_46_325","core47","T17-61088","HRP","FIGO III","Primairy debulking",2,3231,1553,0
+"TMA_46_325","core48","T17-61088","HRP","FIGO III","Primairy debulking",2,3231,1553,0
+"TMA_46_325","core31","T17-61089","HRP","FIGO III","Primairy debulking",2,1360,975,1
+"TMA_46_325","core34","T17-61089","HRP","FIGO III","Primairy debulking",2,1360,975,1
+"TMA_46_325","core30","T17-61089","HRP","FIGO III","Primairy debulking",2,1360,975,1
+"TMA_46_325","core29","T17-61089","HRP","FIGO III","Primairy debulking",2,1360,975,1
+"TMA_34_504","core46","T11-11158","CCNE1amp","FIGO III","NACT",2,1668,304,1
+"TMA_34_504","core34","T11-11158","CCNE1amp","FIGO III","NACT",2,1668,304,1
+"TMA_34_504","core29","T11-11158","CCNE1amp","FIGO III","NACT",2,1668,304,1
+"TMA_34_504","core40","T11-11158","CCNE1amp","FIGO III","NACT",2,1668,304,1
+"TMA_41_812","core15","T11-11535","Other","FIGO III","NACT",2,540,463,1
+"TMA_41_812","core21","T11-11535","Other","FIGO III","NACT",2,540,463,1
+"TMA_41_812","core26","T11-11535","Other","FIGO III","NACT",2,540,463,1
+"TMA_31_1020","core11","T16-01500","HRD","FIGO III","NACT",2,899,329,1
+"TMA_31_1020","core14","T16-01500","HRD","FIGO III","NACT",2,899,329,1
+"TMA_31_1020","core20","T16-01500","HRD","FIGO III","NACT",2,899,329,1
+"TMA_31_1020","core13","T16-01500","HRD","FIGO III","NACT",2,899,329,1
+"TMA_46_325","core23","T17-61093","CCNE1amp","FIGO III","Primairy debulking",2,589,302,1
+"TMA_46_325","core24","T17-61093","CCNE1amp","FIGO III","Primairy debulking",2,589,302,1
+"TMA_46_325","core20","T17-61093","CCNE1amp","FIGO III","Primairy debulking",2,589,302,1
+"TMA_46_325","core28","T17-61093","CCNE1amp","FIGO III","Primairy debulking",2,589,302,1
+"TMA_46_325","core5","T17-61095","Other","FIGO III","Primairy debulking",2,1912,167,1
+"TMA_46_325","core7","T17-61095","Other","FIGO III","Primairy debulking",2,1912,167,1
+"TMA_46_325","core6","T17-61095","Other","FIGO III","Primairy debulking",2,1912,167,1
+"TMA_46_325","core8","T17-61095","Other","FIGO III","Primairy debulking",2,1912,167,1
+"TMA_46_325","core12","T17-61096","HRP","FIGO III","Primairy debulking",2,951,650,1
+"TMA_46_325","core9","T17-61096","HRP","FIGO III","Primairy debulking",2,951,650,1
+"TMA_46_325","core11","T17-61096","HRP","FIGO III","Primairy debulking",2,951,650,1
+"TMA_46_325","core13","T17-61096","HRP","FIGO III","Primairy debulking",2,951,650,1
+"TMA_42_961","core22","T17-61068","CCNE1amp","FIGO III","PDS followed by NACT",2,1967,993,0
+"TMA_42_961","core44","T17-61068","CCNE1amp","FIGO III","PDS followed by NACT",2,1967,993,0
+"TMA_42_961","core10","T17-61068","CCNE1amp","FIGO III","PDS followed by NACT",2,1967,993,0
+"TMA_42_961","core33","T17-61068","CCNE1amp","FIGO III","PDS followed by NACT",2,1967,993,0
+"TMA_42_961","core77","T17-61070","CCNE1amp","FIGO III","Primairy debulking",2,2005,875,1
+"TMA_42_961","core65","T17-61070","CCNE1amp","FIGO III","Primairy debulking",2,2005,875,1
+"TMA_42_961","core87","T17-61070","CCNE1amp","FIGO III","Primairy debulking",2,2005,875,1
+"TMA_42_961","core54","T17-61070","CCNE1amp","FIGO III","Primairy debulking",2,2005,875,1
+"TMA_42_961","core21","T17-61071","HRP","FIGO III","Primairy debulking",2,1802,539,1
+"TMA_42_961","core31","T17-61071","HRP","FIGO III","Primairy debulking",2,1802,539,1
+"TMA_42_961","core8","T17-61071","HRP","FIGO III","Primairy debulking",2,1802,539,1
+"TMA_42_961","core42","T17-61071","HRP","FIGO III","Primairy debulking",2,1802,539,1
+"TMA_42_961","core103","T17-61076","CCNE1amp","FIGO III","Primairy debulking",2,1159,324,1
+"TMA_42_961","core96","T17-61076","CCNE1amp","FIGO III","Primairy debulking",2,1159,324,1
+"TMA_42_961","core123","T17-61076","CCNE1amp","FIGO III","Primairy debulking",2,1159,324,1
+"TMA_42_961","core111","T17-61076","CCNE1amp","FIGO III","Primairy debulking",2,1159,324,1
+"TMA_42_961","core84","T17-61077","Other","FIGO III","PDS followed by NACT",2,2504,1168,1
+"TMA_42_961","core73","T17-61077","Other","FIGO III","PDS followed by NACT",2,2504,1168,1
+"TMA_42_961","core51","T17-61077","Other","FIGO III","PDS followed by NACT",2,2504,1168,1
+"TMA_42_961","core62","T17-61077","Other","FIGO III","PDS followed by NACT",2,2504,1168,1
+"TMA_42_961","core28","T17-61078","Other","FIGO III","Primairy debulking",2,1557,427,1
+"TMA_42_961","core17","T17-61078","Other","FIGO III","Primairy debulking",2,1557,427,1
+"TMA_42_961","core39","T17-61078","Other","FIGO III","Primairy debulking",2,1557,427,1
+"TMA_42_961","core6","T17-61078","Other","FIGO III","Primairy debulking",2,1557,427,1
+"TMA_42_961","core119","T17-61079","HRP","FIGO IV","Primairy debulking",2,1689,730,1
+"TMA_42_961","core95","T17-61079","HRP","FIGO IV","Primairy debulking",2,1689,730,1
+"TMA_42_961","core109","T17-61079","HRP","FIGO IV","Primairy debulking",2,1689,730,1
+"TMA_42_961","core101","T17-61079","HRP","FIGO IV","Primairy debulking",2,1689,730,1
+"TMA_42_961","core60","T17-61080","Other","FIGO III","PDS followed by NACT",2,1215,396,1
+"TMA_42_961","core82","T17-61080","Other","FIGO III","PDS followed by NACT",2,1215,396,1
+"TMA_42_961","core71","T17-61080","Other","FIGO III","PDS followed by NACT",2,1215,396,1
+"TMA_42_961","core49","T17-61080","Other","FIGO III","PDS followed by NACT",2,1215,396,1
+"TMA_41_812","core116","T11-08703","HRP","FIGO IV","NACT",2,580,526,1
+"TMA_41_812","core119","T11-08703","HRP","FIGO IV","NACT",2,580,526,1
+"TMA_41_812","core118","T11-08703","HRP","FIGO IV","NACT",2,580,526,1
+"TMA_41_812","core113","T11-08703","HRP","FIGO IV","NACT",2,580,526,1
+"TMA_41_812","core34","T13-01837","Other","FIGO III","NACT followed by re-debulking",2,1139,361,1
+"TMA_41_812","core40","T13-01837","Other","FIGO III","NACT followed by re-debulking",2,1139,361,1
+"TMA_41_812","core47","T13-01837","Other","FIGO III","NACT followed by re-debulking",2,1139,361,1
+"TMA_18_810","core56","T13-02436","CCNE1amp","FIGO IV","NACT",2,1593,752,1
+"TMA_18_810","core57","T13-02436","CCNE1amp","FIGO IV","NACT",2,1593,752,1
+"TMA_18_810","core55","T13-02436","CCNE1amp","FIGO IV","NACT",2,1593,752,1
+"TMA_18_810","core58","T13-02436","CCNE1amp","FIGO IV","NACT",2,1593,752,1
+"TMA_18_810","core42","T13-03807","HRP","FIGO III","NACT",2,478,267,1
+"TMA_18_810","core39","T13-03807","HRP","FIGO III","NACT",2,478,267,1
+"TMA_18_810","core40","T13-03807","HRP","FIGO III","NACT",2,478,267,1
+"TMA_18_810","core41","T13-03807","HRP","FIGO III","NACT",2,478,267,1
+"TMA_18_810","core43","T13-04015","Other","FIGO IV","NACT",2,288,210,1
+"TMA_18_810","core46","T13-04015","Other","FIGO IV","NACT",2,288,210,1
+"TMA_18_810","core44","T13-04015","Other","FIGO IV","NACT",2,288,210,1
+"TMA_18_810","core45","T13-04015","Other","FIGO IV","NACT",2,288,210,1
+"TMA_18_810","core24","T13-04828","HRD","FIGO III","NACT",2,375,311,1
+"TMA_18_810","core25","T13-04828","HRD","FIGO III","NACT",2,375,311,1
+"TMA_18_810","core27","T13-04828","HRD","FIGO III","NACT",2,375,311,1
+"TMA_18_810","core26","T13-04828","HRD","FIGO III","NACT",2,375,311,1
+"TMA_43_616","core114","T17-20510","HRD","FIGO III","Primairy debulking",2,920,485,1
+"TMA_43_616","core122","T17-20510","HRD","FIGO III","Primairy debulking",2,920,485,1
+"TMA_43_616","core115","T17-20510","HRD","FIGO III","Primairy debulking",2,920,485,1
+"TMA_43_616","core121","T17-20510","HRD","FIGO III","Primairy debulking",2,920,485,1
+"TMA_43_616","core108","T17-61141","HRP","","Primairy debulking",2,973,532,1
+"TMA_43_616","core113","T17-61141","HRP","","Primairy debulking",2,973,532,1
+"TMA_43_616","core112","T17-61141","HRP","","Primairy debulking",2,973,532,1
+"TMA_43_616","core109","T17-61141","HRP","","Primairy debulking",2,973,532,1
+"TMA_43_616","core111","T17-61141","HRP","","Primairy debulking",2,973,532,1
+"TMA_43_616","core104","T17-61141","HRP","","Primairy debulking",2,973,532,1
+"TMA_43_616","core105","T17-61141","HRP","","Primairy debulking",2,973,532,1
+"TMA_43_616","core107","T17-61141","HRP","","Primairy debulking",2,973,532,1
+"TMA_43_616","core110","T17-61142","HRD","FIGO III","Primairy debulking",2,1541,532,1
+"TMA_43_616","core106","T17-61142","HRD","FIGO III","Primairy debulking",2,1541,532,1
+"TMA_43_616","core103","T17-61142","HRD","FIGO III","Primairy debulking",2,1541,532,1
+"TMA_43_616","core102","T17-61142","HRD","FIGO III","Primairy debulking",2,1541,532,1
+"TMA_43_616","core99","T17-61143","HRD","FIGO III","Primairy debulking",1,3855,1860,0
+"TMA_43_616","core101","T17-61143","HRD","FIGO III","Primairy debulking",1,3855,1860,0
+"TMA_43_616","core96","T17-61143","HRD","FIGO III","Primairy debulking",1,3855,1860,0
+"TMA_43_616","core100","T17-61143","HRD","FIGO III","Primairy debulking",1,3855,1860,0
+"TMA_43_616","core37","T17-61159","HRP","FIGO III","Primairy debulking",1,4889,2881,1
+"TMA_43_616","core36","T17-61159","HRP","FIGO III","Primairy debulking",1,4889,2881,1
+"TMA_43_616","core38","T17-61159","HRP","FIGO III","Primairy debulking",1,4889,2881,1
+"TMA_43_616","core32","T17-61159","HRP","FIGO III","Primairy debulking",1,4889,2881,1
+"TMA_43_616","core33","T17-61161","CCNE1amp","FIGO III","Primairy debulking",2,445,408,1
+"TMA_43_616","core39","T17-61161","CCNE1amp","FIGO III","Primairy debulking",2,445,408,1
+"TMA_43_616","core34","T17-61161","CCNE1amp","FIGO III","Primairy debulking",2,445,408,1
+"TMA_43_616","core35","T17-61161","CCNE1amp","FIGO III","Primairy debulking",2,445,408,1
+"TMA_43_616","core16","T17-61162","CCNE1amp","FIGO III","Primairy debulking",2,223,223,0
+"TMA_43_616","core19","T17-61162","CCNE1amp","FIGO III","Primairy debulking",2,223,223,0
+"TMA_43_616","core17","T17-61162","CCNE1amp","FIGO III","Primairy debulking",2,223,223,0
+"TMA_43_616","core18","T17-61162","CCNE1amp","FIGO III","Primairy debulking",2,223,223,0
+"TMA_43_616","core26","T17-61164","HRD","FIGO III","Primairy debulking",2,697,378,1
+"TMA_43_616","core27","T17-61164","HRD","FIGO III","Primairy debulking",2,697,378,1
+"TMA_43_616","core25","T17-61164","HRD","FIGO III","Primairy debulking",2,697,378,1
+"TMA_43_616","core24","T17-61164","HRD","FIGO III","Primairy debulking",2,697,378,1
+"TMA_43_616","core12","T17-61165","Other","FIGO III","Primairy debulking",2,1964,527,1
+"TMA_43_616","core9","T17-61165","Other","FIGO III","Primairy debulking",2,1964,527,1
+"TMA_43_616","core10","T17-61165","Other","FIGO III","Primairy debulking",2,1964,527,1
+"TMA_43_616","core13","T17-61165","Other","FIGO III","Primairy debulking",2,1964,527,1
+"TMA_43_616","core14","T17-61167","Other","FIGO III","Primairy debulking",1,2306,852,0
+"TMA_43_616","core11","T17-61167","Other","FIGO III","Primairy debulking",1,2306,852,0
+"TMA_43_616","core7","T17-61167","Other","FIGO III","Primairy debulking",1,2306,852,0
+"TMA_43_616","core6","T17-61167","Other","FIGO III","Primairy debulking",1,2306,852,0
+"TMA_44_810","core14","T17-61172","HRD","FIGO III","Primairy debulking",2,1183,294,1
+"TMA_44_810","core17","T17-61172","HRD","FIGO III","Primairy debulking",2,1183,294,1
+"TMA_44_810","core15","T17-61172","HRD","FIGO III","Primairy debulking",2,1183,294,1
+"TMA_44_810","core19","T17-61172","HRD","FIGO III","Primairy debulking",2,1183,294,1
+"TMA_44_810","core12","T17-61173","HRP","FIGO III","Primairy debulking",2,1013,456,1
+"TMA_44_810","core10","T17-61173","HRP","FIGO III","Primairy debulking",2,1013,456,1
+"TMA_44_810","core13","T17-61173","HRP","FIGO III","Primairy debulking",2,1013,456,1
+"TMA_44_810","core7","T17-61173","HRP","FIGO III","Primairy debulking",2,1013,456,1
+"TMA_44_810","core34","T17-61174","Other","FIGO III","Primairy debulking",2,1290,765,1
+"TMA_44_810","core37","T17-61174","Other","FIGO III","Primairy debulking",2,1290,765,1
+"TMA_44_810","core39","T17-61174","Other","FIGO III","Primairy debulking",2,1290,765,1
+"TMA_44_810","core35","T17-61174","Other","FIGO III","Primairy debulking",2,1290,765,1
+"TMA_44_810","core25","T17-61176","HRP","FIGO III","Primairy debulking",1,3974,2064,0
+"TMA_44_810","core32","T17-61176","HRP","FIGO III","Primairy debulking",1,3974,2064,0
+"TMA_44_810","core28","T17-61176","HRP","FIGO III","Primairy debulking",1,3974,2064,0
+"TMA_44_810","core30","T17-61176","HRP","FIGO III","Primairy debulking",1,3974,2064,0
+"TMA_31_1020","core39","T15-05487","HRP","FIGO III","NACT",2,1243,408,1
+"TMA_31_1020","core38","T15-05487","HRP","FIGO III","NACT",2,1243,408,1
+"TMA_31_1020","core40","T15-05487","HRP","FIGO III","NACT",2,1243,408,1
+"TMA_31_1020","core45","T15-05487","HRP","FIGO III","NACT",2,1243,408,1
+"TMA_42_961","core58","T17-60988","Other","FIGO II","Primairy debulking",2,1341,1109,0
+"TMA_42_961","core89","T17-60988","Other","FIGO II","Primairy debulking",2,1341,1109,0
+"TMA_42_961","core79","T17-60988","Other","FIGO II","Primairy debulking",2,1341,1109,0
+"TMA_42_961","core69","T17-60988","Other","FIGO II","Primairy debulking",2,1341,1109,0
+"TMA_42_961","core11","T17-60990","Other","FIGO III","PDS followed by NACT",2,1130,552,1
+"TMA_42_961","core23","T17-60990","Other","FIGO III","PDS followed by NACT",2,1130,552,1
+"TMA_42_961","core34","T17-60990","Other","FIGO III","PDS followed by NACT",2,1130,552,1
+"TMA_42_961","core45","T17-60990","Other","FIGO III","PDS followed by NACT",2,1130,552,1
+"TMA_42_961","core78","T17-61001","HRP","FIGO III","PDS followed by NACT",2,695,376,1
+"TMA_42_961","core67","T17-61001","HRP","FIGO III","PDS followed by NACT",2,695,376,1
+"TMA_42_961","core56","T17-61001","HRP","FIGO III","PDS followed by NACT",2,695,376,1
+"TMA_42_961","core88","T17-61001","HRP","FIGO III","PDS followed by NACT",2,695,376,1
+"TMA_43_616","core92","T17-61144","HRP","FIGO II","Primairy debulking",2,1525,1057,1
+"TMA_43_616","core90","T17-61144","HRP","FIGO II","Primairy debulking",2,1525,1057,1
+"TMA_43_616","core97","T17-61144","HRP","FIGO II","Primairy debulking",2,1525,1057,1
+"TMA_43_616","core95","T17-61144","HRP","FIGO II","Primairy debulking",2,1525,1057,1
+"TMA_43_616","core94","T17-61145","Other","FIGO IV","Primairy debulking",2,1901,554,1
+"TMA_43_616","core91","T17-61145","Other","FIGO IV","Primairy debulking",2,1901,554,1
+"TMA_43_616","core98","T17-61145","Other","FIGO IV","Primairy debulking",2,1901,554,1
+"TMA_43_616","core93","T17-61145","Other","FIGO IV","Primairy debulking",2,1901,554,1
+"TMA_43_616","core84","T17-61146","HRD","FIGO III","Primairy debulking",2,1476,582,1
+"TMA_43_616","core89","T17-61146","HRD","FIGO III","Primairy debulking",2,1476,582,1
+"TMA_43_616","core87","T17-61146","HRD","FIGO III","Primairy debulking",2,1476,582,1
+"TMA_43_616","core86","T17-61146","HRD","FIGO III","Primairy debulking",2,1476,582,1
+"TMA_43_616","core85","T17-61148","Other","FIGO II","Primairy debulking",2,577,564,0
+"TMA_43_616","core82","T17-61148","Other","FIGO II","Primairy debulking",2,577,564,0
+"TMA_43_616","core88","T17-61148","Other","FIGO II","Primairy debulking",2,577,564,0
+"TMA_43_616","core81","T17-61148","Other","FIGO II","Primairy debulking",2,577,564,0
+"TMA_43_616","core71","T17-61151","CCNE1amp","FIGO IV","Primairy debulking",2,2146,1103,1
+"TMA_43_616","core68","T17-61151","CCNE1amp","FIGO IV","Primairy debulking",2,2146,1103,1
+"TMA_43_616","core69","T17-61151","CCNE1amp","FIGO IV","Primairy debulking",2,2146,1103,1
+"TMA_43_616","core67","T17-61151","CCNE1amp","FIGO IV","Primairy debulking",2,2146,1103,1
+"TMA_43_616","core76","T17-61152","Other","FIGO III","Primairy debulking",2,2357,684,0
+"TMA_43_616","core74","T17-61152","Other","FIGO III","Primairy debulking",2,2357,684,0
+"TMA_43_616","core66","T17-61152","Other","FIGO III","Primairy debulking",2,2357,684,0
+"TMA_43_616","core70","T17-61152","Other","FIGO III","Primairy debulking",2,2357,684,0
+"TMA_43_616","core64","T17-61153","HRD","FIGO III","Primairy debulking",1,2330,442,0
+"TMA_43_616","core56","T17-61153","HRD","FIGO III","Primairy debulking",1,2330,442,0
+"TMA_43_616","core61","T17-61153","HRD","FIGO III","Primairy debulking",1,2330,442,0
+"TMA_43_616","core60","T17-61153","HRD","FIGO III","Primairy debulking",1,2330,442,0
+"TMA_43_616","core58","T17-61154","Other","FIGO III","Primairy debulking",2,1830,618,0
+"TMA_43_616","core53","T17-61154","Other","FIGO III","Primairy debulking",2,1830,618,0
+"TMA_43_616","core54","T17-61154","Other","FIGO III","Primairy debulking",2,1830,618,0
+"TMA_43_616","core57","T17-61154","Other","FIGO III","Primairy debulking",2,1830,618,0
+"TMA_43_616","core63","T17-61155","HRP","FIGO III","Primairy debulking",1,2530,686,0
+"TMA_43_616","core62","T17-61155","HRP","FIGO III","Primairy debulking",1,2530,686,0
+"TMA_43_616","core55","T17-61155","HRP","FIGO III","Primairy debulking",1,2530,686,0
+"TMA_43_616","core59","T17-61155","HRP","FIGO III","Primairy debulking",1,2530,686,0
+"TMA_43_616","core48","T17-61156","Other","FIGO III","Primairy debulking",2,2388,1437,1
+"TMA_43_616","core44","T17-61156","Other","FIGO III","Primairy debulking",2,2388,1437,1
+"TMA_43_616","core49","T17-61156","Other","FIGO III","Primairy debulking",2,2388,1437,1
+"TMA_43_616","core51","T17-61156","Other","FIGO III","Primairy debulking",2,2388,1437,1
+"TMA_43_616","core42","T17-61157","HRP","","Primairy debulking",2,998,559,1
+"TMA_43_616","core43","T17-61157","HRP","","Primairy debulking",2,998,559,1
+"TMA_43_616","core40","T17-61157","HRP","","Primairy debulking",2,998,559,1
+"TMA_43_616","core41","T17-61157","HRP","","Primairy debulking",2,998,559,1
+"TMA_44_810","core29","T17-61189","HRD","FIGO III","Primairy debulking",2,2779,920,1
+"TMA_44_810","core31","T17-61189","HRD","FIGO III","Primairy debulking",2,2779,920,1
+"TMA_44_810","core36","T17-61189","HRD","FIGO III","Primairy debulking",2,2779,920,1
+"TMA_44_810","core33","T17-61189","HRD","FIGO III","Primairy debulking",2,2779,920,1
+"TMA_44_810","core73","T17-61193","Other","FIGO III","Primairy debulking",2,2743,925,0
+"TMA_44_810","core69","T17-61193","Other","FIGO III","Primairy debulking",2,2743,925,0
+"TMA_44_810","core71","T17-61193","Other","FIGO III","Primairy debulking",2,2743,925,0
+"TMA_44_810","core75","T17-61193","Other","FIGO III","Primairy debulking",2,2743,925,0
+"TMA_44_810","core60","T17-61194","Other","FIGO III","Primairy debulking",2,624,483,1
+"TMA_44_810","core62","T17-61194","Other","FIGO III","Primairy debulking",2,624,483,1
+"TMA_44_810","core67","T17-61194","Other","FIGO III","Primairy debulking",2,624,483,1
+"TMA_44_810","core65","T17-61194","Other","FIGO III","Primairy debulking",2,624,483,1
+"TMA_44_810","core83","T17-61196","HRD","FIGO III","Primairy debulking",2,802,794,0
+"TMA_44_810","core87","T17-61196","HRD","FIGO III","Primairy debulking",2,802,794,0
+"TMA_44_810","core81","T17-61196","HRD","FIGO III","Primairy debulking",2,802,794,0
+"TMA_44_810","core85","T17-61196","HRD","FIGO III","Primairy debulking",2,802,794,0
+"TMA_44_810","core64","T17-61198","CCNE1amp","FIGO II","Primairy debulking",2,1580,619,1
+"TMA_44_810","core68","T17-61198","CCNE1amp","FIGO II","Primairy debulking",2,1580,619,1
+"TMA_44_810","core66","T17-61198","CCNE1amp","FIGO II","Primairy debulking",2,1580,619,1
+"TMA_44_810","core70","T17-61198","CCNE1amp","FIGO II","Primairy debulking",2,1580,619,1
+"TMA_44_810","core99","T17-61199","Other","FIGO III","Primairy debulking",2,1044,439,1
+"TMA_44_810","core95","T17-61199","Other","FIGO III","Primairy debulking",2,1044,439,1
+"TMA_44_810","core97","T17-61199","Other","FIGO III","Primairy debulking",2,1044,439,1
+"TMA_44_810","core93","T17-61199","Other","FIGO III","Primairy debulking",2,1044,439,1
+"TMA_44_810","core111","T17-61205","HRD","FIGO III","Primairy debulking",1,4441,1512,1
+"TMA_44_810","core109","T17-61205","HRD","FIGO III","Primairy debulking",1,4441,1512,1
+"TMA_44_810","core105","T17-61205","HRD","FIGO III","Primairy debulking",1,4441,1512,1
+"TMA_44_810","core107","T17-61205","HRD","FIGO III","Primairy debulking",1,4441,1512,1
+"TMA_44_810","core58","T17-61195","Other","FIGO II","Primairy debulking",1,2481,581,0
+"TMA_44_810","core54","T17-61195","Other","FIGO II","Primairy debulking",1,2481,581,0
+"TMA_44_810","core52","T17-61195","Other","FIGO II","Primairy debulking",1,2481,581,0
+"TMA_44_810","core56","T17-61195","Other","FIGO II","Primairy debulking",1,2481,581,0
+"TMA_44_810","core92","T17-61210","Other","FIGO III","Primairy debulking",2,3174,1782,0
+"TMA_44_810","core94","T17-61210","Other","FIGO III","Primairy debulking",2,3174,1782,0
+"TMA_44_810","core90","T17-61210","Other","FIGO III","Primairy debulking",2,3174,1782,0
+"TMA_44_810","core88","T17-61210","Other","FIGO III","Primairy debulking",2,3174,1782,0
+"TMA_44_810","core114","T17-61211","Other","","Primairy debulking",2,2116,2116,0
+"TMA_44_810","core117","T17-61211","Other","","Primairy debulking",2,2116,2116,0
+"TMA_44_810","core116","T17-61211","Other","","Primairy debulking",2,2116,2116,0
+"TMA_44_810","core115","T17-61211","Other","","Primairy debulking",2,2116,2116,0
+"TMA_44_810","core106","T17-61214","CCNE1amp","FIGO III","Primairy debulking",1,2716,530,0
+"TMA_44_810","core101","T17-61214","CCNE1amp","FIGO III","Primairy debulking",1,2716,530,0
+"TMA_44_810","core104","T17-61214","CCNE1amp","FIGO III","Primairy debulking",1,2716,530,0
+"TMA_44_810","core103","T17-61214","CCNE1amp","FIGO III","Primairy debulking",1,2716,530,0
+"TMA_44_810","core120","T17-61216","Other","FIGO III","Primairy debulking",2,1094,748,0
+"TMA_44_810","core119","T17-61216","Other","FIGO III","Primairy debulking",2,1094,748,0
+"TMA_44_810","core118","T17-61216","Other","FIGO III","Primairy debulking",2,1094,748,0
+"TMA_44_810","core121","T17-61216","Other","FIGO III","Primairy debulking",2,1094,748,0
+"TMA_44_810","core98","T17-61208","HRD","FIGO III","Primairy debulking",2,1721,884,0
+"TMA_44_810","core100","T17-61208","HRD","FIGO III","Primairy debulking",2,1721,884,0
+"TMA_44_810","core96","T17-61208","HRD","FIGO III","Primairy debulking",2,1721,884,0
+"TMA_44_810","core102","T17-61208","HRD","FIGO III","Primairy debulking",2,1721,884,0
+"TMA_31_1020","core130","T09-01152","Other","FIGO IV","NACT",2,1051,317,1
+"TMA_31_1020","core134","T09-01152","Other","FIGO IV","NACT",2,1051,317,1
+"TMA_31_1020","core128","T09-01152","Other","FIGO IV","NACT",2,1051,317,1
+"TMA_31_1020","core132","T09-01152","Other","FIGO IV","NACT",2,1051,317,1
+"TMA_41_812","core16","T10-09944","Other","FIGO III","NACT",2,1096,298,0
+"TMA_41_812","core32","T10-09944","Other","FIGO III","NACT",2,1096,298,0
+"TMA_41_812","core20","T10-09944","Other","FIGO III","NACT",2,1096,298,0
+"TMA_41_812","core25","T10-09944","Other","FIGO III","NACT",2,1096,298,0
+"TMA_18_810","core123","T12-06667","HRP","FIGO III","NACT followed by re-debulking",2,1008,283,1
+"TMA_18_810","core121","T12-06667","HRP","FIGO III","NACT followed by re-debulking",2,1008,283,1
+"TMA_18_810","core124","T12-06667","HRP","FIGO III","NACT followed by re-debulking",2,1008,283,1
+"TMA_18_810","core122","T12-06667","HRP","FIGO III","NACT followed by re-debulking",2,1008,283,1
+"TMA_31_1020","core69","T14-05476","Other","FIGO III","NACT",1,2831,1050,0
+"TMA_31_1020","core67","T14-05476","Other","FIGO III","NACT",1,2831,1050,0
+"TMA_31_1020","core66","T14-05476","Other","FIGO III","NACT",1,2831,1050,0
+"TMA_31_1020","core68","T14-05476","Other","FIGO III","NACT",1,2831,1050,0
+"TMA_33_576","core12","T10-08958","Other","","NACT",1,1647,454,1
+"TMA_41_812","core37","T12-06585","Other","","NACT",2,417,328,1
+"TMA_31_1020","core111","T09-02307","Other","","NACT",2,1689,746,1
+"TMA_31_1020","core105","T09-02307","Other","","NACT",2,1689,746,1
+"TMA_31_1020","core110","T09-02307","Other","","NACT",2,1689,746,1
+"TMA_31_1020","core109","T09-02307","Other","","NACT",2,1689,746,1
+"TMA_41_812","core28","T09-08152","Other","","NACT",2,1092,290,1
+"TMA_41_812","core35","T09-08152","Other","","NACT",2,1092,290,1
+"TMA_41_812","core43","T09-08152","Other","","NACT",2,1092,290,1
+"TMA_34_504","core28","T13-05762","Other","FIGO IV","NACT",2,1674,703,1
+"TMA_34_504","core16","T13-06193","Other","","NACT",2,796,447,1
+"TMA_34_504","core10","T13-06193","Other","","NACT",2,796,447,1
+"TMA_34_504","core22","T13-06193","Other","","NACT",2,796,447,1
+"TMA_18_810","core102","T12-10092","Other","","NACT",2,643,390,1
+"TMA_34_504","core44","T13-07366","Other","","NACT",2,816,392,1
+"TMA_34_504","core38","T13-07366","Other","","NACT",2,816,392,1
+"TMA_34_504","core37","T13-08754","Other","","NACT",2,1120,370,1
+"TMA_34_504","core43","T13-08754","Other","","NACT",2,1120,370,1
+"TMA_34_504","core32","T13-08754","Other","","NACT",2,1120,370,1
+"TMA_41_812","core50","T11-11746","Other","","NACT",2,834,522,1
+"TMA_41_812","core39","T11-11746","Other","","NACT",2,834,522,1
+"TMA_41_812","core33","T11-11746","Other","","NACT",2,834,522,1
+"TMA_41_812","core44","T11-11746","Other","","NACT",2,834,522,1
+"TMA_31_1020","core107","T14-02934","Other","","NACT",2,1277,951,1
+"TMA_33_576","core21","T10-08958","Other","","NACT",1,1647,454,1
+"TMA_33_576","core30","T10-08958","Other","","NACT",1,1647,454,1
+"TMA_33_576","core3","T10-08958","Other","","NACT",1,1647,454,1
+"TMA_41_812","core31","T12-06585","Other","","NACT",2,417,328,1
+"TMA_44_810","core24","T17-61171","BRCAmut/met","FIGO III","Primairy debulking",2,2072,1947,0
+"TMA_31_1020","core106","T14-02934","Other","","NACT",2,1277,951,1
+"TMA_31_1020","core108","T14-02934","Other","","NACT",2,1277,951,1
+"TMA_34_504","core33","T13-05762","Other","FIGO IV","NACT",2,1674,703,1
+"TMA_34_504","core45","T13-05762","Other","FIGO IV","NACT",2,1674,703,1
+"TMA_34_504","core39","T13-05762","Other","FIGO IV","NACT",2,1674,703,1
+"TMA_41_812","core100","T14-07579","Other","","NACT",1,2761,950,0
+"TMA_41_812","core105","T14-07579","Other","","NACT",1,2761,950,0
+"TMA_41_812","core96","T14-07579","Other","","NACT",1,2761,950,0
+"TMA_41_812","core110","T14-07579","Other","","NACT",1,2761,950,0
+"TMA_34_504","core4","T13-06193","Other","","NACT",2,796,447,1
+"TMA_18_810","core103","T12-10092","Other","","NACT",2,643,390,1
+"TMA_31_1020","core104","T14-02934","Other","","NACT",2,1277,951,1
+"TMA_41_812","core109","T15-07369","Other","","NACT",2,909,546,1
+"TMA_34_504","core27","T13-08754","Other","","NACT",2,1120,370,1
+"TMA_44_810","core26","T17-61171","BRCAmut/met","FIGO III","Primairy debulking",2,2072,1947,0
+"TMA_41_812","core106","T15-07369","Other","","NACT",2,909,546,1
+"TMA_41_812","core24","T12-06585","Other","","NACT",2,417,328,1
+"TMA_42_961","core7","T17-61074","Other","","Primairy debulking",2,1198,770,1
+"TMA_42_961","core30","T17-61074","Other","","Primairy debulking",2,1198,770,1
+"TMA_44_810","core21","T17-61171","BRCAmut/met","FIGO III","Primairy debulking",2,2072,1947,0
+"TMA_42_961","core41","T17-61074","Other","","Primairy debulking",2,1198,770,1
+"TMA_42_961","core19","T17-61074","Other","","Primairy debulking",2,1198,770,1
+"TMA_44_810","core27","T17-61171","BRCAmut/met","FIGO III","Primairy debulking",2,2072,1947,0
+"TMA_42_961","core37","T13-00443","BRCAmut/met","FIGO III","Primairy debulking",2,1630,1532,0
+"TMA_42_961","core50","T13-00443","BRCAmut/met","FIGO III","Primairy debulking",2,1630,1532,0
+"TMA_31_1020","core53","T15-02253","BRCAmut/met","FIGO IV","NACT",2,1475,492,1
+"TMA_34_504","core21","T13-07570","Other","FIGO IV","NACT",2,2394,1219,0
+"TMA_34_504","core9","T13-07570","Other","FIGO IV","NACT",2,2394,1219,0
+"TMA_34_504","core3","T13-07570","Other","FIGO IV","NACT",2,2394,1219,0
+"TMA_34_504","core15","T13-07570","Other","FIGO IV","NACT",2,2394,1219,0
+"TMA_44_810","core8","T17-61169","BRCAmut/met","FIGO III","Primairy debulking",2,927,539,1
+"TMA_44_810","core5","T17-61169","BRCAmut/met","FIGO III","Primairy debulking",2,927,539,1
+"TMA_44_810","core9","T17-61169","BRCAmut/met","FIGO III","Primairy debulking",2,927,539,1
+"TMA_44_810","core2","T17-61170","BRCAmut/met","FIGO III","Primairy debulking",2,2502,1830,1
+"TMA_33_576","core88","T10-02206","BRCAmut/met","FIGO III","NACT",2,1103,550,1
+"TMA_41_812","core64","T13-08998","BRCAmut/met","FIGO IV","Primairy debulking",1,2985,1340,0
+"TMA_41_812","core77","T13-08998","BRCAmut/met","FIGO IV","Primairy debulking",1,2985,1340,0
+"TMA_41_812","core84","T13-08998","BRCAmut/met","FIGO IV","Primairy debulking",1,2985,1340,0
+"TMA_41_812","core71","T13-08998","BRCAmut/met","FIGO IV","Primairy debulking",1,2985,1340,0
+"TMA_41_812","core102","T15-03851","BRCAmut/met","FIGO III","NACT",2,484,314,1
+"TMA_41_812","core114","T15-03851","BRCAmut/met","FIGO III","NACT",2,484,314,1
+"TMA_41_812","core111","T15-03851","BRCAmut/met","FIGO III","NACT",2,484,314,1
+"TMA_41_812","core107","T15-03851","BRCAmut/met","FIGO III","NACT",2,484,314,1
+"TMA_34_504","core17","T13-02551","BRCAmut/met","FIGO III","NACT",2,446,446,0
+"TMA_34_504","core5","T13-02551","BRCAmut/met","FIGO III","NACT",2,446,446,0
+"TMA_34_504","core23","T13-02551","BRCAmut/met","FIGO III","NACT",2,446,446,0
+"TMA_34_504","core11","T13-02551","BRCAmut/met","FIGO III","NACT",2,446,446,0
+"TMA_41_812","core68","T12-08776","Other",NA,NA,NA,NA,NA,NA
+"TMA_33_576","core70","T09-10157","Other",NA,NA,NA,NA,NA,NA
+"TMA_33_576","core62","T09-10157","Other",NA,NA,NA,NA,NA,NA
+"TMA_33_576","core53","T09-10157","Other",NA,NA,NA,NA,NA,NA
+"TMA_18_810","core75","T12-12043","BRCAmut/met","FIGO III","NACT",2,569,459,1
+"TMA_18_810","core76","T12-12043","BRCAmut/met","FIGO III","NACT",2,569,459,1
+"TMA_18_810","core78","T12-12043","BRCAmut/met","FIGO III","NACT",2,569,459,1
+"TMA_42_961","core36","T15-05386","BRCAmut/met","FIGO III","Primairy debulking",1,2433,441,0
+"TMA_42_961","core27","T15-05386","BRCAmut/met","FIGO III","Primairy debulking",1,2433,441,0
+"TMA_42_961","core48","T15-05386","BRCAmut/met","FIGO III","Primairy debulking",1,2433,441,0
+"TMA_42_961","core15","T15-05386","BRCAmut/met","FIGO III","Primairy debulking",1,2433,441,0
+"TMA_42_961","core106","T15-08222","BRCAmut/met","FIGO III","Primairy debulking",1,2281,454,0
+"TMA_42_961","core125","T15-08222","BRCAmut/met","FIGO III","Primairy debulking",1,2281,454,0
+"TMA_42_961","core133","T15-08222","BRCAmut/met","FIGO III","Primairy debulking",1,2281,454,0
+"TMA_42_961","core116","T15-08222","BRCAmut/met","FIGO III","Primairy debulking",1,2281,454,0
+"TMA_41_812","core46","T10-10609","BRCAmut/met","FIGO IV","NACT",2,670,238,1
+"TMA_41_812","core38","T10-10609","BRCAmut/met","FIGO IV","NACT",2,670,238,1
+"TMA_31_1020","core19","T15-09807","BRCAmut/met","FIGO III","NACT",2,1828,947,0
+"TMA_33_576","core57","T10-08884","BRCAmut/met","FIGO III","NACT",2,755,529,1
+"TMA_33_576","core39","T10-08884","BRCAmut/met","FIGO III","NACT",2,755,529,1
+"TMA_33_576","core48","T10-08884","BRCAmut/met","FIGO III","NACT",2,755,529,1
+"TMA_18_810","core144","T12-01978","BRCAmut/met","FIGO III","NACT",1,3710,1948,0
+"TMA_45_312","core20","T14-07035","BRCAmut/met","FIGO III","NACT",2,915,563,1
+"TMA_42_961","core25","T17-61084","BRCAmut/met","FIGO II","Primairy debulking",1,3162,1273,0
+"TMA_42_961","core35","T17-61084","BRCAmut/met","FIGO II","Primairy debulking",1,3162,1273,0
+"TMA_42_961","core132","T10-09951","BRCAmut/met","FIGO II","Primairy debulking",1,4142,2246,0
+"TMA_18_810","core18","T09-08643","BRCAmut/met","FIGO III","Primairy debulking",2,859,594,1
+"TMA_18_810","core19","T09-08643","BRCAmut/met","FIGO III","Primairy debulking",2,859,594,1
+"TMA_18_810","core17","T09-08643","BRCAmut/met","FIGO III","Primairy debulking",2,859,594,1
+"TMA_18_810","core16","T09-08643","BRCAmut/met","FIGO III","Primairy debulking",2,859,594,1
+"TMA_31_1020","core129","T08-09400","Other","FIGO IV","NACT",2,1104,570,1
+"TMA_33_576","core55","T10-11026","BRCAmut/met","FIGO III","NACT",2,1386,363,1
+"TMA_33_576","core45","T10-11026","BRCAmut/met","FIGO III","NACT",2,1386,363,1
+"TMA_18_810","core52","T13-01641","BRCAmut/met","FIGO III","NACT",2,1825,921,1
+"TMA_18_810","core38","T13-03404","BRCAmut/met","FIGO IV","NACT",2,1367,401,1
+"TMA_18_810","core36","T13-03404","BRCAmut/met","FIGO IV","NACT",2,1367,401,1
+"TMA_18_810","core37","T13-03404","BRCAmut/met","FIGO IV","NACT",2,1367,401,1
+"TMA_33_576","core47","T11-00700","Other","FIGO III","NACT followed by re-debulking",2,548,508,1
+"TMA_33_576","core64","T11-00700","Other","FIGO III","NACT followed by re-debulking",2,548,508,1
+"TMA_33_576","core94","T10-03884","BRCAmut/met","FIGO III","NACT",2,542,315,1
+"TMA_33_576","core78","T10-03884","BRCAmut/met","FIGO III","NACT",2,542,315,1
+"TMA_33_576","core105","T10-03884","BRCAmut/met","FIGO III","NACT",2,542,315,1
+"TMA_43_616","core116","T14-22038","BRCAmut/met","FIGO III","Primairy debulking",2,2425,815,1
+"TMA_43_616","core120","T14-22038","BRCAmut/met","FIGO III","Primairy debulking",2,2425,815,1
+"TMA_45_312","core16","T15-02569","BRCAmut/met","FIGO III","NACT",2,868,726,0
+"TMA_42_961","core61","T13-00368","BRCAmut/met","FIGO III","Primairy debulking",2,1782,596,1
+"TMA_42_961","core90","T13-00368","BRCAmut/met","FIGO III","Primairy debulking",2,1782,596,1
+"TMA_42_961","core81","T13-00368","BRCAmut/met","FIGO III","Primairy debulking",2,1782,596,1
+"TMA_42_961","core72","T13-00368","BRCAmut/met","FIGO III","Primairy debulking",2,1782,596,1
+"TMA_18_810","core104","T13-00758","BRCAmut/met","FIGO III","NACT",2,2066,679,1
+"TMA_46_325","core39","T17-61091","BRCAmut/met","FIGO III","Primairy debulking",2,1600,475,0
+"TMA_46_325","core36","T17-61091","BRCAmut/met","FIGO III","Primairy debulking",2,1600,475,0
+"TMA_46_325","core35","T17-61091","BRCAmut/met","FIGO III","Primairy debulking",2,1600,475,0
+"TMA_46_325","core22","T17-61092","BRCAmut/met","FIGO III","Primairy debulking",1,2498,727,1
+"TMA_46_325","core18","T17-61092","BRCAmut/met","FIGO III","Primairy debulking",1,2498,727,1
+"TMA_46_325","core17","T17-61092","BRCAmut/met","FIGO III","Primairy debulking",1,2498,727,1
+"TMA_46_325","core19","T17-61092","BRCAmut/met","FIGO III","Primairy debulking",1,2498,727,1
+"TMA_18_810","core108","T12-07130","BRCAmut/met","FIGO III","NACT",2,905,444,1
+"TMA_18_810","core106","T12-07130","BRCAmut/met","FIGO III","NACT",2,905,444,1
+"TMA_18_810","core105","T12-07130","BRCAmut/met","FIGO III","NACT",2,905,444,1
+"TMA_18_810","core107","T12-07130","BRCAmut/met","FIGO III","NACT",2,905,444,1
+"TMA_45_312","core22","T14-07035","BRCAmut/met","FIGO III","NACT",2,915,563,1
+"TMA_31_1020","core51","T15-02253","BRCAmut/met","FIGO IV","NACT",2,1475,492,1
+"TMA_45_312","core27","T14-07035","BRCAmut/met","FIGO III","NACT",2,915,563,1
+"TMA_45_312","core24","T14-07035","BRCAmut/met","FIGO III","NACT",2,915,563,1
+"TMA_41_812","core60","T13-04724","BRCAmut/met","FIGO IV","NACT",2,1118,483,1
+"TMA_31_1020","core71","T14-07146","Other","FIGO III","NACT",2,1548,536,1
+"TMA_31_1020","core72","T14-07146","Other","FIGO III","NACT",2,1548,536,1
+"TMA_31_1020","core73","T14-07146","Other","FIGO III","NACT",2,1548,536,1
+"TMA_43_616","core30","T17-61160","BRCAmut/met","FIGO III","Primairy debulking",2,2311,1111,0
+"TMA_31_1020","core115","T09-06945","BRCAmut/met","FIGO III","NACT",2,751,356,1
+"TMA_31_1020","core113","T09-06945","BRCAmut/met","FIGO III","NACT",2,751,356,1
+"TMA_31_1020","core116","T09-06945","BRCAmut/met","FIGO III","NACT",2,751,356,1
+"TMA_31_1020","core112","T09-06945","BRCAmut/met","FIGO III","NACT",2,751,356,1
+"TMA_31_1020","core9","T16-03150","BRCAmut/met","FIGO IV","NACT",2,380,350,1
+"TMA_31_1020","core8","T16-03150","BRCAmut/met","FIGO IV","NACT",2,380,350,1
+"TMA_18_810","core139","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_18_810","core143","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_43_616","core118","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_44_810","core125","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_46_325","core21","T17-61094","BRCAmut/met","FIGO IV","Primairy debulking",2,772,560,1
+"TMA_46_325","core27","T17-61094","BRCAmut/met","FIGO IV","Primairy debulking",2,772,560,1
+"TMA_46_325","core25","T17-61094","BRCAmut/met","FIGO IV","Primairy debulking",2,772,560,1
+"TMA_31_1020","core80","T14-05219","BRCAmut/met","FIGO III","NACT",2,1336,439,1
+"TMA_46_325","core26","T17-61094","BRCAmut/met","FIGO IV","Primairy debulking",2,772,560,1
+"TMA_45_312","core18","T15-02569","BRCAmut/met","FIGO III","NACT",2,868,726,0
+"TMA_45_312","core13","T15-02569","BRCAmut/met","FIGO III","NACT",2,868,726,0
+"TMA_45_312","core15","T15-02569","BRCAmut/met","FIGO III","NACT",2,868,726,0
+"TMA_34_504","core64","T13-08368","BRCAmut/met","FIGO IV","NACT",2,868,575,1
+"TMA_34_504","core57","T13-08368","BRCAmut/met","FIGO IV","NACT",2,868,575,1
+"TMA_34_504","core49","T13-08368","BRCAmut/met","FIGO IV","NACT",2,868,575,1
+"TMA_34_504","core71","T13-08368","BRCAmut/met","FIGO IV","NACT",2,868,575,1
+"TMA_31_1020","core85","T14-05244","BRCAmut/met","FIGO III","NACT",2,2368,980,1
+"TMA_33_576","core22","T10-08405","BRCAmut/met","FIGO III","NACT",2,1863,727,1
+"TMA_33_576","core31","T10-08405","BRCAmut/met","FIGO III","NACT",2,1863,727,1
+"TMA_33_576","core4","T10-08405","BRCAmut/met","FIGO III","NACT",2,1863,727,1
+"TMA_42_961","core16","T13-00443","BRCAmut/met","FIGO III","Primairy debulking",2,1630,1532,0
+"TMA_44_810","core43","T17-61188","BRCAmut/met","FIGO III","Primairy debulking",2,378,258,1
+"TMA_42_961","core108","T17-61069","BRCAmut/met","FIGO III","Primairy debulking",2,1765,1283,1
+"TMA_42_961","core100","T17-61069","BRCAmut/met","FIGO III","Primairy debulking",2,1765,1283,1
+"TMA_31_1020","core52","T15-02253","BRCAmut/met","FIGO IV","NACT",2,1475,492,1
+"TMA_31_1020","core50","T15-02253","BRCAmut/met","FIGO IV","NACT",2,1475,492,1
+"TMA_46_325","core10","T17-61097","BRCAmut/met","FIGO III","Primairy debulking",1,2715,951,0
+"TMA_44_810","core6","T17-61169","BRCAmut/met","FIGO III","Primairy debulking",2,927,539,1
+"TMA_44_810","core57","T17-61190","BRCAmut/met","FIGO III","Primairy debulking",2,2860,1170,0
+"TMA_44_810","core59","T17-61190","BRCAmut/met","FIGO III","Primairy debulking",2,2860,1170,0
+"TMA_44_810","core53","T17-61191","BRCAmut/met","FIGO III","Primairy debulking",2,1366,462,1
+"TMA_44_810","core49","T17-61191","BRCAmut/met","FIGO III","Primairy debulking",2,1366,462,1
+"TMA_44_810","core3","T17-61170","BRCAmut/met","FIGO III","Primairy debulking",2,2502,1830,1
+"TMA_33_576","core106","T10-02206","BRCAmut/met","FIGO III","NACT",2,1103,550,1
+"TMA_33_576","core97","T10-02206","BRCAmut/met","FIGO III","NACT",2,1103,550,1
+"TMA_33_576","core79","T10-02206","BRCAmut/met","FIGO III","NACT",2,1103,550,1
+"TMA_42_961","core40","T10-03313","BRCAmut/met","FIGO IV","Primairy debulking",2,554,352,1
+"TMA_42_961","core52","T10-03313","BRCAmut/met","FIGO IV","Primairy debulking",2,554,352,1
+"TMA_42_961","core29","T10-03313","BRCAmut/met","FIGO IV","Primairy debulking",2,554,352,1
+"TMA_42_961","core18","T10-03313","BRCAmut/met","FIGO IV","Primairy debulking",2,554,352,1
+"TMA_31_1020","core114","T08-05863","BRCAmut/met","FIGO IV","NACT",2,1112,545,1
+"TMA_18_810","core10","T13-00499","BRCAmut/met","FIGO IV","NACT",2,828,502,1
+"TMA_18_810","core11","T13-00499","BRCAmut/met","FIGO IV","NACT",2,828,502,1
+"TMA_18_810","core9","T13-00499","BRCAmut/met","FIGO IV","NACT",2,828,502,1
+"TMA_18_810","core12","T13-00499","BRCAmut/met","FIGO IV","NACT",2,828,502,1
+"TMA_33_576","core54","T11-00700","Other","FIGO III","NACT followed by re-debulking",2,548,508,1
+"TMA_43_616","core117","T14-22038","BRCAmut/met","FIGO III","Primairy debulking",2,2425,815,1
+"TMA_43_616","core20","T17-61163","BRCAmut/met","FIGO III","Primairy debulking",1,3422,1430,0
+"TMA_31_1020","core2","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_33_576","core44","T09-10157","Other",NA,NA,NA,NA,NA,NA
+"TMA_42_961","core112","T17-60991","Other",NA,NA,NA,NA,NA,NA
+"TMA_44_810","core23","T17-61177","BRCAmut/met","FIGO III","Primairy debulking",2,3059,1167,0
+"TMA_18_810","core77","T12-12043","BRCAmut/met","FIGO III","NACT",2,569,459,1
+"TMA_44_810","core18","T17-61177","BRCAmut/met","FIGO III","Primairy debulking",2,3059,1167,0
+"TMA_44_810","core16","T17-61177","BRCAmut/met","FIGO III","Primairy debulking",2,3059,1167,0
+"TMA_42_961","core75","T17-61073","Other",NA,NA,NA,NA,NA,NA
+"TMA_42_961","core26","T17-61081","BRCAmut/met","FIGO IV","PDS followed by NACT",2,1788,548,1
+"TMA_42_961","core38","T17-61081","BRCAmut/met","FIGO IV","PDS followed by NACT",2,1788,548,1
+"TMA_42_961","core5","T17-61081","BRCAmut/met","FIGO IV","PDS followed by NACT",2,1788,548,1
+"TMA_42_961","core14","T17-61081","BRCAmut/met","FIGO IV","PDS followed by NACT",2,1788,548,1
+"TMA_31_1020","core18","T15-09807","BRCAmut/met","FIGO III","NACT",2,1828,947,0
+"TMA_31_1020","core16","T15-09807","BRCAmut/met","FIGO III","NACT",2,1828,947,0
+"TMA_44_810","core80","T17-6120","Other",NA,NA,NA,NA,NA,NA
+"TMA_18_810","core145","T12-01978","BRCAmut/met","FIGO III","NACT",1,3710,1948,0
+"TMA_18_810","core146","T12-01978","BRCAmut/met","FIGO III","NACT",1,3710,1948,0
+"TMA_18_810","core142","T12-01978","BRCAmut/met","FIGO III","NACT",1,3710,1948,0
+"TMA_42_961","core118","T17-61069","BRCAmut/met","FIGO III","Primairy debulking",2,1765,1283,1
+"TMA_41_812","core53","T13-04724","BRCAmut/met","FIGO IV","NACT",2,1118,483,1
+"TMA_41_812","core73","T13-04724","BRCAmut/met","FIGO IV","NACT",2,1118,483,1
+"TMA_41_812","core66","T13-04724","BRCAmut/met","FIGO IV","NACT",2,1118,483,1
+"TMA_42_961","core4","T17-61084","BRCAmut/met","FIGO II","Primairy debulking",1,3162,1273,0
+"TMA_42_961","core136","T10-09951","BRCAmut/met","FIGO II","Primairy debulking",1,4142,2246,0
+"TMA_31_1020","core127","T08-09400","Other","FIGO IV","NACT",2,1104,570,1
+"TMA_31_1020","core125","T08-09400","Other","FIGO IV","NACT",2,1104,570,1
+"TMA_31_1020","core126","T08-09400","Other","FIGO IV","NACT",2,1104,570,1
+"TMA_33_576","core65","T10-11026","BRCAmut/met","FIGO III","NACT",2,1386,363,1
+"TMA_18_810","core54","T13-01641","BRCAmut/met","FIGO III","NACT",2,1825,921,1
+"TMA_18_810","core51","T13-01641","BRCAmut/met","FIGO III","NACT",2,1825,921,1
+"TMA_42_961","core68","T17-61086","BRCAmut/met","FIGO IV","Primairy debulking",2,672,448,1
+"TMA_44_810","core112","T17-61212","BRCAmut/met","FIGO III","Primairy debulking",2,1823,779,1
+"TMA_44_810","core113","T17-61212","BRCAmut/met","FIGO III","Primairy debulking",2,1823,779,1
+"TMA_41_812","core72","T12-05894","Other",NA,NA,NA,NA,NA,NA
+"TMA_31_1020","core120","T08-05863","BRCAmut/met","FIGO IV","NACT",2,1112,545,1
+"TMA_31_1020","core122","T08-05863","BRCAmut/met","FIGO IV","NACT",2,1112,545,1
+"TMA_33_576","core38","T11-00700","Other","FIGO III","NACT followed by re-debulking",2,548,508,1
+"TMA_43_616","core22","T17-61163","BRCAmut/met","FIGO III","Primairy debulking",1,3422,1430,0
+"TMA_43_616","core21","T17-61163","BRCAmut/met","FIGO III","Primairy debulking",1,3422,1430,0
+"TMA_45_312","core33","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_43_616","core75","T17-61149","BRCAmut/met","FIGO II","Primairy debulking",1,4826,3366,0
+"TMA_31_1020","core78","T14-05219","BRCAmut/met","FIGO III","NACT",2,1336,439,1
+"TMA_18_810","core138","T12-04653","BRCAmut/met","FIGO IV","NACT",2,2084,490,1
+"TMA_18_810","core140","T12-04653","BRCAmut/met","FIGO IV","NACT",2,2084,490,1
+"TMA_18_810","core137","T12-04653","BRCAmut/met","FIGO IV","NACT",2,2084,490,1
+"TMA_18_810","core141","T12-04653","BRCAmut/met","FIGO IV","NACT",2,2084,490,1
+"TMA_46_325","core40","T17-61091","BRCAmut/met","FIGO III","Primairy debulking",2,1600,475,0
+"TMA_44_810","core77","T17-61197","BRCAmut/met","FIGO II","Primairy debulking",1,2313,839,0
+"TMA_44_810","core72","T17-61197","BRCAmut/met","FIGO II","Primairy debulking",1,2313,839,0
+"TMA_34_504","core41","T11-04810","BRCAmut/met","FIGO IV","NACT",2,3327,432,1
+"TMA_34_504","core35","T11-04810","BRCAmut/met","FIGO IV","NACT",2,3327,432,1
+"TMA_43_616","core77","T17-61149","BRCAmut/met","FIGO II","Primairy debulking",1,4826,3366,0
+"TMA_43_616","core73","T17-61149","BRCAmut/met","FIGO II","Primairy debulking",1,4826,3366,0
+"TMA_41_812","core115","T15-04527","BRCAmut/met","FIGO III","NACT",2,1342,769,1
+"TMA_43_616","core72","T17-61149","BRCAmut/met","FIGO II","Primairy debulking",1,4826,3366,0
+"TMA_34_504","core75","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_43_616","core2","T17-61168","BRCAmut/met","FIGO III","Primairy debulking",2,2952,1358,1
+"TMA_42_961","core127","T17-61069","BRCAmut/met","FIGO III","Primairy debulking",2,1765,1283,1
+"TMA_46_325","core16","T17-61097","BRCAmut/met","FIGO III","Primairy debulking",1,2715,951,0
+"TMA_43_616","core1","T17-61168","BRCAmut/met","FIGO III","Primairy debulking",2,2952,1358,1
+"TMA_44_810","core63","T17-61190","BRCAmut/met","FIGO III","Primairy debulking",2,2860,1170,0
+"TMA_44_810","core122","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_31_1020","core70","T14-07146","Other","FIGO III","NACT",2,1548,536,1
+"TMA_31_1020","core31","T15-06700","BRCAmut/met","FIGO IV","NACT",1,2428,896,0
+"TMA_31_1020","core25","T15-06700","BRCAmut/met","FIGO IV","NACT",1,2428,896,0
+"TMA_43_616","core31","T17-61160","BRCAmut/met","FIGO III","Primairy debulking",2,2311,1111,0
+"TMA_44_810","core38","T17-61188","BRCAmut/met","FIGO III","Primairy debulking",2,378,258,1
+"TMA_43_616","core28","T17-61160","BRCAmut/met","FIGO III","Primairy debulking",2,2311,1111,0
+"TMA_43_616","core29","T17-61160","BRCAmut/met","FIGO III","Primairy debulking",2,2311,1111,0
+"TMA_31_1020","core6","T16-03150","BRCAmut/met","FIGO IV","NACT",2,380,350,1
+"TMA_31_1020","core7","T16-03150","BRCAmut/met","FIGO IV","NACT",2,380,350,1
+"TMA_34_504","core67","T12-08066","Other","FIGO III","NACT",2,768,320,1
+"TMA_34_504","core51","T12-08066","Other","FIGO III","NACT",2,768,320,1
+"TMA_31_1020","core63","T14-05414","BRCAmut/met","FIGO III","NACT",2,1542,559,1
+"TMA_31_1020","core62","T14-05414","BRCAmut/met","FIGO III","NACT",2,1542,559,1
+"TMA_41_812","core79","T12-05894","Other",NA,NA,NA,NA,NA,NA
+"TMA_31_1020","core123","T08-05863","BRCAmut/met","FIGO IV","NACT",2,1112,545,1
+"TMA_41_812","core89","T12-08776","Other",NA,NA,NA,NA,NA,NA
+"TMA_43_616","core119","T14-22038","BRCAmut/met","FIGO III","Primairy debulking",2,2425,815,1
+"TMA_44_810","core50","T17-61191","BRCAmut/met","FIGO III","Primairy debulking",2,1366,462,1
+"TMA_33_576","core13","T10-08405","BRCAmut/met","FIGO III","NACT",2,1863,727,1
+"TMA_43_616","core23","T17-61163","BRCAmut/met","FIGO III","Primairy debulking",1,3422,1430,0
+"TMA_31_1020","core79","T14-05219","BRCAmut/met","FIGO III","NACT",2,1336,439,1
+"TMA_31_1020","core81","T14-05219","BRCAmut/met","FIGO III","NACT",2,1336,439,1
+"TMA_31_1020","core64","T14-05414","BRCAmut/met","FIGO III","NACT",2,1542,559,1
+"TMA_31_1020","core65","T14-05414","BRCAmut/met","FIGO III","NACT",2,1542,559,1
+"TMA_43_616","core3","T17-61168","BRCAmut/met","FIGO III","Primairy debulking",2,2952,1358,1
+"TMA_44_810","core61","T17-61190","BRCAmut/met","FIGO III","Primairy debulking",2,2860,1170,0
+"TMA_31_1020","core82","T14-05244","BRCAmut/met","FIGO III","NACT",2,2368,980,1
+"TMA_41_812","core92","T15-03096","BRCAmut/met","FIGO III","NACT",2,1255,573,1
+"TMA_31_1020","core84","T14-05244","BRCAmut/met","FIGO III","NACT",2,2368,980,1
+"TMA_31_1020","core83","T14-05244","BRCAmut/met","FIGO III","NACT",2,2368,980,1
+"TMA_44_810","core124","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_42_961","core124","T10-09951","BRCAmut/met","FIGO II","Primairy debulking",1,4142,2246,0
+"TMA_45_312","core2","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_45_312","core1","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_46_325","core15","T17-61097","BRCAmut/met","FIGO III","Primairy debulking",1,2715,951,0
+"TMA_46_325","core14","T17-61097","BRCAmut/met","FIGO III","Primairy debulking",1,2715,951,0
+"TMA_43_616","core4","T17-61168","BRCAmut/met","FIGO III","Primairy debulking",2,2952,1358,1
+"TMA_31_1020","core137","T08-01868","Other",NA,NA,NA,NA,NA,NA
+"TMA_42_961","core63","T17-61073","Other",NA,NA,NA,NA,NA,NA
+"TMA_44_810","core20","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_43_616","core123","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_45_312","core4","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_34_504","core7","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_41_812","core58","T10-10609","BRCAmut/met","FIGO IV","NACT",2,670,238,1
+"TMA_41_812","core52","T10-10609","BRCAmut/met","FIGO IV","NACT",2,670,238,1
+"TMA_41_812","core108","T15-04527","BRCAmut/met","FIGO III","NACT",2,1342,769,1
+"TMA_41_812","core117","T15-04527","BRCAmut/met","FIGO III","NACT",2,1342,769,1
+"TMA_41_812","core112","T15-04527","BRCAmut/met","FIGO III","NACT",2,1342,769,1
+"TMA_42_961","core126","T17-61072","BRCAmut/met","FIGO III","Primairy debulking",2,2545,1263,1
+"TMA_31_1020","core135","T08-01868","Other",NA,NA,NA,NA,NA,NA
+"TMA_44_810","core22","T17-61177","BRCAmut/met","FIGO III","Primairy debulking",2,3059,1167,0
+"TMA_34_504","core1","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_42_961","core85","T17-61073","Other",NA,NA,NA,NA,NA,NA
+"TMA_44_810","core48","T17-61187","BRCAmut/met","FIGO III","Primairy debulking",2,1107,606,1
+"TMA_41_812","core65","T12-05894","Other",NA,NA,NA,NA,NA,NA
+"TMA_41_812","core59","T12-05894","Other",NA,NA,NA,NA,NA,NA
+"TMA_18_810","core130","T12-02604","BRCAmut/met","FIGO III","NACT",1,3714,909,1
+"TMA_42_961","core115","T10-09951","BRCAmut/met","FIGO II","Primairy debulking",1,4142,2246,0
+"TMA_44_810","core86","T17-61200","BRCAmut/met","FIGO III","Primairy debulking",1,4157,1820,0
+"TMA_44_810","core78","T17-6120","Other",NA,NA,NA,NA,NA,NA
+"TMA_33_576","core80","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_46_325","core32","T17-61090","BRCAmut/met","FIGO II","Primairy debulking",1,2852,1075,0
+"TMA_42_961","core122","T17-60991","Other",NA,NA,NA,NA,NA,NA
+"TMA_44_810","core110","T17-61212","BRCAmut/met","FIGO III","Primairy debulking",2,1823,779,1
+"TMA_42_961","core138","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_42_961","core2","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_46_325","core4","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_42_961","core53","T17-61073","Other",NA,NA,NA,NA,NA,NA
+"TMA_44_810","core91","T17-61200","BRCAmut/met","FIGO III","Primairy debulking",1,4157,1820,0
+"TMA_43_616","core5","T17-61166","BRCAmut/met","FIGO III","Primairy debulking",1,2408,570,0
+"TMA_41_812","core86","T15-03096","BRCAmut/met","FIGO III","NACT",2,1255,573,1
+"TMA_42_961","core9","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_33_576","core37","T10-11026","BRCAmut/met","FIGO III","NACT",2,1386,363,1
+"TMA_41_812","core74","T12-08776","Other",NA,NA,NA,NA,NA,NA
+"TMA_42_961","core47","T17-61086","BRCAmut/met","FIGO IV","Primairy debulking",2,672,448,1
+"TMA_46_325","core42","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_46_325","core33","T17-61090","BRCAmut/met","FIGO II","Primairy debulking",1,2852,1075,0
+"TMA_46_325","core37","T17-61090","BRCAmut/met","FIGO II","Primairy debulking",1,2852,1075,0
+"TMA_46_325","core38","T17-61090","BRCAmut/met","FIGO II","Primairy debulking",1,2852,1075,0
+"TMA_43_616","core80","T17-61147","BRCAmut/met","FIGO III","Primairy debulking",1,2786,876,0
+"TMA_31_1020","core28","T15-06700","BRCAmut/met","FIGO IV","NACT",1,2428,896,0
+"TMA_31_1020","core33","T15-06700","BRCAmut/met","FIGO IV","NACT",1,2428,896,0
+"TMA_31_1020","core5","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_31_1020","core4","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_34_504","core30","T11-04810","BRCAmut/met","FIGO IV","NACT",2,3327,432,1
+"TMA_34_504","core47","T11-04810","BRCAmut/met","FIGO IV","NACT",2,3327,432,1
+"TMA_18_810","core53","T13-01641","BRCAmut/met","FIGO III","NACT",2,1825,921,1
+"TMA_33_576","core107","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_42_961","core57","T17-61086","BRCAmut/met","FIGO IV","Primairy debulking",2,672,448,1
+"TMA_44_810","core82","T17-6120","Other",NA,NA,NA,NA,NA,NA
+"TMA_34_504","core60","T12-08066","Other","FIGO III","NACT",2,768,320,1
+"TMA_43_616","core45","T17-61158","BRCAmut/met","FIGO III","Primairy debulking",1,3279,1504,1
+"TMA_43_616","core47","T17-61158","BRCAmut/met","FIGO III","Primairy debulking",1,3279,1504,1
+"TMA_44_810","core79","T17-61197","BRCAmut/met","FIGO II","Primairy debulking",1,2313,839,0
+"TMA_44_810","core45","T17-61187","BRCAmut/met","FIGO III","Primairy debulking",2,1107,606,1
+"TMA_44_810","core74","T17-61197","BRCAmut/met","FIGO II","Primairy debulking",1,2313,839,0
+"TMA_42_961","core98","T17-61072","BRCAmut/met","FIGO III","Primairy debulking",2,2545,1263,1
+"TMA_42_961","core13","T17-61084","BRCAmut/met","FIGO II","Primairy debulking",1,3162,1273,0
+"TMA_18_810","core131","T12-02604","BRCAmut/met","FIGO III","NACT",1,3714,909,1
+"TMA_44_810","core40","T17-61188","BRCAmut/met","FIGO III","Primairy debulking",2,378,258,1
+"TMA_31_1020","core133","T08-01868","Other",NA,NA,NA,NA,NA,NA
+"TMA_46_325","core2","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_34_504","core73","T12-08066","Other","FIGO III","NACT",2,768,320,1
+"TMA_43_616","core50","T17-61158","BRCAmut/met","FIGO III","Primairy debulking",1,3279,1504,1
+"TMA_34_504","core54","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_43_616","core78","T17-61147","BRCAmut/met","FIGO III","Primairy debulking",1,2786,876,0
+"TMA_43_616","core46","T17-61158","BRCAmut/met","FIGO III","Primairy debulking",1,3279,1504,1
+"TMA_45_312","core3","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_44_810","core4","T17-61170","BRCAmut/met","FIGO III","Primairy debulking",2,2502,1830,1
+"TMA_44_810","core76","T17-6120","Other",NA,NA,NA,NA,NA,NA
+"TMA_42_961","core131","T17-60991","Other",NA,NA,NA,NA,NA,NA
+"TMA_43_616","core8","T17-61166","BRCAmut/met","FIGO III","Primairy debulking",1,2408,570,0
+"TMA_42_961","core113","T17-61072","BRCAmut/met","FIGO III","Primairy debulking",2,2545,1263,1
+"TMA_44_810","core44","T17-61192","BRCAmut/met","FIGO III","Primairy debulking",2,2623,769,1
+"TMA_42_961","core105","T17-61072","BRCAmut/met","FIGO III","Primairy debulking",2,2545,1263,1
+"TMA_42_961","core97","T17-61085","BRCAmut/met","FIGO III","Primairy debulking",2,505,375,1
+"TMA_43_616","core83","T17-61147","BRCAmut/met","FIGO III","Primairy debulking",1,2786,876,0
+"TMA_31_1020","core131","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_44_810","core108","T17-61212","BRCAmut/met","FIGO III","Primairy debulking",2,1823,779,1
+"TMA_41_812","core83","T12-08776","Other",NA,NA,NA,NA,NA,NA
+"TMA_44_810","core47","T17-61187","BRCAmut/met","FIGO III","Primairy debulking",2,1107,606,1
+"TMA_44_810","core11","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_18_810","core127","T12-02604","BRCAmut/met","FIGO III","NACT",1,3714,909,1
+"TMA_18_810","core134","T12-02604","BRCAmut/met","FIGO III","NACT",1,3714,909,1
+"TMA_44_810","core55","T17-61191","BRCAmut/met","FIGO III","Primairy debulking",2,1366,462,1
+"TMA_44_810","core1","T17-61170","BRCAmut/met","FIGO III","Primairy debulking",2,2502,1830,1
+"TMA_42_961","core104","T17-61085","BRCAmut/met","FIGO III","Primairy debulking",2,505,375,1
+"TMA_44_810","core41","T17-61192","BRCAmut/met","FIGO III","Primairy debulking",2,2623,769,1
+"TMA_31_1020","core124","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_43_616","core79","T17-61147","BRCAmut/met","FIGO III","Primairy debulking",1,2786,876,0
+"TMA_46_325","core45","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_31_1020","core17","T15-09807","BRCAmut/met","FIGO III","NACT",2,1828,947,0
+"TMA_44_810","core89","T17-61200","BRCAmut/met","FIGO III","Primairy debulking",1,4157,1820,0
+"TMA_42_961","core128","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_44_810","core84","T17-61200","BRCAmut/met","FIGO III","Primairy debulking",1,4157,1820,0
+"TMA_46_325","core1","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_44_810","core123","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_44_810","core46","T17-61192","BRCAmut/met","FIGO III","Primairy debulking",2,2623,769,1
+"TMA_42_961","core114","T17-61085","BRCAmut/met","FIGO III","Primairy debulking",2,505,375,1
+"TMA_31_1020","core1","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_43_616","core15","T17-61166","BRCAmut/met","FIGO III","Primairy debulking",1,2408,570,0
+"TMA_42_961","core91","T17-61085","BRCAmut/met","FIGO III","Primairy debulking",2,505,375,1
+"TMA_46_325","core3","OC liver","Other",NA,NA,NA,NA,NA,NA
+"TMA_44_810","core51","T17-61187","BRCAmut/met","FIGO III","Primairy debulking",2,1107,606,1
+"TMA_42_961","core102","T17-60991","Other",NA,NA,NA,NA,NA,NA
+"TMA_44_810","core42","T17-61188","BRCAmut/met","FIGO III","Primairy debulking",2,378,258,1
