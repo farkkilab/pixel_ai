@@ -14,4 +14,4 @@ export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 module load pytorch/2.1
 source venv/bin/activate
-srun python scripts/train_vanilla_vae_fullcore.py --cores_path $LOCAL_SCRATCH/NKI_project_TMAs
+python scripts/train_vanilla_vae_fullcore.py --cores_path $LOCAL_SCRATCH/NKI_project_TMAs
