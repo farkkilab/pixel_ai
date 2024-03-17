@@ -147,7 +147,7 @@ def main():
             'best_loss_val': best_loss_val,
             'optimizer': optimizer.state_dict(),
         }, is_best, '{0}_vae.pth.tar'.format(model_name))
-
+    torch.cuda.empty_cache()
     train_image_input_list = []
     train_image_reconstructed_list = []
     files_names = []
