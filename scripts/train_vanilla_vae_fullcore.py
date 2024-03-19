@@ -78,7 +78,7 @@ def main():
     lr = p.lr
     #pathlib.Path("saved_models/{0}/images".format(cores_folder)).mkdir(parents=True, exist_ok=True)
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    epochs = 250
+    epochs = 100
     batch_size = 32
     channels = [0, 1, 2]
     # channels = [0, 1, 2, 25, 27, 29]
