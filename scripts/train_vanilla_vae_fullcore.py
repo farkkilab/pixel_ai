@@ -66,17 +66,20 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--cores_path", type=Path,
                         default="/data/projects/pixel_project/datasets/NKI_project_TMAs/")
-
+    parser.add_argument("--latent_dims", type=int,
+                        default=8)
+    parser.add_argument("--lr", type=float,
+                        default=0.0001)
 
 
     p = parser.parse_args()
     cores_path = p.cores_path
+    latent_dims = p.latent_dims
+    lr = p.lr
     #pathlib.Path("saved_models/{0}/images".format(cores_folder)).mkdir(parents=True, exist_ok=True)
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     epochs = 250
-    batch_size = 64
-    lr = 0.0001
-    latent_dims = 8
+    batch_size = 32
     channels = [0, 1, 2]
     # channels = [0, 1, 2, 25, 27, 29]
     in_channels = len(channels)
