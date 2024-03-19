@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=vaefullcore_training
 #SBATCH --account=project_2003009
-#SBATCH --time=24:00:00
+#SBATCH --time=12:00:00
 #SBATCH --partition=gpusmall
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=64
@@ -14,4 +14,6 @@ export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 module load pytorch/2.1
 source venv/bin/activate
-python scripts/train_vanilla_vae_fullcore.py --cores_path $LOCAL_SCRATCH/NKI_project_TMAs
+python scripts/train_vanilla_vae_fullcore.py --cores_path $LOCAL_SCRATCH/NKI_project_TMAs --latent_dims 16
+python scripts/train_vanilla_vae_fullcore.py --cores_path $LOCAL_SCRATCH/NKI_project_TMAs --latent_dims 32
+python scripts/train_vanilla_vae_fullcore.py --cores_path $LOCAL_SCRATCH/NKI_project_TMAs --latent_dims 64
