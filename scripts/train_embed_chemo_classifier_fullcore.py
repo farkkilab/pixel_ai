@@ -46,7 +46,7 @@ def train_test(vae_model,classifier_model, optimizer,loader, epoch,train, criter
 
     for i, (images, labels) in enumerate(loader):
         images = images.cuda()
-        labels = labels.cuda()
+        labels = torch.as_tensor(labels).cuda()
         data_time.update(time.time() - end)
         x_hat = vae_model(images)
         z = x_hat[4]
@@ -90,14 +90,17 @@ def main():
                             for fn in fs if fn.endswith('.tif')])
     cores_chemo_labels_df = pd.read_csv('data/cores_labels_chemotherapy.csv')
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    batch_size = 256
-    latent_dims = 8
+    batch_size = 16
+    latent_dims = 16
     channels = [0, 1, 2]
     in_channels = len(channels)
+    best_f1_test = 99999999
     hidden_dims = [ 16, 32, 64, 128, 256]
-    input_dimensions = (128, 128)
-    epochs = 30
+    input_dimensions = (1024, 1024)
+    epochs = 10
     lr = 0.001
+    model_path = 'saved_models'
+    model_name = "model_best_allcores_fullcore_{0}".format(str(channels))
     config = {
         "learning_rate": lr,
         "architecture": "vanilla-VAE",
@@ -106,11 +109,12 @@ def main():
         "latent_dims": latent_dims,
         "hidden_dims": hidden_dims,
         "channels": channels,
-        "input_dimensions": input_dimensions
+        "input_dimensions": input_dimensions,
+        "vae_model":model_name
     }
+    wandb.init(project='pixel_ai', name="embed_chemo_classifier_fullcore", resume="allow", config=config)
     transform_to_image = T.ToPILImage()
-    model_path='/data/projects/pixel_project/saved_models'
-    model_name = "model_best_allcores_fullcore_{0}".format(str(channels))
+
 
     vae_model = VanillaVAE(in_channels=in_channels, latent_dim=latent_dims, input_dimensions=input_dimensions, hidden_dims=hidden_dims).to(device) # GPU
     checkpoint = torch.load('{}/{}_vae.pth.tar'.format(model_path, model_name))
@@ -123,41 +127,48 @@ def main():
 
     vae_model.load_state_dict(checkpoint['state_dict'])
     vae_model.eval()
-    classifier_model = EmbedSubtypeClassifier(input_dim=8, output_dim=1).to(device)
-    cores_files_train, cores_files_test = train_test_split(cores_files, test_size=0.1, random_state=42)
+    classifier_model = EmbedSubtypeClassifier(input_dim=16, output_dim=1).to(device)
+    cores_labels_train = []
+    cores_labels_test = []
+    # Only files that we have a label for
+    cores_files_train = []
+    cores_files_test = []
+    # list to keep only patches with labels
+    for i, core_file in enumerate(cores_files):
+        patch_file_label_df = cores_chemo_labels_df[(cores_chemo_labels_df['cycif.slide']==core_file.split('/')[-3])&(cores_chemo_labels_df['cycif.core.id']==core_file.split('/')[-1].replace('.tif',''))]
+        if not patch_file_label_df.empty and str(patch_file_label_df.iloc[0]['therapy_sequence']).lower()!='na':
+            if core_file.split('/')[-3]=='TMA_42_961':
+                cores_files_test.append(core_file)
+                # If contains NACT, is a sample collected after chemotherapy exposure
+                if 'nact' in str(patch_file_label_df.iloc[0]['therapy_sequence']).lower():
+                    cores_labels_test.append(0)
+                else:
+                    cores_labels_test.append(1)
+            else:
+                cores_files_train.append(core_file)
+                # If contains NACT, is a sample collected after chemotherapy exposure
+                if 'nact' in str(patch_file_label_df.iloc[0]['therapy_sequence']).lower():
+                    cores_labels_train.append(0)
+                else:
+                    cores_labels_train.append(1)
+        else:
+            print('Missing label for:'+core_file)
+
     config['total_patches'] = len(cores_files)
     config['train_images'] = len(cores_files_train)
     config['test_images'] = len(cores_files_test)
-    cores_labels = []
-    # list to keep only patches with labels
-    for i, core_file in enumerate(cores_files):
-        ipdb.set_trace()
-        patch_file_label_df = cores_chemo_labels_df[(cores_chemo_labels_df['cycif.slide']==core_file)&(cores_chemo_labels_df['cycif.core.id']==core_file)]
-        if not patch_file_label_df.empty:
-            # If contains NACT, is a sample collected after chemotherapy exposure
-            if patch_file_label_df.iloc[0]['label'].str.lower().str.contains('nact'):
-                cores_labels.append(0)
-            else:
-                cores_labels.append(1)
 
-    indices_train, indices_test  = train_test_split(range(len(cores_files)), test_size=0.1, random_state=42)
-    core_files_train = [cores_files[i] for i in indices_train]
-    core_files_test = [cores_files[i] for i in indices_test]
-
-    core_labels_train = [cores_files[i] for i in indices_train]
-    core_labels_test = [cores_files[i] for i in indices_test]
-
-    tiff_dataset_train = TiffDataset(files=core_files_train, channels=channels,labels=core_labels_train)
-    tiff_dataset_test = TiffDataset(files=core_files_test,channels=channels,labels=core_labels_test)
+    tiff_dataset_train = TiffDataset(files=cores_files_train,transform=T.Resize([1024,1024]), channels=channels,labels=cores_labels_train)
+    tiff_dataset_test = TiffDataset(files=cores_files_test,transform=T.Resize([1024,1024]), channels=channels,labels=cores_labels_test)
 
     train_sampler = None
     train_loader = torch.utils.data.DataLoader(
             tiff_dataset_train, batch_size=batch_size, shuffle=(train_sampler is None),
-             pin_memory=True, sampler=train_sampler)
+             pin_memory=True, sampler=train_sampler, num_workers=64)
     test_sampler = None
     test_loader = torch.utils.data.DataLoader(
             tiff_dataset_test, batch_size=batch_size, shuffle=(test_sampler is None),
-             pin_memory=True, sampler=test_sampler)
+             pin_memory=True, sampler=test_sampler, num_workers=64)
 
 
 
@@ -169,21 +180,25 @@ def main():
         loss_test, acc_test, f1_test = train_test(vae_model, classifier_model,optimizer, test_loader, epoch, train=False, criterion=criterion)
         print("Accuracy training: "+str(acc_train))
         print("Accuracy test: "+str(acc_test))
-        #wandb.log({"loss_train": loss_train, "loss_test": loss_test,
-        #           "lr": optimizer.param_groups[0]['lr'],
-        #           "epoch": epoch})
+        print("F1 training: " + str(f1_train))
+        print("F1 test: " + str(f1_test))
+        wandb.log({"loss_train": loss_train, "loss_test": loss_test,
+                   "lr": optimizer.param_groups[0]['lr'],
+                   "epoch": epoch,
+                   "acc_train":acc_train,"acc_test":acc_test,
+                   "f1_train":f1_train,"f1_test":f1_test})
         scheduler.step()
         print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
         print('Loss test '+str(loss_test))
-        #is_best = loss_test < best_loss_val
-        #if is_best:
-        #    best_loss_val = loss_test
-        #save_checkpoint({
-        #    'epoch': epoch + 1,
-        #    'state_dict': model.state_dict(),
-        #    'best_loss_val': best_loss_val,
-        #    'optimizer': optimizer.state_dict(),
-        #}, is_best, '{0}_vae.pth.tar'.format(model_name))
+        is_best = f1_test < best_f1_test
+        if is_best:
+            best_f1_test = f1_test
+        save_checkpoint({
+            'epoch': epoch + 1,
+            'state_dict': classifier_model.state_dict(),
+            'best_f1_test': best_f1_test,
+            'optimizer': optimizer.state_dict(),
+        }, is_best, 'embed_chemo_classifier_fullcore.pth.tar')
 
 if __name__ == "__main__":
     main()
