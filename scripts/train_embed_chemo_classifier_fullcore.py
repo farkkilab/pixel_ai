@@ -97,7 +97,7 @@ def main():
     best_f1_test = 99999999
     hidden_dims = [ 16, 32, 64, 128, 256]
     input_dimensions = (1024, 1024)
-    epochs = 10
+    epochs = 100
     lr = 0.001
     model_path = 'saved_models'
     model_name = "model_best_allcores_fullcore_{0}".format(str(channels))
