@@ -112,7 +112,6 @@ def main():
         "input_dimensions": input_dimensions,
         "vae_model":model_name
     }
-    wandb.init(project='pixel_ai', name="embed_chemo_classifier_fullcore", resume="allow", config=config)
     transform_to_image = T.ToPILImage()
 
 
@@ -157,7 +156,7 @@ def main():
     config['total_patches'] = len(cores_files)
     config['train_images'] = len(cores_files_train)
     config['test_images'] = len(cores_files_test)
-
+    wandb.init(project='pixel_ai', name="embed_chemo_classifier_fullcore", resume="allow", config=config)
     tiff_dataset_train = TiffDataset(files=cores_files_train,transform=T.Resize([1024,1024]), channels=channels,labels=cores_labels_train)
     tiff_dataset_test = TiffDataset(files=cores_files_test,transform=T.Resize([1024,1024]), channels=channels,labels=cores_labels_test)
 
