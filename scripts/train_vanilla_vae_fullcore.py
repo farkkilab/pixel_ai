@@ -66,17 +66,20 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--cores_path", type=Path,
                         default="/data/projects/pixel_project/datasets/NKI_project_TMAs/")
-
+    parser.add_argument("--latent_dims", type=int,
+                        default=8)
+    parser.add_argument("--lr", type=float,
+                        default=0.0001)
 
 
     p = parser.parse_args()
     cores_path = p.cores_path
+    latent_dims = p.latent_dims
+    lr = p.lr
     #pathlib.Path("saved_models/{0}/images".format(cores_folder)).mkdir(parents=True, exist_ok=True)
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    epochs = 250
-    batch_size = 128
-    lr = 0.0001
-    latent_dims = 8
+    epochs = 100
+    batch_size = 32
     channels = [0, 1, 2]
     # channels = [0, 1, 2, 25, 27, 29]
     in_channels = len(channels)
@@ -85,7 +88,7 @@ def main():
     kld_weight = 0.000025
     transform_to_image = T.ToPILImage()
     model_name = "allcores_fullcore_{0}".format(str(channels))
-    input_dimensions = (512, 512)  # (sample_file.shape[0],sample_file.shape[1])
+    input_dimensions = (1024, 1024)  # (sample_file.shape[0],sample_file.shape[1])
     config = {
         "learning_rate": lr,
         "architecture": "vanilla-VAE",
@@ -117,9 +120,9 @@ def main():
     model = nn.DataParallel(model)
 
     optimizer = torch.optim.Adam(model.parameters(),lr=lr)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.1)
-    tiff_dataset_train = TiffDataset(files=cores_files_train,transform=T.Resize([512,512]),files_names=cores_files_train, channels=channels)
-    tiff_dataset_test = TiffDataset(files=cores_files_test,transform=T.Resize([512,512]),files_names=cores_files_test, channels=channels)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
+    tiff_dataset_train = TiffDataset(files=cores_files_train,transform=T.Resize([1024,1024]),files_names=cores_files_train, channels=channels)
+    tiff_dataset_test = TiffDataset(files=cores_files_test,transform=T.Resize([1024,1024]),files_names=cores_files_test, channels=channels)
 
     train_sampler = None
     train_loader = torch.utils.data.DataLoader(
@@ -147,7 +150,7 @@ def main():
             'best_loss_val': best_loss_val,
             'optimizer': optimizer.state_dict(),
         }, is_best, '{0}_vae.pth.tar'.format(model_name))
-
+    torch.cuda.empty_cache()
     train_image_input_list = []
     train_image_reconstructed_list = []
     files_names = []
