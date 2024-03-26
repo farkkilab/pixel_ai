@@ -14,6 +14,5 @@ export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 module load pytorch/2.1
 source venv/bin/activate
-python scripts/train_vanilla_vae_fullcore.py --cores_path $LOCAL_SCRATCH/NKI_project_TMAs --latent_dims 16 --lr 0.00001
-python scripts/train_vanilla_vae_fullcore.py --cores_path $LOCAL_SCRATCH/NKI_project_TMAs --latent_dims 16 --lr 0.000001
-python scripts/train_vanilla_vae_fullcore.py --cores_path $LOCAL_SCRATCH/NKI_project_TMAs --latent_dims 16 --lr 0.0000001
+python scripts/train_embed_chemo_classifier_fullcore.py --cores_path $LOCAL_SCRATCH/NKI_project_TMAs
+
