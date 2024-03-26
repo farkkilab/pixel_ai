@@ -152,7 +152,6 @@ def main():
                     cores_labels_train.append(1)
         else:
             print('Missing label for:'+core_file)
-
     config['total_patches'] = len(cores_files)
     config['train_images'] = len(cores_files_train)
     config['test_images'] = len(cores_files_test)
