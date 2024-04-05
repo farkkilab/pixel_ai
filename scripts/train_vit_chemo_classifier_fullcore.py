@@ -20,6 +20,7 @@ from pathlib import Path
 from os.path import dirname, join, abspath
 sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 from vit_pytorch import ViT
+from vit_pytorch.recorder import Recorder
 from utils import ProgressMeter, AverageMeter, save_checkpoint, TiffDataset
 import ipdb
 
@@ -44,6 +45,7 @@ def train_test(classifier_model, optimizer,loader, epoch,train, criterion):
         prefix=prefix + " [{}]".format(epoch))
 
     for i, (images, labels) in enumerate(loader):
+        optimizer.zero_grad()
         images = images.cuda()
         labels = torch.as_tensor(labels).cuda()
         data_time.update(time.time() - end)
@@ -52,10 +54,9 @@ def train_test(classifier_model, optimizer,loader, epoch,train, criterion):
         binary_predictions = torch.argmax(predictions,dim=1).cpu().tolist()
         # Compute loss
         loss = criterion(predictions, labels)
-        #model.train()
         loss.backward()
         optimizer.step()
-        optimizer.zero_grad()
+
 
         losses.update(loss.item(), images.size(0))
         acc.update(accuracy_score(binary_predictions, labels.cpu()),images.size(0))
@@ -87,11 +88,11 @@ def main():
     cores_chemo_labels_df = pd.read_csv('data/cores_labels_chemotherapy.csv')
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     batch_size = 8
-    channels = [0, 1, 2]
+    channels = [0, 12, 28]
     in_channels = len(channels)
     best_f1_test = 99999999
     input_dimensions = (1024, 1024)
-    epochs = 100
+    epochs = 20
     lr = 0.00001
     num_workers = 28
     model_path = 'saved_models'
@@ -109,7 +110,10 @@ def main():
 
 
     #checkpoint = torch.load('{}/{}_vae.pth.tar'.format(model_path, model_name))
-
+    transforms = torch.nn.Sequential(
+        T.CenterCrop(2048),
+        T.Resize([input_dimensions[0], input_dimensions[1]])
+    )
 
     classifier_model = ViT(
     image_size = 1024,
@@ -122,7 +126,7 @@ def main():
     dropout = 0.1,
     emb_dropout = 0.1
     ).to(device)
-    classifier_model = nn.DataParallel(classifier_model)
+    #classifier_model = nn.DataParallel(classifier_model)
     cores_labels_train = []
     cores_labels_test = []
     # Only files that we have a label for
@@ -152,8 +156,8 @@ def main():
     config['train_images'] = len(cores_files_train)
     config['test_images'] = len(cores_files_test)
     wandb.init(project='pixel_ai', name="vit_chemo_classifier_fullcore", resume="allow", config=config)
-    tiff_dataset_train = TiffDataset(files=cores_files_train,transform=T.Resize([input_dimensions[0],input_dimensions[1]]), channels=channels,labels=cores_labels_train)
-    tiff_dataset_test = TiffDataset(files=cores_files_test,transform=T.Resize([input_dimensions[0],input_dimensions[1]]), channels=channels,labels=cores_labels_test)
+    tiff_dataset_train = TiffDataset(files=cores_files_train,transform=transforms, channels=channels,labels=cores_labels_train)
+    tiff_dataset_test = TiffDataset(files=cores_files_test,transform=transforms, channels=channels,labels=cores_labels_test)
 
     train_sampler = None
     train_loader = torch.utils.data.DataLoader(
@@ -192,6 +196,15 @@ def main():
             'best_f1_test': best_f1_test,
             'optimizer': optimizer.state_dict(),
         }, is_best, 'vit_chemo_classifier_fullcore.pth.tar')
+    test_image_input_list = []
+    files_names = []
+    classifier_model = Recorder(classifier_model)
+    for i, images in enumerate(test_loader):
+        files_names.append(images[1])
+        images = images[0].cuda()
+        ipdb.set_trace()
+        preds, attns = classifier_model(images)
+
 
 if __name__ == "__main__":
     main()
