@@ -6,6 +6,7 @@ import shutil
 import torch
 from torch.utils.data import Dataset
 import torchvision
+from PIL import Image
 import numpy as np
 
 class AverageMeter(object):
@@ -76,6 +77,13 @@ class TiffDataset(Dataset):
     def __getitem__(self, idx):
         if torch.is_tensor(idx):
             idx = idx.tolist()
+        im_tiff = tifffile.TiffFile(self.tiff_files[idx])
+        im_tiff_data = im_tiff.asarray()
+        image_data = Image.fromarray(im_tiff_data)
+
+        # Resize the image
+        resized_image = image_data.resize(1024)
+        ipdb.set_trace()
         im_tiff = tifffile.imread(self.tiff_files[idx],key=self.channels,maxworkers=32)
         info = np.iinfo(im_tiff.dtype)
         sample = torch.from_numpy(im_tiff / info.max).float()
@@ -95,6 +103,37 @@ class TiffDataset(Dataset):
         if self.labels:
             output.append(self.labels[idx])
         return tuple(output)
+
+class MultiEpochsDataLoader(torch.utils.data.DataLoader):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._DataLoader__initialized = False
+        self.batch_sampler = _RepeatSampler(self.batch_sampler)
+        self._DataLoader__initialized = True
+        self.iterator = super().__iter__()
+
+    def __len__(self):
+        return len(self.batch_sampler.sampler)
+
+    def __iter__(self):
+        for i in range(len(self)):
+            yield next(self.iterator)
+
+
+class _RepeatSampler(object):
+    """ Sampler that repeats forever.
+    Args:
+        sampler (Sampler)
+    """
+
+    def __init__(self, sampler):
+        self.sampler = sampler
+
+    def __iter__(self):
+        while True:
+            yield from iter(self.sampler)
+
 
 def create_random_patches(image_path, patch_size, output_folder):
     # Load the TIFF image
