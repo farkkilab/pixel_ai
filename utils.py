@@ -3,6 +3,7 @@ import numpy as np
 import os
 import ipdb
 import shutil
+import pyvips
 import torch
 from torch.utils.data import Dataset
 import torchvision
@@ -77,16 +78,10 @@ class TiffDataset(Dataset):
     def __getitem__(self, idx):
         if torch.is_tensor(idx):
             idx = idx.tolist()
-        im_tiff = tifffile.TiffFile(self.tiff_files[idx])
-        im_tiff_data = im_tiff.asarray()
-        image_data = Image.fromarray(im_tiff_data)
-
-        # Resize the image
-        resized_image = image_data.resize(1024)
-        ipdb.set_trace()
         im_tiff = tifffile.imread(self.tiff_files[idx],key=self.channels,maxworkers=32)
-        info = np.iinfo(im_tiff.dtype)
-        sample = torch.from_numpy(im_tiff / info.max).float()
+        #info = np.iinfo(im_tiff.dtype)
+        #sample = torch.from_numpy(im_tiff / info.max).float()
+        sample = torch.from_numpy(np.log1p(im_tiff))
         #array_expression = np.array([array_expression])
         #array_expression = array_expression.astype('float32').reshape(-1, 1657)
         #array_expression = np.pad(array_expression, (0, 7), 'constant')
@@ -162,6 +157,19 @@ def create_random_patches(image_path, patch_size, output_folder):
             # Save the patch as a new TIFF file
             patch_filename = f"{output_folder}/patch_{top_left_y}_{top_left_x}.tiff"
             tifffile.imwrite(patch_filename, patch)
+
+def create_random_patches_wholeslide(z, patch_size, output_folder, top_left_y, top_left_x):
+    # Get the dimensions of the image
+
+    # Create output folder if it doesn't exist
+    os.makedirs(output_folder, exist_ok=True)
+
+    # Extract the patch from the image
+    patch = z[0][:, top_left_y:top_left_y + patch_size[0], top_left_x:top_left_x + patch_size[1]]
+    # Save the patch as a new TIFF file
+    patch_filename = f"{output_folder}/patch_{top_left_y}_{top_left_x}.tiff"
+    ipdb.set_trace()
+    tifffile.imwrite(patch_filename, patch)
 
 
 def get_patch_stats(patch_path):
