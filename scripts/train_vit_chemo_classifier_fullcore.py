@@ -45,7 +45,6 @@ def train_test(classifier_model, optimizer,loader, epoch,train, criterion):
         len(loader),
         [batch_time, data_time, losses],
         prefix=prefix + " [{}]".format(epoch))
-
     for i, (images, labels) in enumerate(loader):
         optimizer.zero_grad()
         images = images.cuda()
@@ -72,10 +71,13 @@ def train_test(classifier_model, optimizer,loader, epoch,train, criterion):
 def main():
 
     parser = argparse.ArgumentParser()
+    #/data/projects/pixel_project/datasets/NKI_project_TMAs/
+    #/data/projects/sciset/resized/
     parser.add_argument("--files_path", type=Path,
-                        default="/data/projects/sciset/registration/")
+                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/")
+    # cores or whole_slide
     parser.add_argument("--data_type", type=str,
-                        default="whole_slide")
+                        default="cores")
 
 
     p = parser.parse_args()
@@ -86,9 +88,9 @@ def main():
         cores_directories = [d for d in os.listdir(files_path) if
                              os.path.isdir(os.path.join(files_path, d)) and d.startswith('TMA')]
         for i, slide in enumerate(cores_directories):
-            files_path = str(files_path) + "/" + slide + "/Channels_all"
+            cores_files_path = str(files_path) + "/" + slide + "/Channels_all"
             cores_files.extend([os.path.join(r, fn)
-                                for r, ds, fs in os.walk(files_path)
+                                for r, ds, fs in os.walk(cores_files_path)
                                 for fn in fs if fn.endswith('.tif')])
         cores_chemo_labels_df = pd.read_csv('data/cores_labels_chemotherapy.csv')
         cores_stats_df = pd.read_csv('data/cores_stats_ncancer_cells.csv')
@@ -97,11 +99,11 @@ def main():
                              os.path.isfile(os.path.join(files_path, d)) and d.endswith('tif')]
         wholeslide_labels_df = pd.read_csv('data/wholeslide_clinical_data.csv')
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
+    # resized images, this channels correspond actually to 0, 12, 28
     #channels = [0, 1, 2]
     channels = [0, 12, 28]
     in_channels = len(channels)
-    best_f1_test = 99999999
+    best_f1_test = 0
     input_dimensions = (1024, 1024)
     epochs = 100
     lr = 0.001
@@ -111,20 +113,20 @@ def main():
     model_name = "model_best_{1}_vit_{0}".format(str(channels),data_type)
     model = 'resnet'
     if model == 'vit':
-        batch_size = 8
+        batch_size = 32
         classifier_model = ViT(
             image_size=input_dimensions[0],
             patch_size=128,
             num_classes=2,
-            dim=1024,
+            dim=2048,
             depth=12,
-            heads=32,
-            mlp_dim=2048,
+            heads=6,
+            mlp_dim=3072,
             dropout=0.1,
             emb_dropout=0.1
         ).to(device)
     else:
-        batch_size = 4
+        batch_size = 8
         import ssl
         ssl._create_default_https_context = ssl._create_unverified_context
         classifier_model = models.resnet50(pretrained=True)
@@ -136,7 +138,7 @@ def main():
     #summary(classifier_model, input_size=(batch_size, in_channels, input_dimensions[0], input_dimensions[1]))
     config = {
         "learning_rate": lr,
-        "architecture": "vit",
+        "architecture": model,
         "epochs": epochs,
         "batch_size": batch_size,
         "channels": channels,
@@ -149,11 +151,11 @@ def main():
     #checkpoint = torch.load('{}/{}_vae.pth.tar'.format(model_path, model_name))
     transforms_train = torch.nn.Sequential(
         T.CenterCrop(2048),
-        T.RandomCrop(1024)
+        T.RandomCrop(input_dimensions[0])
         #T.Resize([input_dimensions[0], input_dimensions[1]])
     )
     transforms_test = torch.nn.Sequential(
-        T.CenterCrop(1024),
+        T.CenterCrop(input_dimensions[0]),
         #T.Resize([input_dimensions[0], input_dimensions[1]])
     )
 
@@ -223,7 +225,8 @@ def main():
         config['total_patches'] = len(wholeslide_files)
     config['train_images'] = len(files_train)
     config['test_images'] = len(files_test)
-    wandb.init(project='pixel_ai', name="vit_chemo_classifier_fullcore", resume="allow", config=config, mode="disabled")
+    # , mode="disabled"
+    wandb.init(project='pixel_ai', name="vit_chemo_classifier_fullcore", resume="allow", config=config)
     tiff_dataset_train = TiffDataset(files=files_train,transform=transforms_train, channels=channels,labels=labels_train)
     tiff_dataset_test = TiffDataset(files=files_test,transform=transforms_test, channels=channels,labels=labels_test)
     #tiff_dataset_validate = TiffDataset(files=cores_files_validate, transform=transforms, channels=channels,labels=cores_labels_validate)
@@ -258,7 +261,7 @@ def main():
         scheduler.step()
         print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
         print('Loss test '+str(loss_test))
-        is_best = f1_test < best_f1_test
+        is_best = f1_test > best_f1_test
         if is_best:
             best_f1_test = f1_test
         save_checkpoint({
