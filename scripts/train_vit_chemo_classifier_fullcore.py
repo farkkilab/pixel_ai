@@ -107,8 +107,8 @@ def main():
     input_dimensions = (1024, 1024)
     epochs = 100
     lr = 0.001
-    num_workers = 0
-    #num_workers = 28
+    #num_workers = 0
+    num_workers = 28
     model_path = 'saved_models'
     model_name = "model_best_{1}_vit_{0}".format(str(channels),data_type)
     model = 'resnet'
@@ -151,12 +151,13 @@ def main():
     #checkpoint = torch.load('{}/{}_vae.pth.tar'.format(model_path, model_name))
     transforms_train = torch.nn.Sequential(
         T.CenterCrop(2048),
-        T.RandomCrop(input_dimensions[0])
-        #T.Resize([input_dimensions[0], input_dimensions[1]])
+        #T.RandomCrop(input_dimensions[0])
+        T.Resize([input_dimensions[0], input_dimensions[1]])
     )
     transforms_test = torch.nn.Sequential(
-        T.CenterCrop(input_dimensions[0]),
-        #T.Resize([input_dimensions[0], input_dimensions[1]])
+        T.CenterCrop(2048),
+        #T.CenterCrop(input_dimensions[0]),
+        T.Resize([input_dimensions[0], input_dimensions[1]])
     )
 
     classifier_model = nn.DataParallel(classifier_model)
