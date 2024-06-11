@@ -5,6 +5,7 @@ from torchvision import datasets, transforms, models
 import torchvision.transforms as T
 import torch
 import torch.nn as nn
+from torchvision.utils import save_image
 import ipdb
 import ssl
 import os
@@ -139,8 +140,11 @@ for i, (images, labels) in enumerate(test_loader):
     grayscale_cam = grayscale_cam[0, :]
     image_np = images[0].cpu().numpy().transpose(1, 2, 0)
     visualization = show_cam_on_image(image_np, grayscale_cam, use_rgb=True)
+    prediction = classifier_model(images)
     cv2.imwrite('activations_roi/{0}_gradcam_classifier.jpg'.format(str(i)), visualization)
-    cv2.imwrite('activations_roi/{0}_base_classifier.jpg'.format(str(i)), image_np)
+    #cv2.imwrite('activations_roi/{0}_prediction_{1}_gt_{2}_base_classifier.jpg'.format(str(i),prediction[0],labels[0]), image_np)
+    save_image(images[0].cpu(), 'activations_roi/{0}_prediction_{1}_gt_{2}_base_classifier.jpg'.format(str(i),prediction[0],labels[0]))
+
     #cv2.imshow('visualization', visualization)
     #cv2.waitKey(0)
     #cv2.destroyAllWindows()

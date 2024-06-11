@@ -1,16 +1,76 @@
 from histoprep import SlideReader
+import tifffile
+import tqdm
+import numpy as np
+from PIL import Image
+import os, sys, glob
+import histoprep.functional as F
+from histoprep._data import SpotCoordinates, TileCoordinates
 import ipdb
+from os.path import dirname, join, abspath
+sys.path.insert(0, abspath(join(dirname(__file__), '..')))
+from utils import get_tissue_mask
 
-# Read slide image.
-reader = SlideReader("/data/projects/sciset/registration/Sample_01.ome.tif")
-# Detect tissue.
-threshold, tissue_mask = reader.get_tissue_mask(level=-1)
-# Extract overlapping tile coordinates with less than 50% background.
-tile_coordinates = reader.get_tile_coordinates(
-    tissue_mask, width=512, overlap=0.5, max_background=0.5
-)
-ipdb.set_trace()
-# Save tile images with image metrics for preprocessing.
-tile_metadata = reader.save_regions(
-    "./train_tiles/", tile_coordinates, threshold=threshold, save_metrics=True
-)
+# channels, DNA1, Vimentin, CK7 (in that order)
+# 0, 38, 42
+# select certain channels to get the tissue mask
+selected_channels = [0, 38, 42]
+slides_path = '/data/projects/sciset/registration/'
+slides_to_process = [file for file in glob.glob(str(slides_path)+"*.tif")]
+for slide in slides_to_process:
+    im_tiff = tifffile.imread(slide,level=-1, maxworkers=32)
+    output_dir = "/data/projects/sciset/train_tiles/"+slide.split('/')[-1].split('.')[0]+'/'
+    os.makedirs(output_dir, exist_ok=True)
+    os.makedirs(output_dir+'tiles', exist_ok=True)
+    image_np = im_tiff[selected_channels,:,:].astype(np.uint8).transpose(1, 2, 0)
+
+
+    threshold, tissue_mask = get_tissue_mask(image_np)
+    # Extract overlapping tile coordinates with less than 50% background.
+    width = 512
+    height = 512
+    overlap = 0.5
+    tile_coordinates = F.get_tile_coordinates(
+        tissue_mask.shape, height=height,width=width, overlap=0.5
+    )
+    max_background = 0.75
+    if tissue_mask is not None:
+        all_backgrounds = F.get_background_percentages(
+            tile_coordinates=tile_coordinates,
+            tissue_mask=tissue_mask,
+            downsample=1,
+        )
+        filtered_coordinates = []
+        for xywh, background in zip(tile_coordinates, all_backgrounds):
+            if background <= max_background:
+                filtered_coordinates.append(xywh)
+        tile_coordinates = filtered_coordinates
+        tiles = TileCoordinates(
+        coordinates=tile_coordinates,
+        width=width,
+        height=width if height is None else height,
+        overlap=overlap,
+        max_background=max_background,
+        tissue_mask=tissue_mask,
+        )
+        kwargs = {
+            "image": image_np,
+            "downsample": 1,
+            "rectangle_width": 1,
+            "rectangle_fill":"red"
+        }
+        kwargs.update(
+            {"coordinates": tiles.coordinates, "highlight_first": True}
+        )
+        Image.fromarray(image_np).save(output_dir+ "thumbnail.jpeg")
+        thumbnail_regions = F.get_annotated_image(**kwargs)
+        thumbnail_regions.save(output_dir + f"thumbnail_tiles.jpeg")
+        Image.fromarray(255 - 255 * tiles.tissue_mask).save(
+            output_dir + "thumbnail_tissue.jpeg")
+        for i, (xywh) in enumerate(tile_coordinates):
+            x, y, w, h = xywh
+            patch = im_tiff[:, y:y + h, x:x + w]
+            # Save the patch as a new TIFF file
+            patch_filename = f"{output_dir}/tiles/patch_{y}_{x}.tiff"
+            tifffile.imwrite(patch_filename, patch)
+

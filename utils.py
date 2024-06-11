@@ -8,7 +8,18 @@ import torch
 from torch.utils.data import Dataset
 import torchvision
 from PIL import Image
+import cv2
 import numpy as np
+from typing import Optional, Union
+
+
+ERROR_THRESHOLD = "Threshold should be in range [0, 255], got {}."
+
+MAX_THRESHOLD = 255
+WHITE_PIXEL = 255
+BLACK_PIXEL = 0
+SIGMA_NO_OP = 0.0
+GRAY_NDIM = 2
 
 class AverageMeter(object):
     """Computes and stores the average and current value"""
@@ -184,3 +195,63 @@ def get_patch_stats(patch_path):
     mean = np.mean(patch_image[0, :, :])
     standard_deviation = np.std(patch_image[0, :, :])
     return median, mean, standard_deviation, patch_file, patch_core, patch_slide
+
+def _gaussian_blur(
+    *, image: np.ndarray, sigma: float, truncate: float = 3.5
+) -> np.ndarray:
+    """Apply gaussian blurring."""
+    if sigma <= SIGMA_NO_OP:
+        return image
+    ksize = int(truncate * sigma + 0.5)
+    if ksize % 2 == 0:
+        ksize += 1
+    return cv2.GaussianBlur(image, ksize=(ksize, ksize), sigmaX=sigma, sigmaY=sigma)
+
+def _otsu_threshold(*, gray: np.ndarray) -> int:
+    """Helper function to calculate Otsu's thresold from a grayscale image."""
+    values = gray.flatten()
+    values = values[(values != WHITE_PIXEL) & (values != BLACK_PIXEL)]
+    threshold, __ = cv2.threshold(
+        values, None, 1, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU
+    )
+    return threshold
+def get_tissue_mask(
+    image: Union[Image.Image, np.ndarray],
+    *,
+    threshold: Optional[int] = None,
+    multiplier: float = 1.0,
+    sigma: float = 1.0,
+) -> tuple[int, np.ndarray]:
+    """Detect tissue from image.
+
+    Args:
+        image: Input image.
+        threshold: Threshold for tissue detection. If set, will detect tissue by
+            global thresholding, and otherwise Otsu's method is used to find
+            a threshold. Defaults to None.
+        multiplier: Otsu's method is used to find an optimal threshold by
+            minimizing the weighted within-class variance. This threshold is
+            then multiplied with `multiplier`. Ignored if `threshold` is not None.
+            Defaults to 1.0.
+        sigma: Sigma for gaussian blurring. Defaults to 1.0.
+
+    Raises:
+        ValueError: Threshold not between 0 and 255.
+
+    Returns:
+        Tuple with `threshold` and `tissue_mask` (0=background and 1=tissue).
+    """
+    # Check arguments.
+    if threshold is not None and not 0 <= threshold <= MAX_THRESHOLD:
+        raise ValueError(ERROR_THRESHOLD.format(threshold))
+    # Convert to grayscale.
+    gray = image if image.ndim == GRAY_NDIM else cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+    # Gaussian blurring.
+    blur = _gaussian_blur(image=gray, sigma=sigma, truncate=3.5)
+    # Get threshold.
+    if threshold is None:
+        threshold = _otsu_threshold(gray=blur)
+        threshold = max(min(255, int(threshold * max(0.0, multiplier) + 0.5)), 0)
+    # Global thresholding.
+    thrsh, mask = cv2.threshold(blur, threshold, 1, cv2.THRESH_BINARY)
+    return int(thrsh), mask
