@@ -62,11 +62,11 @@ for slide in slides_to_process:
         kwargs.update(
             {"coordinates": tiles.coordinates, "highlight_first": True}
         )
-        Image.fromarray(image_np).save(output_dir+ "thumbnail.jpeg")
+        Image.fromarray(image_np).save(output_dir+ "thumbnail.tiff")
         thumbnail_regions = F.get_annotated_image(**kwargs)
-        thumbnail_regions.save(output_dir + f"thumbnail_tiles.jpeg")
+        thumbnail_regions.save(output_dir + f"thumbnail_tiles.tiff")
         Image.fromarray(255 - 255 * tiles.tissue_mask).save(
-            output_dir + "thumbnail_tissue.jpeg")
+            output_dir + "thumbnail_tissue.tiff")
         for i, (xywh) in enumerate(tile_coordinates):
             x, y, w, h = xywh
             patch = im_tiff[:, y:y + h, x:x + w]
