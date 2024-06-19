@@ -1,4 +1,3 @@
-from histoprep import SlideReader
 import tifffile
 import tqdm
 import numpy as np
