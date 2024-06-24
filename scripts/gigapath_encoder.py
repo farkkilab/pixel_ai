@@ -8,11 +8,18 @@ import os, sys, glob
 import ipdb
 from pathlib import Path
 import pathlib
+import torch.nn as nn
 import argparse
 import pandas as pd
+from os.path import dirname, join, abspath
+sys.path.insert(0, abspath(join(dirname(__file__), '..')))
+from utils import ProgressMeter, AverageMeter, save_checkpoint, TiffDataset, MultiEpochsDataLoader
 import torch
 from multiprocessing import Pool, set_start_method, cpu_count
+from gigapath.pipeline import run_inference_with_tile_encoder
+from gigapath.slide_encoder import create_model
 
+slide_encoder = create_model("hf_hub:prov-gigapath/prov-gigapath", "gigapath_slide_enc12l768d", 1536)
 def main():
     parser = argparse.ArgumentParser()
     # wh "/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_generated"
@@ -29,18 +36,18 @@ def main():
     data_type = p.data_type
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     tile_encoder = timm.create_model("hf_hub:prov-gigapath/prov-gigapath", pretrained=True).cuda()
-
+    #tile_encoder = nn.DataParallel(tile_encoder)
     transform = transforms.Compose(
         [
             transforms.Resize(256, interpolation=transforms.InterpolationMode.BICUBIC),
             transforms.CenterCrop(224),
-            transforms.ToTensor(),
             transforms.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
         ]
     )
 
-
-
+    channels = [0, 12, 28]
+    batch_size = 32
+    num_workers = 28
     labels_train = []
     labels_test = []
     labels_validate = []
@@ -119,14 +126,41 @@ def main():
             else:
                 print('Missing label for:' + wholeslide_file)
 
+    tiff_dataset_train = TiffDataset(files=files_train, files_names=files_train, transform=transform, channels=channels,
+                                     labels=labels_train)
+    tiff_dataset_test = TiffDataset(files=files_test, files_names=files_train, transform=transform, channels=channels, labels=labels_test)
     tile_encoder.eval()
-    args = [(transform, image_path, tiles_embedding_path, tile_encoder) for image_path in files_train]
-    with Pool(32) as pool:
-        pool.starmap(extract_embedding, args)
+    sampler = None
+    train_loader = MultiEpochsDataLoader(
+        tiff_dataset_train, batch_size=batch_size, shuffle=(sampler is None),
+        pin_memory=True, sampler=sampler, num_workers=num_workers)
+    test_loader = MultiEpochsDataLoader(
+        tiff_dataset_test, batch_size=batch_size, shuffle=(sampler is None),
+        pin_memory=True, sampler=sampler, num_workers=num_workers)
+    existing_dirs = []
+    for i, (images, file_names, labels) in enumerate(train_loader):
+        images = images.cuda()
+        with torch.no_grad():
+            output = tile_encoder(images)
+        output = output.cpu()
+        with Pool(num_workers) as pool:
+           args = [(output[i], file_names[i], tiles_embedding_path) for i in range(len(output))]
+           pool.starmap(save_embedding, args)
+    for i, (images, file_names, labels) in enumerate(test_loader):
+        images = images.cuda()
+        with torch.no_grad():
+            output = tile_encoder(images)
+        output = output.cpu()
+        with Pool(num_workers) as pool:
+           args = [(output[i], file_names[i], tiles_embedding_path) for i in range(len(output))]
+           pool.starmap(save_embedding, args)
+    #args = [(transform, image_path, tiles_embedding_path, tile_encoder) for image_path in files_train]
+    #with Pool(32) as pool:
+    #    pool.starmap(extract_embedding, args)
 
-    args = [(transform, image_path, tiles_embedding_path, tile_encoder) for image_path in files_test]
-    with Pool(32) as pool:
-        pool.starmap(extract_embedding, args)
+    #args = [(transform, image_path, tiles_embedding_path, tile_encoder) for image_path in files_test]
+    #with Pool(32) as pool:
+    #    pool.starmap(extract_embedding, args)
     # for file in files_train:
     #     sample_input = transform(Image.open(file).convert("RGB")).unsqueeze(0).cuda()
     #     pathlib.Path(pathlib.Path(os.path.join(tiles_embedding_path,'/'.join(file.split('/')[-3:-1])))).mkdir(parents=True, exist_ok=True)
@@ -142,14 +176,11 @@ def main():
     #         torch.save(output, os.path.join(tiles_embedding_path,'/'.join(file.split('/')[-3:]).replace('.tiff','')+'_tensor.pt'))
 
 
-def extract_embedding(transform, image_path, tiles_embedding_path, tile_encoder):
-    sample_input = transform(Image.open(image_path).convert("RGB")).unsqueeze(0).cuda()
-    pathlib.Path(pathlib.Path(os.path.join(tiles_embedding_path, '/'.join(image_path.split('/')[-3:-1])))).mkdir(parents=True,
+def save_embedding(embedding, file_name, tiles_embedding_path):
+    pathlib.Path(pathlib.Path(os.path.join(tiles_embedding_path, '/'.join(file_name.split('/')[-3:-1])))).mkdir(parents=True,
                                                                                                            exist_ok=True)
-    with torch.no_grad():
-        output = tile_encoder(sample_input).squeeze()
-        torch.save(output, os.path.join(tiles_embedding_path,
-                                        '/'.join(image_path.split('/')[-3:]).replace('.tiff', '') + '_tensor.pt'))
+    torch.save(embedding, os.path.join(tiles_embedding_path,
+                                    '/'.join(file_name.split('/')[-3:]).replace('.tiff', '') + '_tensor.pt'))
 
 
 if __name__ == "__main__":

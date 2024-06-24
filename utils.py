@@ -3,7 +3,6 @@ import numpy as np
 import os
 import ipdb
 import shutil
-import pyvips
 import torch
 from torch.utils.data import Dataset
 import torchvision
@@ -11,7 +10,6 @@ from PIL import Image
 import cv2
 import numpy as np
 from typing import Optional, Union
-
 
 ERROR_THRESHOLD = "Threshold should be in range [0, 255], got {}."
 
@@ -92,6 +90,9 @@ class TiffDataset(Dataset):
         im_tiff = tifffile.imread(self.tiff_files[idx],key=self.channels,maxworkers=32)
         info = np.iinfo(im_tiff.dtype)
         sample = torch.from_numpy(im_tiff / info.max).float()
+        if self.transform:
+            sample = self.transform(sample)
+
         #sample = torch.from_numpy(np.log1p(im_tiff)).float()
         #array_expression = np.array([array_expression])
         #array_expression = array_expression.astype('float32').reshape(-1, 1657)
@@ -99,8 +100,7 @@ class TiffDataset(Dataset):
         #array_expression = array_expression[:,  None, :, :]
         #sample = torch.from_numpy(im_tiff)
 
-        if self.transform:
-            sample = self.transform(sample)
+
 
         output = []
         output.append(sample)
@@ -179,7 +179,6 @@ def create_random_patches_wholeslide(z, patch_size, output_folder, top_left_y, t
     patch = z[0][:, top_left_y:top_left_y + patch_size[0], top_left_x:top_left_x + patch_size[1]]
     # Save the patch as a new TIFF file
     patch_filename = f"{output_folder}/patch_{top_left_y}_{top_left_x}.tiff"
-    ipdb.set_trace()
     tifffile.imwrite(patch_filename, patch)
 
 
@@ -255,3 +254,13 @@ def get_tissue_mask(
     # Global thresholding.
     thrsh, mask = cv2.threshold(blur, threshold, 1, cv2.THRESH_BINARY)
     return int(thrsh), mask
+
+
+def load_tensors_from_directory(tensors_path):
+    # List all .pt files in the directory
+    tensor_files = [os.path.join(tensors_path,f)  for f in os.listdir(tensors_path) if f.endswith('.pt')]
+    tensors = [torch.load(f) for f in tensor_files]
+    multi_dim_tensor = torch.stack(tensors, dim=0)
+    coords = [torch.tensor([int(file.split('patch_')[1].split('_')[0]),int(file.split('patch_')[1].split('_')[1])]) for file in tensor_files]
+    coords_tensor = torch.stack(coords, dim=0)
+    return multi_dim_tensor, coords_tensor
