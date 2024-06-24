@@ -11,9 +11,13 @@ import pathlib
 import argparse
 import pandas as pd
 import torch
-import gigapath
+from os.path import dirname, join, abspath
+sys.path.insert(0, abspath(join(dirname(__file__), '..')))
+from utils import load_tensors_from_directory
+from gigapath.pipeline import run_inference_with_tile_encoder, run_inference_with_slide_encoder
+from gigapath.slide_encoder import create_model
 
-slide_encoder = gigapath.slide_encoder.create_model("hf_hub:prov-gigapath/prov-gigapath", "gigapath_slide_enc12l768d", 1536)
+slide_encoder = create_model("hf_hub:prov-gigapath/prov-gigapath", "gigapath_slide_enc12l768d", 1536)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -54,15 +58,15 @@ def main():
     if data_type == 'cores':
         cores_files = []
         slides_directories = [d for d in os.listdir(files_path) if
-                             os.path.isdir(os.path.join(files_path, d)) and d.startswith('TMA')]
+                             os.path.isdir(os.path.join(tiles_embedding_path, d)) and d.startswith('TMA')]
         for i, slide in enumerate(slides_directories):
-            cores_files_path = str(files_path) + "/" + slide
-            cores_directories = [d for d in os.listdir(cores_files_path) if
+            cores_files_path = str(tiles_embedding_path) + "/" + slide
+            cores_directories = [os.path.join(cores_files_path,d) for d in os.listdir(cores_files_path) if
                              os.path.isdir(os.path.join(cores_files_path, d))]
             for core in cores_directories:
                 cores_files.extend([os.path.join(r, fn)
-                                    for r, ds, fs in os.walk(os.path.join(cores_files_path,core))
-                                    for fn in fs if fn.endswith('.tiff')])
+                                    for r, ds, fs in os.walk(core)
+                                    for fn in fs if fn.endswith('tensor.pt')])
         cores_chemo_labels_df = pd.read_csv('data/cores_labels_chemotherapy.csv')
         cores_stats_df = pd.read_csv('data/cores_stats_ncancer_cells.csv')
     elif data_type == 'whole_slide':
@@ -125,7 +129,12 @@ def main():
 
     slide_encoder.eval()
     for core in cores_directories:
-        ipdb.set_trace()
+        embeddings, coordinates = load_tensors_from_directory(os.path.join(cores_files_path,core))
         with torch.no_grad():
-            tile_embedding = os.path.join(tiles_embedding_path, '/'.join(file.split('/')[-3:]).replace('.tiff', '') + '_tensor.pt'
-            output = slide_encoder(tile_embed, coordinates).squeeze()
+
+            output = run_inference_with_slide_encoder(slide_encoder_model=slide_encoder, tile_embeds=embeddings, coords=coordinates)
+            ipdb.set_trace()
+            output = slide_encoder(embeddings, coordinates).squeeze()
+
+if __name__ == "__main__":
+    main()

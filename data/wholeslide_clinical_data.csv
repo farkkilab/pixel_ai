@@ -6,7 +6,7 @@
 "5","H098","H098_pOme","s08","primary","PDS","Yes","complete response","CCNE1 amplification","complete response",NA,44,"HRP"
 "6","H102","H102_pMes","s06","primary","PDS","No","complete response","BRCA1 somaticmut","complete response",NA,98,"HRD"
 "7","H103","H103_pPer","s11","primary","NACT","Yes","complete response","Other","complete response",NA,15,"HRP"
-"8","H110","H110_pOva","s04","primary",NA,NA,NA,NA,"complete response","PDS",NA,NA
+"8","H110","H110_pOva","s04","primary","PDS",NA,NA,NA,"complete response","PDS",NA,NA
 "9","H114","H114_iOvaR","s07","interval","NACT","No","complete response","Other","complete response",NA,55,"HRD"
 "10","H114","H114_pOme","s12","primary","NACT","No","complete response","Other","complete response",NA,55,"HRD"
 "11","H116","H116_pOme","s03","primary","NACT","Yes","partial response","RADcore somaticmut","partial response",NA,72,"HRD"
