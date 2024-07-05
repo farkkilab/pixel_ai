@@ -1,6 +1,5 @@
 import os
 
-os.environ["HUGGINGFACE_HUB_CACHE"] = "/data/projects/pixel_project/huggingface/cache"
 import timm
 from PIL import Image
 from torchvision import transforms
@@ -17,7 +16,6 @@ from utils import load_tensors_from_directory
 from gigapath.pipeline import run_inference_with_tile_encoder, run_inference_with_slide_encoder
 from gigapath.slide_encoder import create_model
 
-slide_encoder = create_model("hf_hub:prov-gigapath/prov-gigapath", "gigapath_slide_enc12l768d", 1536)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -26,26 +24,21 @@ def main():
                         default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_generated")
     parser.add_argument("--tiles_embedding_path", type=Path,
                         default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_embeddings")
+    parser.add_argument("--slide_embedding_path", type=Path,
+                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/slide_embeddings")
     # cores or whole_slide
     parser.add_argument("--data_type", type=str,
                         default="cores")
+    parser.add_argument("--hf_cache_path", type=Path,
+                        default="/data/projects/pixel_project/huggingface/cache")
     p = parser.parse_args()
     files_path = p.files_path
     tiles_embedding_path = p.tiles_embedding_path
+    slide_embedding_path = p.slide_embedding_path
     data_type = p.data_type
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    tile_encoder = timm.create_model("hf_hub:prov-gigapath/prov-gigapath", pretrained=True)
-
-    transform = transforms.Compose(
-        [
-            transforms.Resize(256, interpolation=transforms.InterpolationMode.BICUBIC),
-            transforms.CenterCrop(224),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
-        ]
-    )
-
-
+    hf_cache_path = p.hf_cache_path
+    os.environ["HUGGINGFACE_HUB_CACHE"] = str(hf_cache_path)
+    slide_encoder = create_model("hf_hub:prov-gigapath/prov-gigapath", "gigapath_slide_enc12l768d", 1536)
 
     labels_train = []
     labels_test = []
@@ -54,15 +47,15 @@ def main():
     files_train = []
     files_test = []
     files_validate = []
-
+    cores_directories = []
     if data_type == 'cores':
         cores_files = []
         slides_directories = [d for d in os.listdir(files_path) if
                              os.path.isdir(os.path.join(tiles_embedding_path, d)) and d.startswith('TMA')]
         for i, slide in enumerate(slides_directories):
             cores_files_path = str(tiles_embedding_path) + "/" + slide
-            cores_directories = [os.path.join(cores_files_path,d) for d in os.listdir(cores_files_path) if
-                             os.path.isdir(os.path.join(cores_files_path, d))]
+            cores_directories.extend([os.path.join(cores_files_path,d) for d in os.listdir(cores_files_path) if
+                             os.path.isdir(os.path.join(cores_files_path, d))])
             for core in cores_directories:
                 cores_files.extend([os.path.join(r, fn)
                                     for r, ds, fs in os.walk(core)
@@ -129,12 +122,20 @@ def main():
 
     slide_encoder.eval()
     for core in cores_directories:
+        print(core)
         embeddings, coordinates = load_tensors_from_directory(os.path.join(cores_files_path,core))
+        print(coordinates)
         with torch.no_grad():
 
-            output = run_inference_with_slide_encoder(slide_encoder_model=slide_encoder, tile_embeds=embeddings, coords=coordinates)
-            ipdb.set_trace()
-            output = slide_encoder(embeddings, coordinates).squeeze()
+            output_inference = run_inference_with_slide_encoder(slide_encoder_model=slide_encoder, tile_embeds=embeddings, coords=coordinates)
+            #output_inference = output_inference.cpu()
+            save_embedding(output_inference, os.path.join(cores_files_path,core), slide_embedding_path)
+
+def save_embedding(embedding, file_name, slide_embedding_path):
+    pathlib.Path(pathlib.Path(os.path.join(slide_embedding_path, file_name.split('/')[-2]))).mkdir(parents=True,
+                                                                                                           exist_ok=True)
+    torch.save(embedding, os.path.join(slide_embedding_path,
+                                    '/'.join(file_name.split('/')[-2:]))+ '_tensor.pt')
 
 if __name__ == "__main__":
     main()
