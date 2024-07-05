@@ -2,6 +2,8 @@ import tifffile
 import tqdm
 import numpy as np
 from PIL import Image
+import argparse
+from pathlib import Path
 import os, sys, glob
 import histoprep.functional as F
 from histoprep._data import SpotCoordinates, TileCoordinates
@@ -12,9 +14,20 @@ sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 from utils import get_tissue_mask
 
 
-
-output_path = "/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_generated"
-slides_path = "/data/projects/pixel_project/datasets/NKI_project_TMAs"
+parser = argparse.ArgumentParser()
+parser.add_argument("--output_path", type=Path,
+                    default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_generated")
+parser.add_argument("--slides_path", type=Path,
+                    default="/data/projects/pixel_project/datasets/NKI_project_TMAs")
+parser.add_argument("--tiles_width", type=int,
+                    default=512)
+parser.add_argument("--tiles_height", type=int,
+                    default=512)
+p = parser.parse_args()
+output_path = p.output_path
+slides_path = p.slides_path
+tiles_width = p.tiles_width
+tiles_height = p.tiles_height
 #crop_size = 2048
 # channels, DNA1, Vimentin, CK7 (in that order)
 # 0, 25, 28
@@ -40,6 +53,7 @@ for slide in slides_directories:
         #start_y = max(0,(height - crop_size) // 2)
         #image_np = im_tiff[selected_channels,start_y:start_y + min(height,crop_size), start_x:start_x + min(width,crop_size)]
         image_np = im_tiff[selected_channels, :,:]
+        # Define a threshold to help the tissue detection process
         image_np[image_np < 500] = 0
         image_np = image_np.astype(np.uint8).transpose(1, 2, 0)
         # Convert the image to 3 channels
@@ -51,11 +65,9 @@ for slide in slides_directories:
         threshold, tissue_mask = get_tissue_mask(image_np)
         print(slide, file_name)
         # Extract overlapping tile coordinates with less than 50% background.
-        width = 256
-        height = 256
-        overlap = 0.5
+        overlap = 0.1
         tile_coordinates = F.get_tile_coordinates(
-            tissue_mask.shape, height=height,width=width, overlap=0.5
+            tissue_mask.shape, height=tiles_height,width=tiles_width, overlap=overlap
         )
         max_background = 0.75
         if tissue_mask is not None:
@@ -71,8 +83,8 @@ for slide in slides_directories:
             tile_coordinates = filtered_coordinates
             tiles = TileCoordinates(
             coordinates=tile_coordinates,
-            width=width,
-            height=width if height is None else height,
+            width=tiles_width,
+            height=tiles_width if tiles_height is None else tiles_height,
             overlap=overlap,
             max_background=max_background,
             tissue_mask=tissue_mask,

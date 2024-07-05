@@ -1,7 +1,8 @@
 import os
 
-#os.environ["HUGGINGFACE_HUB_CACHE"] = "/data/projects/pixel_project/huggingface/cache"
 import timm
+from timm.data.transforms_factory import create_transform
+from timm.data import resolve_data_config
 from PIL import Image
 from torchvision import transforms
 import os, sys, glob
@@ -16,8 +17,6 @@ sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 from utils import ProgressMeter, AverageMeter, save_checkpoint, TiffDataset, MultiEpochsDataLoader
 import torch
 from multiprocessing import Pool, set_start_method, cpu_count
-from gigapath.pipeline import run_inference_with_tile_encoder
-from gigapath.slide_encoder import create_model
 
 def main():
     parser = argparse.ArgumentParser()
@@ -25,7 +24,7 @@ def main():
     parser.add_argument("--files_path", type=Path,
                         default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_generated")
     parser.add_argument("--tiles_embedding_path", type=Path,
-                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_embeddings")
+                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_embeddings_uni")
     parser.add_argument("--hf_cache_path", type=Path,
                         default="/data/projects/pixel_project/huggingface/cache")
     # cores or whole_slide
@@ -37,20 +36,19 @@ def main():
     data_type = p.data_type
     hf_cache_path = p.hf_cache_path
     os.environ["HUGGINGFACE_HUB_CACHE"] = str(hf_cache_path)
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    tile_encoder = timm.create_model("hf_hub:prov-gigapath/prov-gigapath", pretrained=True).cuda()
-    #tile_encoder = nn.DataParallel(tile_encoder)
+    model = timm.create_model("hf-hub:MahmoodLab/uni", pretrained=True, init_values=1e-5, dynamic_img_size=True)
+    #transform = create_transform(**resolve_data_config(model.pretrained_cfg, model=model))
     transform = transforms.Compose(
-        [
-            transforms.Resize(256, interpolation=transforms.InterpolationMode.BICUBIC),
-            transforms.CenterCrop(224),
-            transforms.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
-        ]
-    )
-
+    [
+        transforms.Resize(224),
+        transforms.CenterCrop(224),
+    ]
+)
+    model = model.cuda()
+    model.eval()
     channels = [0, 25, 28]
     batch_size = 128
-    num_workers = 64
+    num_workers = 28
     labels = []
     # Only files that we have a label for
     files_list = []
@@ -58,20 +56,21 @@ def main():
     if data_type == 'cores':
         cores_files = []
         slides_directories = [d for d in os.listdir(files_path) if
-                             os.path.isdir(os.path.join(files_path, d)) and d.startswith('TMA')]
+                              os.path.isdir(os.path.join(files_path, d)) and d.startswith('TMA')]
         for i, slide in enumerate(slides_directories):
             cores_files_path = str(files_path) + "/" + slide
             cores_directories = [d for d in os.listdir(cores_files_path) if
-                             os.path.isdir(os.path.join(cores_files_path, d))]
+                                 os.path.isdir(os.path.join(cores_files_path, d))]
             for core in cores_directories:
                 cores_files.extend([os.path.join(r, fn)
-                                    for r, ds, fs in os.walk(os.path.join(cores_files_path,core))
+                                    for r, ds, fs in os.walk(os.path.join(cores_files_path, core))
                                     for fn in fs if fn.endswith('.tiff')])
         cores_chemo_labels_df = pd.read_csv('data/cores_labels_chemotherapy.csv')
         cores_stats_df = pd.read_csv('data/cores_stats_ncancer_cells.csv')
     elif data_type == 'whole_slide':
-        wholeslide_files = [files_path+slide_dir+'/tiles/'+file for slide_dir in os.listdir(files_path) for file in os.listdir(files_path+'/'+slide_dir+'/tiles') if
-                                     os.path.isfile(files_path+slide_dir+'/tiles/'+file) and file.endswith('tiff')]
+        wholeslide_files = [files_path + slide_dir + '/tiles/' + file for slide_dir in os.listdir(files_path) for file
+                            in os.listdir(files_path + '/' + slide_dir + '/tiles') if
+                            os.path.isfile(files_path + slide_dir + '/tiles/' + file) and file.endswith('tiff')]
         wholeslide_labels_df = pd.read_csv('data/wholeslide_clinical_data.csv')
     if data_type == 'cores':
         for i, core_file in enumerate(cores_files):
@@ -92,10 +91,8 @@ def main():
             else:
                 print('Missing label for:' + core_file)
 
-
     tiff_dataset = TiffDataset(files=files_list, files_names=files_list, transform=transform, channels=channels,
-                                     labels=labels)
-    tile_encoder.eval()
+                               labels=labels)
     sampler = None
     loader = MultiEpochsDataLoader(
         tiff_dataset, batch_size=batch_size, shuffle=(sampler is None),
@@ -104,32 +101,11 @@ def main():
     for i, (images, file_names, labels) in enumerate(loader):
         images = images.cuda()
         with torch.no_grad():
-            output = tile_encoder(images)
+            output = model(images)
         output = output.cpu()
         with Pool(num_workers) as pool:
-           args = [(output[i], file_names[i], tiles_embedding_path) for i in range(len(output))]
-           pool.starmap(save_embedding, args)
-    #args = [(transform, image_path, tiles_embedding_path, tile_encoder) for image_path in files_train]
-    #with Pool(32) as pool:
-    #    pool.starmap(extract_embedding, args)
-
-    #args = [(transform, image_path, tiles_embedding_path, tile_encoder) for image_path in files_test]
-    #with Pool(32) as pool:
-    #    pool.starmap(extract_embedding, args)
-    # for file in files_train:
-    #     sample_input = transform(Image.open(file).convert("RGB")).unsqueeze(0).cuda()
-    #     pathlib.Path(pathlib.Path(os.path.join(tiles_embedding_path,'/'.join(file.split('/')[-3:-1])))).mkdir(parents=True, exist_ok=True)
-    #     with torch.no_grad():
-    #         output = tile_encoder(sample_input).squeeze()
-    #         torch.save(output, os.path.join(tiles_embedding_path,'/'.join(file.split('/')[-3:]).replace('.tiff','')+'_tensor.pt'))
-    # for file in files_test:
-    #     sample_input = transform(Image.open(file).convert("RGB")).unsqueeze(0).cuda()
-    #     pathlib.Path(pathlib.Path(os.path.join(tiles_embedding_path, '/'.join(file.split('/')[-3:-1])))).mkdir(
-    #         parents=True, exist_ok=True)
-    #     with torch.no_grad():
-    #         output = tile_encoder(sample_input).squeeze()
-    #         torch.save(output, os.path.join(tiles_embedding_path,'/'.join(file.split('/')[-3:]).replace('.tiff','')+'_tensor.pt'))
-
+            args = [(output[i], file_names[i], tiles_embedding_path) for i in range(len(output))]
+            pool.starmap(save_embedding, args)
 
 def save_embedding(embedding, file_name, tiles_embedding_path):
     pathlib.Path(pathlib.Path(os.path.join(tiles_embedding_path, '/'.join(file_name.split('/')[-3:-1])))).mkdir(parents=True,

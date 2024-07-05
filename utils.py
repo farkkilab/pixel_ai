@@ -88,8 +88,8 @@ class TiffDataset(Dataset):
         if torch.is_tensor(idx):
             idx = idx.tolist()
         im_tiff = tifffile.imread(self.tiff_files[idx],key=self.channels,maxworkers=32)
-        info = np.iinfo(im_tiff.dtype)
-        sample = torch.from_numpy(im_tiff / info.max).float()
+        #info = np.iinfo(im_tiff.dtype)
+        sample = torch.from_numpy(im_tiff / 65535).float()
         if self.transform:
             sample = self.transform(sample)
 
@@ -109,6 +109,105 @@ class TiffDataset(Dataset):
         if self.labels:
             output.append(self.labels[idx])
         return tuple(output)
+
+class TensorDataset(Dataset):
+    """Face Landmarks dataset."""
+
+    def __init__(self, files, files_names=None,transform=None, channels=None, labels=None, gigapath=None):
+        """
+        Args:
+            csv_file (string): Path to the csv file with annotations.
+            root_dir (string): Directory with all the images.
+            transform (callable, optional): Optional transform to be applied
+                on a sample.
+        """
+        self.tensor_files = files
+        self.files_names = files_names
+        self.transform = transform
+        self.labels = labels
+        self.gigapath = gigapath
+
+    def __len__(self):
+        return len(self.tensor_files)
+    def get_file_name(self, idx):
+        return self.files_names[idx]
+    def __getitem__(self, idx):
+        if torch.is_tensor(idx):
+            idx = idx.tolist()
+        if self.gigapath:
+            embed_dict = torch.load(self.tensor_files[idx])
+
+            # Collect all embeddings and stack them into a tensor of shape (14, 768)
+            embeddings = [embed_dict[key] for key in embed_dict.keys()]
+            tensor = torch.stack(embeddings)
+        else:
+            tensor = torch.load(self.tensor_files[idx])
+        if self.transform:
+            tensor = self.transform(tensor)
+
+
+        output = []
+
+        output.append(tensor)
+        if self.files_names:
+            output.append(self.files_names[idx])
+        if self.labels:
+            output.append(self.labels[idx])
+        return tuple(output)
+
+class TensorDataset2D(Dataset):
+    """Face Landmarks dataset."""
+
+    def __init__(self, slides, files_names=None,transform=None, channels=None, labels=None):
+        """
+        Args:
+            csv_file (string): Path to the csv file with annotations.
+            root_dir (string): Directory with all the images.
+            transform (callable, optional): Optional transform to be applied
+                on a sample.
+        """
+        self.slides = slides
+        self.files_names = files_names
+        self.transform = transform
+        self.labels = labels
+
+    def __len__(self):
+        return len(self.slides)
+    def get_file_name(self, idx):
+        return self.files_names[idx]
+    def __getitem__(self, idx):
+        if torch.is_tensor(idx):
+            idx = idx.tolist()
+
+        patches_tensors = [(file, (int(file.split('_')[1]),int(file.split('_')[2]))) for i,file in enumerate(os.listdir(self.slides[idx])) if file.endswith('_tensor.pt') and i<9]
+        patches_tensors.sort(key=lambda item: (item[1][1], item[1][0]))  # Sort by Y first, then by X
+        M = 3
+        N = 3
+        embedding_dim = 1024
+
+        # Create an empty tensor to store the embeddings
+        embeddings = torch.zeros((M, N, embedding_dim))
+
+        for i in range(M):
+            for j in range(N):
+                patch = patches_tensors[i+j]
+                embeddings[i, j] = torch.load(os.path.join(self.slides[idx],patch[0]))
+
+        tensor = embeddings
+        if self.transform:
+            tensor = self.transform(tensor)
+
+
+        output = []
+
+        output.append(tensor)
+        if self.files_names:
+            output.append(self.files_names[idx])
+        if self.labels:
+            output.append(self.labels[idx])
+        return tuple(output)
+
+
 
 class MultiEpochsDataLoader(torch.utils.data.DataLoader):
 
