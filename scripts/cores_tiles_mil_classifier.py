@@ -20,8 +20,10 @@ from pathlib import Path
 from os.path import dirname, join, abspath
 sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 from vit_pytorch import ViT
-from utils import ProgressMeter, AverageMeter, save_checkpoint, TensorDataset, MultiEpochsDataLoader, TensorDataset2D
-from models.embed_subtype_classifier_2d import EmbedSubtypeClassifier2D
+from utils import ProgressMeter, AverageMeter, save_checkpoint, MultiEpochsDataLoader, TensorDatasetMIL, collate_fn_MIL
+from models.abmil import ABMIL
+from models.amlab_mil import Attention, GatedAttention
+
 
 def train_test(classifier_model, optimizer,loader, epoch,train, criterion):
     batch_time = AverageMeter('Time', ':6.3f')
@@ -41,54 +43,54 @@ def train_test(classifier_model, optimizer,loader, epoch,train, criterion):
         len(loader),
         [batch_time, data_time, losses],
         prefix=prefix + " [{}]".format(epoch))
-    for i, (images, labels) in enumerate(loader):
+    binary_predictions_list = []
+    labels_predictions = []
+    for i, (bag_tensor, labels, files_names) in enumerate(loader):
         optimizer.zero_grad()
-        images = images.cuda()
-        if classifier_model.__class__.__name__ == 'ResNet':
-            images = images[:,None,:,:, :]
-            images = images.repeat(1,3,1,1,1)
-            images = images.view(images.shape[0], 3 * 1024, 6, 6)
-
-        labels = torch.as_tensor(labels).cuda()
+        bag_tensor = bag_tensor.cuda()
+        #mask = mask.cuda()
+        labels = labels.cuda()
         data_time.update(time.time() - end)
-        predictions = classifier_model(images)
-        if classifier_model.__class__.__name__ == 'ResNet':
-            binary_predictions = torch.argmax(predictions,dim=1).cpu().tolist()
-            # Compute loss
-            loss = criterion(predictions, labels)
-        else:
-            binary_predictions = (predictions > 0.5).float().cpu().tolist()
-            # Compute loss
-            loss = criterion(predictions.squeeze(), labels.float())
+        #predictions, attention_weights = classifier_model(bag_tensor, mask)
+        #predictions, attention_weights, A = classifier_model(bag_tensor)
+        loss, attention_weights = classifier_model.calculate_objective(bag_tensor, labels)
+        error, predictions = classifier_model.calculate_classification_error(bag_tensor, labels)
+        binary_predictions = (predictions > 0.5).float().cpu().tolist()
+        # Compute loss
+
 
         if train:
             loss.backward()
             optimizer.step()
-
-        losses.update(loss.item(), images.size(0))
-        acc.update(accuracy_score(binary_predictions, labels.cpu()),images.size(0))
-        f1.update(f1_score(labels.cpu(), binary_predictions, average='macro'), images.size(0))
+        losses.update(loss.item(), bag_tensor.size(0))
+        binary_predictions_list.extend(binary_predictions)
+        labels_predictions.extend(labels.cpu())
         batch_time.update(time.time() - end)
         #if i % 100 == 0:
         progress.display(i)
+    acc.update(accuracy_score(binary_predictions_list, labels_predictions), 1)
+    f1.update(f1_score(labels_predictions, binary_predictions_list, average='macro'), 1)
     return losses.avg, acc.avg, f1.avg
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--files_path", type=Path,
-                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_embeddings_uni/256/10_11_12")
+                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_embeddings_uni/256/0_25_28")
     # cores or whole_slide
     parser.add_argument("--data_type", type=str,
                         default="cores")
     parser.add_argument("--classification_task", type=str,
                         default="nact")
+    parser.add_argument("--architecture", type=str,
+                        default="amlab_attention")
 
 
     p = parser.parse_args()
     files_path = p.files_path
     data_type = p.data_type
     classification_task = p.classification_task
+    architecture = p.architecture
     if data_type == 'cores':
         cores_directories = []
         slides_directories = [d for d in os.listdir(files_path) if
@@ -107,26 +109,23 @@ def main():
         wholeslide_labels_df = pd.read_csv('data/wholeslide_clinical_data.csv')
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     best_f1_test = 0
-    input_dimensions = (8, 8)
-    epochs = 120
-    lr = 0.0001
+    input_dimensions = (1024)
+    epochs = 60
+    lr = 0.00001
     num_workers = 28
     model_path = 'saved_models'
-    model = 'custom_embed_classifier'
-    if model == 'custom_embed_classifier':
-        batch_size = 512
-        classifier_model = EmbedSubtypeClassifier2D(input_dim=input_dimensions, output_dim=1)
+    if architecture == 'ABMIL':
+        batch_size = 1
+        classifier_model = ABMIL(input_dim=input_dimensions)
         criterion = nn.BCELoss()
-    elif model == 'resnet':
-        batch_size = 256
-        import ssl
-        ssl._create_default_https_context = ssl._create_unverified_context
-        classifier_model = models.resnet50(pretrained=True)
-        classifier_model.conv1 = nn.Conv2d(3 * 1024, 64, kernel_size=7, stride=2, padding=3, bias=False)
-        criterion = nn.CrossEntropyLoss()
-
-        num_features = classifier_model.fc.in_features
-        classifier_model.fc = nn.Linear(num_features, 2)
+    elif architecture == 'amlab_attention':
+        batch_size = 1
+        classifier_model = Attention()
+        criterion = nn.BCELoss()
+    elif architecture == 'amlab_gated_attention':
+        batch_size = 1
+        classifier_model = GatedAttention(input_dim=input_dimensions)
+        criterion = nn.BCELoss()
 
     # Move model to device
     classifier_model = classifier_model.to(device)
@@ -136,7 +135,7 @@ def main():
         "epochs": epochs,
         "batch_size": batch_size,
         "input_dimensions": input_dimensions,
-        "model": model
+        "model": architecture
     }
 
     transforms_train = None
@@ -223,18 +222,18 @@ def main():
     config['train_images'] = len(cores_train)
     config['test_images'] = len(cores_test)
     # , mode="disabled"
-    wandb.init(project='pixel_ai', name="embedding_chemo_classifier_tilescore", resume="allow", config=config)
-    tensor_dataset_train = TensorDataset2D(slides=cores_train,transform=transforms_train,labels=labels_train, gigapath=False)
-    tensor_dataset_test = TensorDataset2D(slides=cores_test,transform=transforms_test, labels=labels_test, gigapath=False)
+    wandb.init(project='pixel_ai', name="embedding_chemo_classifier_mil_tilescore_{0}".format(format(str(files_path).split('/')[-1])), resume="allow", config=config)
+    tensor_dataset_train = TensorDatasetMIL(slides=cores_train,transform=transforms_train,labels=labels_train, gigapath=False)
+    tensor_dataset_test = TensorDatasetMIL(slides=cores_test,transform=transforms_test, labels=labels_test, gigapath=False)
     #tiff_dataset_validate = TiffDataset(files=cores_files_validate, transform=transforms, channels=channels,labels=cores_labels_validate)
     train_sampler = None
     train_loader = MultiEpochsDataLoader(
             tensor_dataset_train, batch_size=batch_size, shuffle=False,
-             pin_memory=True, sampler=train_sampler, num_workers=num_workers)
+             pin_memory=True, sampler=train_sampler, num_workers=num_workers, collate_fn=None)
     test_sampler = None
     test_loader = MultiEpochsDataLoader(
             tensor_dataset_test, batch_size=batch_size, shuffle=False,
-             pin_memory=True, sampler=test_sampler, num_workers=num_workers)
+             pin_memory=True, sampler=test_sampler, num_workers=num_workers, collate_fn=None)
 
     optimizer = torch.optim.Adam(classifier_model.parameters(), lr=lr)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.1)
@@ -262,7 +261,7 @@ def main():
             'state_dict': classifier_model.state_dict(),
             'best_f1_test': best_f1_test,
             'optimizer': optimizer.state_dict(),
-        }, is_best, 'embedding_chemo_classifier_fullcore.pth.tar')
+        }, is_best, 'embedding_chemo_mil_fullcore_{0}.pth.tar'.format(str(files_path).split('/')[-1]))
 
 
 

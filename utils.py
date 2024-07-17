@@ -158,7 +158,7 @@ class TensorDataset(Dataset):
 class TensorDataset2D(Dataset):
     """Face Landmarks dataset."""
 
-    def __init__(self, slides, files_names=None,transform=None, channels=None, labels=None):
+    def __init__(self, slides, files_names=None,transform=None, channels=None, labels=None, gigapath=None):
         """
         Args:
             csv_file (string): Path to the csv file with annotations.
@@ -170,7 +170,7 @@ class TensorDataset2D(Dataset):
         self.files_names = files_names
         self.transform = transform
         self.labels = labels
-
+        self.gigapath = gigapath
     def __len__(self):
         return len(self.slides)
     def get_file_name(self, idx):
@@ -179,19 +179,23 @@ class TensorDataset2D(Dataset):
         if torch.is_tensor(idx):
             idx = idx.tolist()
 
-        patches_tensors = [(file, (int(file.split('_')[1]),int(file.split('_')[2]))) for i,file in enumerate(os.listdir(self.slides[idx])) if file.endswith('_tensor.pt') and i<9]
+        patches_tensors = [(file, (int(file.split('_')[1]),int(file.split('_')[2]))) for i,file in enumerate(os.listdir(self.slides[idx])) if file.endswith('_tensor.pt')]
         patches_tensors.sort(key=lambda item: (item[1][1], item[1][0]))  # Sort by Y first, then by X
-        M = 3
-        N = 3
-        embedding_dim = 1024
+        M = 8
+        N = 8
+        if self.gigapath:
+            embedding_dim = 1536
+        else:
+            embedding_dim = 1024
 
         # Create an empty tensor to store the embeddings
         embeddings = torch.zeros((M, N, embedding_dim))
 
         for i in range(M):
             for j in range(N):
-                patch = patches_tensors[i+j]
-                embeddings[i, j] = torch.load(os.path.join(self.slides[idx],patch[0]))
+                if i+j <len(patches_tensors):
+                    patch = patches_tensors[i+j]
+                    embeddings[i, j] = torch.load(os.path.join(self.slides[idx],patch[0]))
 
         tensor = embeddings
         if self.transform:
@@ -208,6 +212,76 @@ class TensorDataset2D(Dataset):
         return tuple(output)
 
 
+class TensorDatasetMIL(Dataset):
+    """Face Landmarks dataset."""
+
+    def __init__(self, slides, files_names=None,transform=None, channels=None, labels=None, gigapath=None):
+        """
+        Args:
+            csv_file (string): Path to the csv file with annotations.
+            root_dir (string): Directory with all the images.
+            transform (callable, optional): Optional transform to be applied
+                on a sample.
+        """
+        self.slides = slides
+        self.files_names = files_names
+        self.transform = transform
+        self.labels = labels
+        self.gigapath = gigapath
+    def __len__(self):
+        return len(self.slides)
+    def get_file_name(self, idx):
+        return self.files_names[idx]
+    def __getitem__(self, idx):
+        if torch.is_tensor(idx):
+            idx = idx.tolist()
+
+        patches_tensors = [(file, (int(file.split('_')[1]),int(file.split('_')[2]))) for i,file in enumerate(os.listdir(self.slides[idx])) if file.endswith('_tensor.pt')]
+        patches_files = []
+        for file in patches_tensors:
+            patches_files.append(os.path.join(self.slides[idx],file[0]))
+        patches_tensors.sort(key=lambda item: (item[1][1], item[1][0]))  # Sort by Y first, then by X
+        if self.gigapath:
+            embedding_dim = 1536
+        else:
+            embedding_dim = 1024
+
+        data = []
+
+        for i in range(len(patches_tensors)):
+            data.append(torch.load(os.path.join(self.slides[idx],patches_tensors[i][0])))
+        tensor = torch.stack(data)
+        if self.transform:
+            tensor = self.transform(tensor)
+
+
+        output = []
+
+        output.append(tensor)
+        if self.files_names:
+            output.append(self.files_names[idx])
+        if self.labels:
+            output.append(torch.as_tensor(self.labels[idx], dtype=torch.float32))
+        output.append(patches_files)
+        return tuple(output)
+
+
+def collate_fn_MIL(batch):
+    bags, labels = zip(*batch)
+    max_length = max(len(bag) for bag in bags)
+    padded_bags = []
+    mask = []
+
+    for bag in bags:
+        padded_bag = torch.cat([bag, torch.zeros(max_length - len(bag), bag.size(1))], dim=0)
+        padded_bags.append(padded_bag)
+        mask.append(torch.cat([torch.ones(len(bag)), torch.zeros(max_length - len(bag))], dim=0))
+
+    padded_bags = torch.stack(padded_bags)
+    mask = torch.stack(mask)
+    labels = torch.stack(labels)
+
+    return padded_bags, labels, mask
 
 class MultiEpochsDataLoader(torch.utils.data.DataLoader):
 
@@ -363,3 +437,11 @@ def load_tensors_from_directory(tensors_path):
     coords = [torch.tensor([int(file.split('patch_')[1].split('_')[0]),int(file.split('patch_')[1].split('_')[1])]) for file in tensor_files]
     coords_tensor = torch.stack(coords, dim=0)
     return multi_dim_tensor, coords_tensor
+
+
+def save_tile(xywh, im_tiff, output_dir):
+    x, y, w, h = xywh
+    patch = im_tiff[:, y:y + h, x:x + w]
+    # Save the patch as a new TIFF file
+    patch_filename = f"{output_dir}/patch_{y}_{x}.tiff"
+    tifffile.imwrite(patch_filename, patch)

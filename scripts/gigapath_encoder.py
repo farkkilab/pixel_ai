@@ -1,8 +1,6 @@
 import os
 
 #os.environ["HUGGINGFACE_HUB_CACHE"] = "/data/projects/pixel_project/huggingface/cache"
-import timm
-from PIL import Image
 from torchvision import transforms
 import os, sys, glob
 import ipdb
@@ -16,16 +14,15 @@ sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 from utils import ProgressMeter, AverageMeter, save_checkpoint, TiffDataset, MultiEpochsDataLoader
 import torch
 from multiprocessing import Pool, set_start_method, cpu_count
-from gigapath.pipeline import run_inference_with_tile_encoder
-from gigapath.slide_encoder import create_model
+
 
 def main():
     parser = argparse.ArgumentParser()
     # wh "/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_generated"
     parser.add_argument("--files_path", type=Path,
-                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_generated")
+                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_generated/256")
     parser.add_argument("--tiles_embedding_path", type=Path,
-                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_embeddings")
+                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_embeddings_gigapath/256")
     parser.add_argument("--hf_cache_path", type=Path,
                         default="/data/projects/pixel_project/huggingface/cache")
     # cores or whole_slide
@@ -38,6 +35,7 @@ def main():
     hf_cache_path = p.hf_cache_path
     os.environ["HUGGINGFACE_HUB_CACHE"] = str(hf_cache_path)
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    import timm
     tile_encoder = timm.create_model("hf_hub:prov-gigapath/prov-gigapath", pretrained=True).cuda()
     #tile_encoder = nn.DataParallel(tile_encoder)
     transform = transforms.Compose(
@@ -50,8 +48,7 @@ def main():
 
     channels = [0, 25, 28]
     batch_size = 128
-    num_workers = 64
-    labels = []
+    num_workers = 28
     # Only files that we have a label for
     files_list = []
 
@@ -68,40 +65,19 @@ def main():
                                     for r, ds, fs in os.walk(os.path.join(cores_files_path,core))
                                     for fn in fs if fn.endswith('.tiff')])
         cores_chemo_labels_df = pd.read_csv('data/cores_labels_chemotherapy.csv')
-        cores_stats_df = pd.read_csv('data/cores_stats_ncancer_cells.csv')
     elif data_type == 'whole_slide':
         wholeslide_files = [files_path+slide_dir+'/tiles/'+file for slide_dir in os.listdir(files_path) for file in os.listdir(files_path+'/'+slide_dir+'/tiles') if
                                      os.path.isfile(files_path+slide_dir+'/tiles/'+file) and file.endswith('tiff')]
         wholeslide_labels_df = pd.read_csv('data/wholeslide_clinical_data.csv')
-    if data_type == 'cores':
-        for i, core_file in enumerate(cores_files):
-            patch_file_label_df = cores_chemo_labels_df[
-                (cores_chemo_labels_df['cycif.slide'] == core_file.split('/')[-3]) & (
-                            cores_chemo_labels_df['cycif.core.id'] == core_file.split('/')[-2].replace('.tiff', ''))]
-            # if core_file_stats is empty, we assume that there is no cancer cells in the core and we should skip it
-            if not patch_file_label_df.empty and str(
-                    patch_file_label_df.iloc[0]['therapy_sequence']).lower() != 'na' and not pd.isnull(
-                    patch_file_label_df.iloc[0]['therapy_sequence']):
 
-                files_list.append(core_file)
-                # If contains NACT, is a sample collected after chemotherapy exposure
-                if 'nact' in str(patch_file_label_df.iloc[0]['therapy_sequence']).lower():
-                    labels.append(1)
-                else:
-                    labels.append(0)
-            else:
-                print('Missing label for:' + core_file)
-
-
-    tiff_dataset = TiffDataset(files=files_list, files_names=files_list, transform=transform, channels=channels,
-                                     labels=labels)
+    tiff_dataset = TiffDataset(files=cores_files, files_names=cores_files, transform=transform, channels=channels)
     tile_encoder.eval()
     sampler = None
     loader = MultiEpochsDataLoader(
         tiff_dataset, batch_size=batch_size, shuffle=(sampler is None),
         pin_memory=True, sampler=sampler, num_workers=num_workers)
     existing_dirs = []
-    for i, (images, file_names, labels) in enumerate(loader):
+    for i, (images, file_names) in enumerate(loader):
         images = images.cuda()
         with torch.no_grad():
             output = tile_encoder(images)
