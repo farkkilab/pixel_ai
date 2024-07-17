@@ -75,7 +75,6 @@ def train_test(classifier_model, optimizer,loader, epoch,train, criterion):
 
 
 def main():
-    torch.manual_seed(8316497282071414223)
     parser = argparse.ArgumentParser()
     #/data/projects/pixel_project/datasets/NKI_project_TMAs/
     #/data/projects/sciset/resized/
@@ -99,7 +98,7 @@ def main():
                                 for r, ds, fs in os.walk(cores_files_path)
                                 for fn in fs if fn.endswith('.tif')])
         cores_chemo_labels_df = pd.read_csv('data/cores_labels_chemotherapy.csv')
-        cores_stats_df = pd.read_csv('data/cores_stats_ncancer_cells.csv')
+        #cores_stats_df = pd.read_csv('data/cores_stats_ncancer_cells.csv')
     elif data_type == 'whole_slide':
         wholeslide_files = [os.path.join(files_path, d) for d in os.listdir(files_path) if
                              os.path.isfile(os.path.join(files_path, d)) and d.endswith('tif')]
@@ -111,10 +110,10 @@ def main():
     in_channels = len(channels)
     best_f1_test = 0
     input_dimensions = (1024, 1024)
-    epochs = 100
-    lr = 0.0001
+    epochs = 200
+    lr = 0.001
     #num_workers = 0
-    num_workers = 28
+    num_workers = 14
     model_path = 'saved_models'
     model_name = "model_best_{1}_vit_{0}".format(str(channels),data_type)
     model = 'resnet'
@@ -132,12 +131,14 @@ def main():
             emb_dropout=0.1
         ).to(device)
     else:
-        batch_size = 16
+        batch_size = 8
         import ssl
         ssl._create_default_https_context = ssl._create_unverified_context
         classifier_model = models.resnet50(pretrained=True)
         num_features = classifier_model.fc.in_features
         classifier_model.fc = nn.Linear(num_features, 2)
+        classifier_model.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False)
+
         # Move model to device
         classifier_model = classifier_model.to(device)
         torch.autograd.set_detect_anomaly(True)
@@ -176,26 +177,26 @@ def main():
     if data_type == 'cores':
         for i, core_file in enumerate(cores_files):
             patch_file_label_df = cores_chemo_labels_df[(cores_chemo_labels_df['cycif.slide']==core_file.split('/')[-3])&(cores_chemo_labels_df['cycif.core.id']==core_file.split('/')[-1].replace('.tif',''))]
-            core_file_stats_row = cores_stats_df[(cores_stats_df['cycif.slide'] == core_file.split('/')[-3]) & (
-                        cores_stats_df['cycif.core.id'] == core_file.split('/')[-1].replace('.tif', ''))]
+            #core_file_stats_row = cores_stats_df[(cores_stats_df['cycif.slide'] == core_file.split('/')[-3]) & (
+            #            cores_stats_df['cycif.core.id'] == core_file.split('/')[-1].replace('.tif', ''))]
             # if core_file_stats is empty, we assume that there is no cancer cells in the core and we should skip it
-            if not patch_file_label_df.empty and not core_file_stats_row.empty and str(patch_file_label_df.iloc[0]['therapy_sequence']).lower()!='na' and not pd.isnull(patch_file_label_df.iloc[0]['therapy_sequence']):
+            if not patch_file_label_df.empty and str(patch_file_label_df.iloc[0]['therapy_sequence']).lower()!='na' and not pd.isnull(patch_file_label_df.iloc[0]['therapy_sequence'])\
+                    and not patch_file_label_df.iloc[0]['therapy_sequence'] == 'PDS followed by NACT':
                 # ignore images with nan
-                if core_file_stats_row['N.cancer.cells'].iloc[0]>500:
-                    if core_file.split('/')[-3]=='TMA_42_961':
-                        files_test.append(core_file)
-                        # If contains NACT, is a sample collected after chemotherapy exposure
-                        if 'nact' in str(patch_file_label_df.iloc[0]['therapy_sequence']).lower():
-                            labels_test.append(1)
-                        else:
-                            labels_test.append(0)
-                    else:#if core_file.split('/')[-3]=='TMA_44_810' or core_file.split('/')[-3]=='TMA_45_312':
-                        files_train.append(core_file)
-                        # If contains NACT, is a sample collected after chemotherapy exposure
-                        if 'nact' in str(patch_file_label_df.iloc[0]['therapy_sequence']).lower():
-                            labels_train.append(1)
-                        else:
-                            labels_train.append(0)
+                if core_file.split('/')[-3]=='TMA_41_812':
+                    files_test.append(core_file)
+                    # If contains NACT, is a sample collected after chemotherapy exposure
+                    if 'nact' in str(patch_file_label_df.iloc[0]['therapy_sequence']).lower():
+                        labels_test.append(1)
+                    else:
+                        labels_test.append(0)
+                else:#if core_file.split('/')[-3]=='TMA_44_810' or core_file.split('/')[-3]=='TMA_45_312':
+                    files_train.append(core_file)
+                    # If contains NACT, is a sample collected after chemotherapy exposure
+                    if 'nact' in str(patch_file_label_df.iloc[0]['therapy_sequence']).lower():
+                        labels_train.append(1)
+                    else:
+                        labels_train.append(0)
             else:
                 print('Missing label for:'+core_file)
     elif data_type == 'whole_slide':
