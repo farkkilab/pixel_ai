@@ -42,6 +42,8 @@ def train_test(classifier_model, optimizer,loader, epoch,train, criterion):
         len(loader),
         [batch_time, data_time, losses],
         prefix=prefix + " [{}]".format(epoch))
+    binary_predictions_list = []
+    labels_predictions = []
     for i, (images, files_names, labels) in enumerate(loader):
         optimizer.zero_grad()
         images = images.cuda()
@@ -66,12 +68,14 @@ def train_test(classifier_model, optimizer,loader, epoch,train, criterion):
             #torch.nn.utils.clip_grad_norm_(classifier_model.parameters(), clipping_value)
 
         losses.update(loss.item(), images.size(0))
-        acc.update(accuracy_score(binary_predictions, labels.cpu()),images.size(0))
-        f1.update(f1_score(labels.cpu(), binary_predictions, average='macro'), images.size(0))
+        binary_predictions_list.extend(binary_predictions)
+        labels_predictions.extend(labels.cpu())
         batch_time.update(time.time() - end)
         #if i % 100 == 0:
         progress.display(i)
-    return losses.avg, acc.avg, f1.avg
+    acc_value = accuracy_score(labels_predictions, binary_predictions_list)
+    f1_value = f1_score(labels_predictions, binary_predictions_list, average='macro')
+    return losses.avg, acc_value, f1_value
 
 
 def main():
@@ -98,7 +102,7 @@ def main():
                                 for r, ds, fs in os.walk(cores_files_path)
                                 for fn in fs if fn.endswith('.tif')])
         cores_chemo_labels_df = pd.read_csv('data/cores_labels_chemotherapy.csv')
-        #cores_stats_df = pd.read_csv('data/cores_stats_ncancer_cells.csv')
+        cores_stats_df = pd.read_csv('data/cores_stats_ncancer_cells.csv')
     elif data_type == 'whole_slide':
         wholeslide_files = [os.path.join(files_path, d) for d in os.listdir(files_path) if
                              os.path.isfile(os.path.join(files_path, d)) and d.endswith('tif')]
@@ -111,7 +115,7 @@ def main():
     best_f1_test = 0
     input_dimensions = (1024, 1024)
     epochs = 200
-    lr = 0.001
+    lr = 0.0001
     #num_workers = 0
     num_workers = 14
     model_path = 'saved_models'
@@ -177,26 +181,27 @@ def main():
     if data_type == 'cores':
         for i, core_file in enumerate(cores_files):
             patch_file_label_df = cores_chemo_labels_df[(cores_chemo_labels_df['cycif.slide']==core_file.split('/')[-3])&(cores_chemo_labels_df['cycif.core.id']==core_file.split('/')[-1].replace('.tif',''))]
-            #core_file_stats_row = cores_stats_df[(cores_stats_df['cycif.slide'] == core_file.split('/')[-3]) & (
-            #            cores_stats_df['cycif.core.id'] == core_file.split('/')[-1].replace('.tif', ''))]
+            core_file_stats_row = cores_stats_df[(cores_stats_df['cycif.slide'] == core_file.split('/')[-3]) & (
+                        cores_stats_df['cycif.core.id'] == core_file.split('/')[-1].replace('.tif', ''))]
             # if core_file_stats is empty, we assume that there is no cancer cells in the core and we should skip it
             if not patch_file_label_df.empty and str(patch_file_label_df.iloc[0]['therapy_sequence']).lower()!='na' and not pd.isnull(patch_file_label_df.iloc[0]['therapy_sequence'])\
                     and not patch_file_label_df.iloc[0]['therapy_sequence'] == 'PDS followed by NACT':
-                # ignore images with nan
-                if core_file.split('/')[-3]=='TMA_41_812':
-                    files_test.append(core_file)
-                    # If contains NACT, is a sample collected after chemotherapy exposure
-                    if 'nact' in str(patch_file_label_df.iloc[0]['therapy_sequence']).lower():
-                        labels_test.append(1)
-                    else:
-                        labels_test.append(0)
-                else:#if core_file.split('/')[-3]=='TMA_44_810' or core_file.split('/')[-3]=='TMA_45_312':
-                    files_train.append(core_file)
-                    # If contains NACT, is a sample collected after chemotherapy exposure
-                    if 'nact' in str(patch_file_label_df.iloc[0]['therapy_sequence']).lower():
-                        labels_train.append(1)
-                    else:
-                        labels_train.append(0)
+                if not core_file_stats_row.empty and core_file_stats_row['N.cancer.cells'].iloc[0] > 500:
+                    # ignore images with nan
+                    if core_file.split('/')[-3]=='TMA_45_312' or core_file.split('/')[-3]=='TMA_46_325':
+                        files_test.append(core_file)
+                        # If contains NACT, is a sample collected after chemotherapy exposure
+                        if 'nact' in str(patch_file_label_df.iloc[0]['therapy_sequence']).lower():
+                            labels_test.append(1)
+                        else:
+                            labels_test.append(0)
+                    else:#if core_file.split('/')[-3]=='TMA_44_810' or core_file.split('/')[-3]=='TMA_45_312':
+                        files_train.append(core_file)
+                        # If contains NACT, is a sample collected after chemotherapy exposure
+                        if 'nact' in str(patch_file_label_df.iloc[0]['therapy_sequence']).lower():
+                            labels_train.append(1)
+                        else:
+                            labels_train.append(0)
             else:
                 print('Missing label for:'+core_file)
     elif data_type == 'whole_slide':

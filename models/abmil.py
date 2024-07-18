@@ -58,11 +58,17 @@ class ABMIL(nn.Module):
         else:
             bag_representation = torch.sum(attention_weights * instance_encodings, dim=1)
             output = self.classifier(bag_representation)
-        return self.sigmoid(output), attention_weights
+        Y_hat = torch.ge(output, 0.5).float()
+        return self.sigmoid(output), Y_hat, attention_weights
+    def calculate_classification_error(self, X, Y):
+        Y = Y.float()
+        _, Y_hat, _ = self.forward(X)
+        error = 1. - Y_hat.eq(Y).cpu().float().mean().item()
 
+        return error, Y_hat
     def calculate_objective(self, X, Y):
-        Y_prob = X
+        Y_prob,_, A = self.forward(X)
         Y_prob = torch.clamp(Y_prob, min=1e-5, max=1. - 1e-5)
         neg_log_likelihood = -1. * (Y * torch.log(Y_prob) + (1. - Y) * torch.log(1. - Y_prob))  # negative log bernoulli
 
-        return neg_log_likelihood
+        return neg_log_likelihood, A
