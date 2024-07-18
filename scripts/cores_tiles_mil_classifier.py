@@ -54,8 +54,8 @@ def train_test(classifier_model, optimizer,loader, epoch,train, criterion):
         #predictions, attention_weights = classifier_model(bag_tensor, mask)
         #predictions, attention_weights, A = classifier_model(bag_tensor)
         loss, attention_weights = classifier_model.calculate_objective(bag_tensor, labels)
-        error, predictions = classifier_model.calculate_classification_error(bag_tensor, labels)
-        binary_predictions = (predictions > 0.5).float().cpu().tolist()
+        error, binary_predictions = classifier_model.calculate_classification_error(bag_tensor, labels)
+        binary_predictions = binary_predictions.cpu().tolist()
         # Compute loss
 
 
@@ -68,15 +68,15 @@ def train_test(classifier_model, optimizer,loader, epoch,train, criterion):
         batch_time.update(time.time() - end)
         #if i % 100 == 0:
         progress.display(i)
-    acc.update(accuracy_score(binary_predictions_list, labels_predictions), 1)
-    f1.update(f1_score(labels_predictions, binary_predictions_list, average='macro'), 1)
-    return losses.avg, acc.avg, f1.avg
+    accuracy_value = accuracy_score(labels_predictions, binary_predictions_list)
+    f1_value = f1_score(labels_predictions, binary_predictions_list, average='macro')
+    return losses.avg, accuracy_value, f1_value
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--files_path", type=Path,
-                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_embeddings_uni/256/0_25_28")
+                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_embeddings_uni/224/0_25_28")
     # cores or whole_slide
     parser.add_argument("--data_type", type=str,
                         default="cores")
@@ -84,13 +84,15 @@ def main():
                         default="nact")
     parser.add_argument("--architecture", type=str,
                         default="amlab_attention")
-
+    parser.add_argument("--filter_cores_lowcancer", type=bool,
+                        default=True)
 
     p = parser.parse_args()
     files_path = p.files_path
     data_type = p.data_type
     classification_task = p.classification_task
     architecture = p.architecture
+    filter_cores_lowcancer = p.filter_cores_lowcancer
     if data_type == 'cores':
         cores_directories = []
         slides_directories = [d for d in os.listdir(files_path) if
@@ -103,6 +105,8 @@ def main():
                         patches_files = [file for file in os.listdir(os.path.join(r, dn))]
                         cores_directories.append(os.path.join(r, dn))
         cores_chemo_labels_df = pd.read_csv('data/cores_labels_chemotherapy.csv')
+        if filter_cores_lowcancer:
+            cores_stats_df = pd.read_csv('data/cores_stats_ncancer_cells.csv')
     elif data_type == 'whole_slide':
         wholeslide_files = [os.path.join(files_path, d) for d in os.listdir(files_path) if
                              os.path.isfile(os.path.join(files_path, d)) and d.endswith('tif')]
@@ -110,7 +114,7 @@ def main():
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     best_f1_test = 0
     input_dimensions = (1024)
-    epochs = 60
+    epochs = 120
     lr = 0.00001
     num_workers = 28
     model_path = 'saved_models'
@@ -153,20 +157,26 @@ def main():
     if data_type == 'cores':
         for i, core_directory in enumerate(cores_directories):
             patch_file_label_df = cores_chemo_labels_df[(cores_chemo_labels_df['cycif.slide']==core_directory.split('/')[-2])&(cores_chemo_labels_df['cycif.core.id']==core_directory.split('/')[-1])]
+            if filter_cores_lowcancer:
+                core_file_stats_row = cores_stats_df[(cores_stats_df['cycif.slide'] == core_directory.split('/')[-2]) & (
+                        cores_stats_df['cycif.core.id'] == core_directory.split('/')[-1])]
             if classification_task == "nact":
                 # if core_file_stats is empty, we assume that there is no cancer cells in the core and we should skip it
                 # Ignore labels with PDS followed by NACT
                 if not patch_file_label_df.empty and str(patch_file_label_df.iloc[0]['therapy_sequence']).lower()!='na' and not pd.isnull(patch_file_label_df.iloc[0]['therapy_sequence'])\
                         and not patch_file_label_df.iloc[0]['therapy_sequence'] == 'PDS followed by NACT':
+                    # skip the rows if filter_cores_lowcancer is set to true and the core don't have enough cancer cells
+                    if filter_cores_lowcancer and (core_file_stats_row.empty or core_file_stats_row['N.cancer.cells'].iloc[0] < 500):
+                        continue
                     # ignore images with nan
-                    if core_directory.split('/')[-2]=='TMA_41_812':
+                    if core_directory.split('/')[-2]=='TMA_45_312' or core_directory.split('/')[-2]=='TMA_46_325':
                         cores_test.append(core_directory)
                         # If contains NACT, is a sample collected after chemotherapy exposure
                         if 'nact' in str(patch_file_label_df.iloc[0]['therapy_sequence']).lower():
                             labels_test.append(1)
                         else:
                             labels_test.append(0)
-                    else:#if core_file.split('/')[-3]=='TMA_44_810' or core_file.split('/')[-3]=='TMA_45_312':
+                    else:
                         cores_train.append(core_directory)
                         # If contains NACT, is a sample collected after chemotherapy exposure
                         if 'nact' in str(patch_file_label_df.iloc[0]['therapy_sequence']).lower():
@@ -181,7 +191,7 @@ def main():
                         patch_file_label_df.iloc[0]['progression']).lower() != 'na' and not pd.isnull(
                         patch_file_label_df.iloc[0]['progression']):
                     # ignore images with nan
-                    if core_directory.split('/')[-2] == 'TMA_42_961':
+                    if core_directory.split('/')[-2]=='TMA_45_312' or core_directory.split('/')[-2]=='TMA_46_325':
                         cores_test.append(core_directory)
 
                         labels_test.append(patch_file_label_df.iloc[0]['progression'])
