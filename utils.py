@@ -63,6 +63,29 @@ def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
         shutil.copyfile('saved_models/'+filename,
                         'saved_models/model_best_{0}'.format(filename))
 
+
+def pad_image(image, target_size=(224, 224)):
+    """
+    Pads the image to the target size with zeros.
+
+    Args:
+        image (torch.Tensor): The input image tensor.
+        target_size (tuple): The desired output size (height, width).
+
+    Returns:
+        torch.Tensor: The padded image tensor.
+    """
+    channels, height, width = image.shape[-3],image.shape[-2], image.shape[-1]
+    target_h, target_w = target_size
+
+    if height < target_h or width < target_w:
+        padded_image = np.zeros((channels, target_h, target_w), dtype=image.dtype)
+        padded_image[:,:height, :width] = image
+    else:
+        padded_image = image
+
+    return padded_image
+
 class TiffDataset(Dataset):
     """Face Landmarks dataset."""
 
@@ -215,7 +238,7 @@ class TensorDataset2D(Dataset):
 class TensorDatasetMIL(Dataset):
     """Face Landmarks dataset."""
 
-    def __init__(self, slides, files_names=None,transform=None, channels=None, labels=None, gigapath=None):
+    def __init__(self, slides, files_names=None,transform=None, labels=None, raw_images=None,gigapath=None, channels=None, multi_channels=None):
         """
         Args:
             csv_file (string): Path to the csv file with annotations.
@@ -227,7 +250,10 @@ class TensorDatasetMIL(Dataset):
         self.files_names = files_names
         self.transform = transform
         self.labels = labels
+        self.raw_images = raw_images
         self.gigapath = gigapath
+        self.channels = channels
+        self.multi_channels = multi_channels
     def __len__(self):
         return len(self.slides)
     def get_file_name(self, idx):
@@ -235,29 +261,64 @@ class TensorDatasetMIL(Dataset):
     def __getitem__(self, idx):
         if torch.is_tensor(idx):
             idx = idx.tolist()
-
-        patches_tensors = [(file, (int(file.split('_')[1]),int(file.split('_')[2]))) for i,file in enumerate(os.listdir(self.slides[idx])) if file.endswith('_tensor.pt')]
+        patches_tensors = []
+        if self.multi_channels:
+            # if there are two mentions to the same slide and core, combine them under same bag (will be different channel image for same sample)
+            slides_dirs = []
+            for channels in os.listdir('/'.join(self.slides[idx].split('/')[:-3])):
+                slides_dirs.append(os.path.join(os.path.join('/'.join(self.slides[idx].split('/')[:-3]), channels),'TMA'+self.slides[idx].split('TMA')[-1]))
+        else:
+            slides_dirs = [self.slides[idx]]
+        for slide in slides_dirs:
+            patches_tensors.extend([(os.path.join(slide,file), (int(file.split('_')[1]),int(file.split('_')[2]))) for i,file in enumerate(os.listdir(slide)) if file.endswith('_tensor.pt')])
+        patches_tensors.sort(key=lambda item: (item[1][1], item[1][0]))  # Sort by Y first, then by X
         patches_files = []
         for file in patches_tensors:
-            patches_files.append(os.path.join(self.slides[idx],file[0]))
-        patches_tensors.sort(key=lambda item: (item[1][1], item[1][0]))  # Sort by Y first, then by X
+            patches_files.append(file[0])
+        if self.raw_images:
+            patches_images = [(file, (int(file.split('_')[1]), int(file.replace('.tiff','').split('_')[2]))) for i, file in
+                               enumerate(os.listdir(self.raw_images[idx])) if file.endswith('.tiff')]
+            patches_images.sort(key=lambda item: (item[1][1], item[1][0]))  # Sort by Y first, then by X
+            patches_images_files = []
+            for file in patches_images:
+                patches_images_files.append(os.path.join(self.raw_images[idx], file[0]))
+
         if self.gigapath:
             embedding_dim = 1536
         else:
             embedding_dim = 1024
 
         data = []
-
-        for i in range(len(patches_tensors)):
-            data.append(torch.load(os.path.join(self.slides[idx],patches_tensors[i][0])))
-        tensor = torch.stack(data)
-        if self.transform:
-            tensor = self.transform(tensor)
-
-
         output = []
+        for i in range(len(patches_tensors)):
+            data.append(torch.load(patches_tensors[i][0]))
+        tensor = torch.stack(data)
 
         output.append(tensor)
+        if self.raw_images:
+            raw_images_data = []
+            for i in range(len(patches_images_files)):
+                #raw_images_data.append(torch.tensor(tifffile.imread(patches_images_files[i],key=self.channels,maxworkers=32)).float())
+                image = tifffile.imread(patches_images_files[i],key=self.channels,maxworkers=28)
+                #normalized_image = image / 65535
+                # Apply log transformation (add 1 to avoid log(0))
+                #log_transformed_image = torch.from_numpy(np.log1p(normalized_image)).float()
+                padded_image = pad_image(image)
+                padded_image = torch.from_numpy(padded_image).float()
+
+                raw_images_data.append(padded_image)
+            raw_images_data_tensor = torch.stack(raw_images_data)
+            if self.transform:
+                raw_images_data_tensor = self.transform(raw_images_data_tensor)
+            output.append(raw_images_data_tensor)
+        else:
+            if self.transform:
+                tensor = self.transform(tensor)
+
+
+
+
+
         if self.files_names:
             output.append(self.files_names[idx])
         if self.labels:
@@ -445,3 +506,37 @@ def save_tile(xywh, im_tiff, output_dir):
     # Save the patch as a new TIFF file
     patch_filename = f"{output_dir}/patch_{y}_{x}.tiff"
     tifffile.imwrite(patch_filename, patch)
+
+
+def remove_part_by_negative_index(path, negative_index):
+    parts = path.split('/')
+    if abs(negative_index) <= len(parts):
+        parts.pop(negative_index)
+    return '/'.join(parts)
+
+def get_percentiles_normalize(directories_path, channels, min_percentil=1, max_percentil=99):
+    images = []
+    for dir_path in directories_path:
+        for file_path in os.listdir(dir_path):
+            if file_path.endswith('tiff') or file_path.endswith('tif'):
+                img = tifffile.imread(os.path.join(dir_path,file_path), key=channels)
+                padded_image = pad_image(img, (224, 224))
+                images.append(padded_image)
+
+    images = np.stack(images)  # Shape will be (500, 224, 224, channel_number)
+    reshaped_images = images.reshape(images.shape[0], images.shape[1], -1)
+    percentile_1 = np.percentile(reshaped_images, min_percentil, axis=(0, 2))
+    percentile_99 = np.percentile(reshaped_images, max_percentil, axis=(0, 2))
+    return percentile_1, percentile_99
+class PercentileNormalize(object):
+    def __init__(self, percentile_min, percentile_max):
+        self.percentile_min = torch.tensor(percentile_min, dtype=torch.float32)
+        self.percentile_max = torch.tensor(percentile_max, dtype=torch.float32)
+
+    def __call__(self, img):
+        # Assuming img is a PyTorch tensor with shape (C, H, W)
+
+        img = (img - self.percentile_min[:, None, None]) / (self.percentile_max[:, None, None] - self.percentile_min[:, None, None])
+        img = torch.clamp(img, 0, 1)  # Ensure values are within [0, 1]
+        return img
+

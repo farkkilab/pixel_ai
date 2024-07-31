@@ -1,48 +1,34 @@
-DNA1
-BG488
-BG555
-BG647
-DNA2
-CD11c
-CD207
-GranzymeB
-DNA3
-CD163
-CD57
-CD20
-DNA4
-CD4
-CD3d
-CD8a
-DNA5
-TIM3
-pSTAT1
-PDL1
-DNA6
-CD45RO
-FOXP3
-PD1
-DNA7
-pTBK1
-CD68
-PDL1_2
-DNA8
-CD15
-CD11b
-yH2AX
-DNA9
-PDL1_488
-PDL1_555
-cPARP1
-DNA10
-Ki67
-Vimentin
-MHCII
-DNA11
-LaminB1
-CK7
-MHCI
-DNA12
-ECadherin
-aSMA
-CD31
+Channel_number,Cycle,Channel_name,Description
+0,1,DNA1,"DAPI, nuclei"
+1,1,BG488,"background, unespcific "
+2,1,BG555,"background, unespcific "
+3,1,BG647,"background, unespcific "
+4,2,CD11c,"denditric cells, antigens presenting cells"
+5,2,CD207,subset of denditric cells
+6,2,GranzymeB,immune response marker
+7,3,CD163,macrophages m1
+8,3,CD57,T cells and NK cells
+9,3,CD20,B cells
+10,4,CD4,"T cell CD4, also in some macrophages"
+11,4,CD3d,T cells markers
+12,4,CD8a,T cell CD8
+13,5,TIM3,immune checkpoint blockage
+14,5,pSTAT1,immune checkpoint blockage
+15,6,CD45RO,memory T cells
+16,6,FOXP3,"T regulatory cell, immunosupresive"
+17,6,PD1,immune checkpoint blockage
+18,7,pTBK1,functional
+19,7,CD68,macrophages m2
+20,8,CD15,"myleoid cells, macrophages and denditric cells"
+21,8,CD11b,cd8+ marker of activation and memory in virus infection
+22,8,yH2AX,dna damage (will not be in new panel)
+23,9,PDL1_488,immune checkpoint blockage
+24,10,Ki67,profileration
+25,10,Vimentin,"stromal marker, related to metastasis"
+26,10,MHCII,"Present antigens, primarily to T cells (to identify those cells in other places)"
+27,11,LaminB1,functional
+28,11,CK7,"epithelial marker, tumor marker"
+29,11,MHCI,molecule expressed so the immune system recognise that is part of the body
+30,12,ECadherin,"epithelial marker, tumor marker"
+31,12,aSMA,"Alpha smooth muscle actin, stromal marker"
+32,12,CD31,"Blood vessell cells, structural marker, entry point for immune cells "

@@ -25,9 +25,9 @@ def crop_center(image, crop_height, crop_width):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--output_path", type=Path,
-                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_generated")
+                        default="/data/projects/pixel_project/datasets/Launonen_TMA/patches/histoprep_generated")
     parser.add_argument("--slides_path", type=Path,
-                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs")
+                        default="/data/data_cloud_mount/farkkila/Data/TMA1/data_cores/TMA1")
     parser.add_argument("--tiles_width", type=int,
                         default=224)
     parser.add_argument("--tiles_height", type=int,
@@ -49,12 +49,18 @@ def main():
     #selected_channels = [0, 25, 28]
     # Only with DAPI
     selected_channels = [0]
-    slides_directories = [d for d in os.listdir(slides_path) if
-                                 os.path.isdir(os.path.join(slides_path, d)) and d.startswith('TMA')]
-
+    if str(slides_path) == "/data/data_cloud_mount/farkkila/Data/TMA1/data_cores/TMA1":
+        slides_directories = ["/data/data_cloud_mount/farkkila/Data/TMA1/data_cores/TMA1"]
+    else:
+        slides_directories = [d for d in os.listdir(slides_path) if
+                                     os.path.isdir(os.path.join(slides_path, d)) and d.startswith('TMA')]
     for slide in slides_directories:
-        files_to_process = [file for file in glob.glob(str(slides_path) + '/' + slide + "/Channels_all/*.tif")]
-        output_path_core = str(output_path) + '/' + slide + "/"
+        if str(slides_path) == "/data/data_cloud_mount/farkkila/Data/TMA1/data_cores/TMA1":
+            files_to_process = [file for file in glob.glob(str(slides_path) + "/*.tif")]
+            output_path_core = str(output_path) + "/TMA1/"
+        else:
+            files_to_process = [file for file in glob.glob(str(slides_path) + '/' + slide + "/Channels_all/*.tif")]
+            output_path_core = str(output_path) + '/' + slide + "/"
         for file_name in files_to_process:
             pathlib.Path(output_path_core + pathlib.Path(file_name).stem).mkdir(parents=True, exist_ok=True)
             im_tiff = tifffile.imread(file_name,level=-1, maxworkers=32)

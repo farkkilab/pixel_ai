@@ -88,7 +88,7 @@ notebook_shim==0.2.3
 numba==0.58.1
 numcodecs==0.12.1
 numpy==1.24.4
-opencv-python==4.5.5.64
+opencv-python==4.8.0.74
 openstacksdk==2.0.0
 os-service-types==1.7.0
 osc-lib==2.9.0
