@@ -23,9 +23,9 @@ def main():
     parser = argparse.ArgumentParser()
     # wh "/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_generated"
     parser.add_argument("--files_path", type=Path,
-                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_generated/224")
+                        default="/data/projects/pixel_project/datasets/Launonen_TMA/patches/histoprep_generated/224")
     parser.add_argument("--tiles_embedding_path", type=Path,
-                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_embeddings_uni/224")
+                        default="/data/projects/pixel_project/datasets/Launonen_TMA/patches/histoprep_embeddings_uni/224")
     parser.add_argument("--hf_cache_path", type=Path,
                         default="/data/projects/pixel_project/huggingface/cache")
     # cores or whole_slide
@@ -48,7 +48,10 @@ def main():
     model = model.cuda()
     model.eval()
     #channels = [0, 25, 28]
-    channels = [10, 11, 12]
+    #channels = [10, 11, 12]
+    #channels = [0, 0, 0]
+    # Launonen tma
+    channels = [0, 30, 34]
     channels_directory_output = '_'.join(map(str, channels))
     tiles_embedding_path = os.path.join(tiles_embedding_path, channels_directory_output)
     batch_size = 128

@@ -20,12 +20,12 @@ from pathlib import Path
 from os.path import dirname, join, abspath
 sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 from vit_pytorch import ViT
-from utils import ProgressMeter, AverageMeter, save_checkpoint, MultiEpochsDataLoader, TensorDatasetMIL, collate_fn_MIL
+from utils import ProgressMeter, AverageMeter, save_checkpoint, MultiEpochsDataLoader, TensorDatasetMIL, collate_fn_MIL, remove_part_by_negative_index, get_percentiles_normalize, PercentileNormalize
 from models.abmil import ABMIL
 from models.amlab_mil import Attention, GatedAttention
 
 
-def train_test(classifier_model, optimizer,loader, epoch,train, criterion):
+def train_test(classifier_model, optimizer,loader, epoch,train, criterion, model_encoder):
     batch_time = AverageMeter('Time', ':6.3f')
     data_time = AverageMeter('Data', ':6.3f')
     losses = AverageMeter('Loss', ':.20f')
@@ -45,16 +45,29 @@ def train_test(classifier_model, optimizer,loader, epoch,train, criterion):
         prefix=prefix + " [{}]".format(epoch))
     binary_predictions_list = []
     labels_predictions = []
-    for i, (bag_tensor, labels, files_names) in enumerate(loader):
+
+    for i, item in enumerate(loader):
         optimizer.zero_grad()
-        bag_tensor = bag_tensor.cuda()
-        #mask = mask.cuda()
+
+        if model_encoder == 'trainable':
+            bag_tensor, raw_images, labels, files_names = item
+            raw_images = raw_images.cuda()
+            input_variable = raw_images
+        else:
+            bag_tensor, labels, files_names = item
+            bag_tensor = bag_tensor.cuda()
+            input_variable = bag_tensor
         labels = labels.cuda()
         data_time.update(time.time() - end)
         #predictions, attention_weights = classifier_model(bag_tensor, mask)
         #predictions, attention_weights, A = classifier_model(bag_tensor)
-        loss, attention_weights = classifier_model.calculate_objective(bag_tensor, labels)
-        error, binary_predictions = classifier_model.calculate_classification_error(bag_tensor, labels)
+        if not train:
+            with torch.no_grad():
+                loss, attention_weights = classifier_model.calculate_objective(input_variable, labels, eval_mode=True)
+                error, binary_predictions = classifier_model.calculate_classification_error(input_variable, labels,eval_mode=True)
+        else:
+            loss, attention_weights = classifier_model.calculate_objective(input_variable, labels)
+            error, binary_predictions = classifier_model.calculate_classification_error(input_variable, labels)
         binary_predictions = binary_predictions.cpu().tolist()
         # Compute loss
 
@@ -62,7 +75,7 @@ def train_test(classifier_model, optimizer,loader, epoch,train, criterion):
         if train:
             loss.backward()
             optimizer.step()
-        losses.update(loss.item(), bag_tensor.size(0))
+        losses.update(loss.item(), input_variable.size(0))
         binary_predictions_list.extend(binary_predictions)
         labels_predictions.extend(labels.cpu())
         batch_time.update(time.time() - end)
@@ -76,7 +89,7 @@ def train_test(classifier_model, optimizer,loader, epoch,train, criterion):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--files_path", type=Path,
-                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_embeddings_uni/224/0_25_28")
+                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_embeddings_uni/224/0_0_0")
     # cores or whole_slide
     parser.add_argument("--data_type", type=str,
                         default="cores")
@@ -84,8 +97,15 @@ def main():
                         default="nact")
     parser.add_argument("--architecture", type=str,
                         default="amlab_attention")
-    parser.add_argument("--filter_cores_lowcancer", type=bool,
-                        default=True)
+    parser.add_argument("--filter_cores_lowcancer", type=str,
+                        default=False)
+    parser.add_argument("--image_normalization", type=str,
+                        default=False)
+    #use more than 3 channels, look for other channel images of same core and slide
+    parser.add_argument("--multi_channels", type=bool,
+                        default=False)
+    parser.add_argument("--model_encoder", type=str,
+                        default="trainable")
 
     p = parser.parse_args()
     files_path = p.files_path
@@ -93,6 +113,19 @@ def main():
     classification_task = p.classification_task
     architecture = p.architecture
     filter_cores_lowcancer = p.filter_cores_lowcancer
+    if filter_cores_lowcancer == 'true':
+        filter_cores_lowcancer = True
+    else:
+        filter_cores_lowcancer = False
+
+    image_normalization = p.image_normalization
+    if image_normalization == 'true':
+        image_normalization = True
+    else:
+        image_normalization = False
+    multi_channels = p.multi_channels
+    model_encoder = p.model_encoder
+
     if data_type == 'cores':
         cores_directories = []
         slides_directories = [d for d in os.listdir(files_path) if
@@ -102,7 +135,6 @@ def main():
             for r, ds, fs in os.walk(slide_files_path):
                 for dn in ds:
                     if dn.startswith('core'):
-                        patches_files = [file for file in os.listdir(os.path.join(r, dn))]
                         cores_directories.append(os.path.join(r, dn))
         cores_chemo_labels_df = pd.read_csv('data/cores_labels_chemotherapy.csv')
         if filter_cores_lowcancer:
@@ -113,18 +145,24 @@ def main():
         wholeslide_labels_df = pd.read_csv('data/wholeslide_clinical_data.csv')
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     best_f1_test = 0
-    input_dimensions = (1024)
-    epochs = 120
+    epochs = 60
     lr = 0.00001
     num_workers = 28
+    channels = [0, 25, 28]
     model_path = 'saved_models'
+    if model_encoder == 'trainable':
+        input_dimensions = None
+    elif model_encoder == 'uni':
+        input_dimensions = (1024)
+    elif model_encoder == 'gigapath':
+        input_dimensions = (1536)
     if architecture == 'ABMIL':
         batch_size = 1
         classifier_model = ABMIL(input_dim=input_dimensions)
         criterion = nn.BCELoss()
     elif architecture == 'amlab_attention':
         batch_size = 1
-        classifier_model = Attention()
+        classifier_model = Attention(encoding=model_encoder, input_dim=input_dimensions)
         criterion = nn.BCELoss()
     elif architecture == 'amlab_gated_attention':
         batch_size = 1
@@ -168,7 +206,6 @@ def main():
                     # skip the rows if filter_cores_lowcancer is set to true and the core don't have enough cancer cells
                     if filter_cores_lowcancer and (core_file_stats_row.empty or core_file_stats_row['N.cancer.cells'].iloc[0] < 500):
                         continue
-                    # ignore images with nan
                     if core_directory.split('/')[-2]=='TMA_45_312' or core_directory.split('/')[-2]=='TMA_46_325':
                         cores_test.append(core_directory)
                         # If contains NACT, is a sample collected after chemotherapy exposure
@@ -186,14 +223,16 @@ def main():
                 else:
                     print('Missing label for:'+core_directory)
             elif classification_task == "progression":
-                # if core_file_stats is empty, we assume that there is no cancer cells in the core and we should skip it
                 if not patch_file_label_df.empty and str(
                         patch_file_label_df.iloc[0]['progression']).lower() != 'na' and not pd.isnull(
                         patch_file_label_df.iloc[0]['progression']):
+                    # skip the rows if filter_cores_lowcancer is set to true and the core don't have enough cancer cells
+                    if filter_cores_lowcancer and (
+                            core_file_stats_row.empty or core_file_stats_row['N.cancer.cells'].iloc[0] < 500):
+                        continue
                     # ignore images with nan
                     if core_directory.split('/')[-2]=='TMA_45_312' or core_directory.split('/')[-2]=='TMA_46_325':
                         cores_test.append(core_directory)
-
                         labels_test.append(patch_file_label_df.iloc[0]['progression'])
                     else:  # if core_file.split('/')[-3]=='TMA_44_810' or core_file.split('/')[-3]=='TMA_45_312':
                         cores_train.append(core_directory)
@@ -232,9 +271,26 @@ def main():
     config['train_images'] = len(cores_train)
     config['test_images'] = len(cores_test)
     # , mode="disabled"
-    wandb.init(project='pixel_ai', name="embedding_chemo_classifier_mil_tilescore_{0}".format(format(str(files_path).split('/')[-1])), resume="allow", config=config)
-    tensor_dataset_train = TensorDatasetMIL(slides=cores_train,transform=transforms_train,labels=labels_train, gigapath=False)
-    tensor_dataset_test = TensorDatasetMIL(slides=cores_test,transform=transforms_test, labels=labels_test, gigapath=False)
+    wandb.init(project='pixel_ai', name="embedding_{0}_classifier_mil_tilescore_{1}_encoder_{2}_filterlowcancercells_{3}_imagenormalization_{4}".format(classification_task,str(files_path).split('/')[-1],model_encoder, filter_cores_lowcancer, image_normalization), resume="allow", config=config)
+    if model_encoder == 'trainable':
+        raw_cores_train = [core.replace('histoprep_embeddings_uni','histoprep_generated').replace('/'+'_'.join(str(channel) for channel in channels),'').replace('/10_11_12','') for core in cores_train]
+        raw_cores_test = [core.replace('histoprep_embeddings_uni', 'histoprep_generated').replace('/'+'_'.join(str(channel) for channel in channels), '').replace('/10_11_12','') for core
+                           in cores_test]
+        if image_normalization:
+            percentile_min, percentile_max = get_percentiles_normalize(raw_cores_train+raw_cores_test, channels, min_percentil=1, max_percentil=99)
+        else:
+            percentile_min = np.array([0]*len(channels))
+            percentile_max = np.array([65535] * len(channels))
+        normalize_transform = PercentileNormalize(percentile_min, percentile_max)
+        transforms_train = normalize_transform
+        transforms_test = normalize_transform
+
+    else:
+        raw_cores_train = None
+        raw_cores_test = None
+        normalize_transform = None
+    tensor_dataset_train = TensorDatasetMIL(slides=cores_train,raw_images=raw_cores_train,transform=transforms_train,labels=labels_train, channels=channels, gigapath=False,multi_channels=multi_channels)
+    tensor_dataset_test = TensorDatasetMIL(slides=cores_test,raw_images=raw_cores_test,transform=transforms_test, labels=labels_test, channels=channels, gigapath=False,multi_channels=multi_channels)
     #tiff_dataset_validate = TiffDataset(files=cores_files_validate, transform=transforms, channels=channels,labels=cores_labels_validate)
     train_sampler = None
     train_loader = MultiEpochsDataLoader(
@@ -248,9 +304,8 @@ def main():
     optimizer = torch.optim.Adam(classifier_model.parameters(), lr=lr)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.1)
     for epoch in range(epochs):
-        loss_train, acc_train, f1_train = train_test(classifier_model,optimizer, train_loader,epoch,train=True, criterion=criterion)
-        loss_test, acc_test, f1_test = train_test(classifier_model,optimizer, test_loader, epoch, train=False, criterion=criterion)
-
+        loss_train, acc_train, f1_train = train_test(classifier_model,optimizer, train_loader,epoch,train=True, criterion=criterion, model_encoder=model_encoder)
+        loss_test, acc_test, f1_test = train_test(classifier_model,optimizer, test_loader, epoch, train=False, criterion=criterion, model_encoder=model_encoder)
         print("Accuracy training: "+str(acc_train))
         print("Accuracy test: "+str(acc_test))
         print("F1 training: " + str(f1_train))
@@ -271,7 +326,7 @@ def main():
             'state_dict': classifier_model.state_dict(),
             'best_f1_test': best_f1_test,
             'optimizer': optimizer.state_dict(),
-        }, is_best, 'embedding_chemo_mil_fullcore_{0}.pth.tar'.format(str(files_path).split('/')[-1]))
+        }, is_best, 'embedding_{0}_mil_fullcore_{1}_encoder_{2}_filterlowcancercells_{3}_imagenormalization_{4}.pth.tar'.format(classification_task,str(files_path).split('/')[-1],model_encoder,filter_cores_lowcancer, image_normalization))
 
 
 

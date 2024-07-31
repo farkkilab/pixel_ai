@@ -20,9 +20,9 @@ def main():
     parser = argparse.ArgumentParser()
     # wh "/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_generated"
     parser.add_argument("--files_path", type=Path,
-                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_generated/256")
+                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_generated/224")
     parser.add_argument("--tiles_embedding_path", type=Path,
-                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_embeddings_gigapath/256")
+                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_embeddings_gigapath/224")
     parser.add_argument("--hf_cache_path", type=Path,
                         default="/data/projects/pixel_project/huggingface/cache")
     # cores or whole_slide
@@ -40,13 +40,16 @@ def main():
     #tile_encoder = nn.DataParallel(tile_encoder)
     transform = transforms.Compose(
         [
-            transforms.Resize(256, interpolation=transforms.InterpolationMode.BICUBIC),
             transforms.CenterCrop(224),
             transforms.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
         ]
     )
 
-    channels = [0, 25, 28]
+    #channels = [0, 25, 28]
+    #channels = [10, 11, 12]
+    channels = [0, 0, 0]
+    channels_directory_output = '_'.join(map(str, channels))
+    tiles_embedding_path = os.path.join(tiles_embedding_path, channels_directory_output)
     batch_size = 128
     num_workers = 28
     # Only files that we have a label for
