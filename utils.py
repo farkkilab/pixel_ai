@@ -530,13 +530,12 @@ def get_percentiles_normalize(directories_path, channels, min_percentil=1, max_p
     return percentile_1, percentile_99
 class PercentileNormalize(object):
     def __init__(self, percentile_min, percentile_max):
-        self.percentile_min = torch.tensor(percentile_min, dtype=torch.float32)
-        self.percentile_max = torch.tensor(percentile_max, dtype=torch.float32)
+        self.percentile_min = torch.tensor(percentile_min, dtype=torch.float32).view(1, -1, 1, 1)
+        self.percentile_max = torch.tensor(percentile_max, dtype=torch.float32).view(1, -1, 1, 1)
 
     def __call__(self, img):
         # Assuming img is a PyTorch tensor with shape (C, H, W)
-
-        img = (img - self.percentile_min[:, None, None]) / (self.percentile_max[:, None, None] - self.percentile_min[:, None, None])
+        img = (img - self.percentile_min) / (self.percentile_max - self.percentile_min)
         img = torch.clamp(img, 0, 1)  # Ensure values are within [0, 1]
         return img
 

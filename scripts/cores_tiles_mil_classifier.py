@@ -75,7 +75,7 @@ def train_test(classifier_model, optimizer,loader, epoch,train, criterion, model
         if train:
             loss.backward()
             optimizer.step()
-        losses.update(loss.item(), input_variable.size(0))
+        losses.update(loss.item(), 1)
         binary_predictions_list.extend(binary_predictions)
         labels_predictions.extend(labels.cpu())
         batch_time.update(time.time() - end)
@@ -146,7 +146,7 @@ def main():
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     best_f1_test = 0
     epochs = 60
-    lr = 0.00001
+    lr = 0.000001
     num_workers = 28
     channels = [0, 25, 28]
     model_path = 'saved_models'
@@ -278,6 +278,7 @@ def main():
                            in cores_test]
         if image_normalization:
             percentile_min, percentile_max = get_percentiles_normalize(raw_cores_train+raw_cores_test, channels, min_percentil=1, max_percentil=99)
+            print(percentile_min, percentile_max)
         else:
             percentile_min = np.array([0]*len(channels))
             percentile_max = np.array([65535] * len(channels))
