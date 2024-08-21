@@ -89,7 +89,7 @@ def pad_image(image, target_size=(224, 224)):
 class TiffDataset(Dataset):
     """Face Landmarks dataset."""
 
-    def __init__(self, files, files_names=None,transform=None, channels=None, labels=None):
+    def __init__(self, files, files_names=None,transform=None, channels=None, labels=None, image_normalization=None):
         """
         Args:
             csv_file (string): Path to the csv file with annotations.
@@ -102,6 +102,7 @@ class TiffDataset(Dataset):
         self.transform = transform
         self.channels = channels
         self.labels = labels
+        self.image_normalization = image_normalization
 
     def __len__(self):
         return len(self.tiff_files)
@@ -112,7 +113,8 @@ class TiffDataset(Dataset):
             idx = idx.tolist()
         im_tiff = tifffile.imread(self.tiff_files[idx],key=self.channels,maxworkers=32)
         #info = np.iinfo(im_tiff.dtype)
-        sample = torch.from_numpy(im_tiff / 65535).float()
+        if not self.image_normalization:
+            sample = torch.from_numpy(im_tiff / 65535).float()
         if self.transform:
             sample = self.transform(sample)
 
@@ -238,8 +240,8 @@ class TensorDataset2D(Dataset):
 class TensorDatasetMIL(Dataset):
     """Face Landmarks dataset."""
 
-    def __init__(self, slides, files_names=None,transform=None, labels=None, raw_images=None,gigapath=None, channels=None, multi_channels=None):
-        """
+    def __init__(self, slides, files_names=None,transform=None, labels=None, raw_images=None,gigapath=None, channels=None, multi_channels=None, image_normalization=None):
+        """image_normalization
         Args:
             csv_file (string): Path to the csv file with annotations.
             root_dir (string): Directory with all the images.
@@ -254,6 +256,7 @@ class TensorDatasetMIL(Dataset):
         self.gigapath = gigapath
         self.channels = channels
         self.multi_channels = multi_channels
+        self.image_normalization = image_normalization
     def __len__(self):
         return len(self.slides)
     def get_file_name(self, idx):
@@ -300,7 +303,8 @@ class TensorDatasetMIL(Dataset):
             for i in range(len(patches_images_files)):
                 #raw_images_data.append(torch.tensor(tifffile.imread(patches_images_files[i],key=self.channels,maxworkers=32)).float())
                 image = tifffile.imread(patches_images_files[i],key=self.channels,maxworkers=28)
-                #normalized_image = image / 65535
+                if not self.image_normalization:
+                    image = image / 65535
                 # Apply log transformation (add 1 to avoid log(0))
                 #log_transformed_image = torch.from_numpy(np.log1p(normalized_image)).float()
                 padded_image = pad_image(image)
@@ -500,11 +504,12 @@ def load_tensors_from_directory(tensors_path):
     return multi_dim_tensor, coords_tensor
 
 
-def save_tile(xywh, im_tiff, output_dir):
+def save_tile(xywh, patch, output_dir, scaling_factor=1):
     x, y, w, h = xywh
-    patch = im_tiff[:, y:y + h, x:x + w]
+    #patch = page.asarray(key=(slice(y, h), slice(x, w)))
+    #patch = im_tiff[:, y:y + h, x:x + w]
     # Save the patch as a new TIFF file
-    patch_filename = f"{output_dir}/patch_{y}_{x}.tiff"
+    patch_filename = f"{output_dir}/patch_{int(y/scaling_factor)}_{int(x/scaling_factor)}.tiff"
     tifffile.imwrite(patch_filename, patch)
 
 
@@ -527,15 +532,30 @@ def get_percentiles_normalize(directories_path, channels, min_percentil=1, max_p
     reshaped_images = images.reshape(images.shape[0], images.shape[1], -1)
     percentile_1 = np.percentile(reshaped_images, min_percentil, axis=(0, 2))
     percentile_99 = np.percentile(reshaped_images, max_percentil, axis=(0, 2))
-    return percentile_1, percentile_99
+
+    # Calculate mean and std, ignoring NaNs
+    mean = np.nanmean(reshaped_images, axis=(0, 2))
+    std = np.nanstd(reshaped_images, axis=(0, 2))
+    return percentile_1, percentile_99, mean, std
 class PercentileNormalize(object):
-    def __init__(self, percentile_min, percentile_max):
+    def __init__(self, percentile_min, percentile_max, mean, std, normalization_strategy="min_max"):
         self.percentile_min = torch.tensor(percentile_min, dtype=torch.float32).view(1, -1, 1, 1)
         self.percentile_max = torch.tensor(percentile_max, dtype=torch.float32).view(1, -1, 1, 1)
+        self.mean = torch.tensor(mean, dtype=torch.float32).view(1, -1, 1, 1)
+        self.std = torch.tensor(std, dtype=torch.float32).view(1, -1, 1, 1)
+        self.normalization_strategy = normalization_strategy
 
     def __call__(self, img):
         # Assuming img is a PyTorch tensor with shape (C, H, W)
-        img = (img - self.percentile_min) / (self.percentile_max - self.percentile_min)
-        img = torch.clamp(img, 0, 1)  # Ensure values are within [0, 1]
+        if self.normalization_strategy == 'min_max':
+            img = (img - self.percentile_min) / (self.percentile_max - self.percentile_min)
+            img = torch.clamp(img, 0, 1)  # Ensure values are within [0, 1]
+            img = torch.squeeze(img)
+        elif self.normalization_strategy == 'mean_std':
+            # Step 1: Limit the values to between percentile 1 and 99
+            img = torch.clamp(img, self.percentile_min, self.percentile_max)
+            # Step 2: Normalize by mean and standard deviation
+            img = (img - self.mean) / self.std
+            img = torch.squeeze(img)
         return img
 

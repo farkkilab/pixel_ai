@@ -25,9 +25,9 @@ def crop_center(image, crop_height, crop_width):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--output_path", type=Path,
-                        default="/data/projects/pixel_project/datasets/Launonen_TMA/patches/histoprep_generated")
+                        default="/scratch/project_2003009/NKI_histoprep_patches")
     parser.add_argument("--slides_path", type=Path,
-                        default="/data/data_cloud_mount/farkkila/Data/TMA1/data_cores/TMA1")
+                        default="/scratch/project_2003009/NKI_project_TMAs")
     parser.add_argument("--tiles_width", type=int,
                         default=224)
     parser.add_argument("--tiles_height", type=int,
@@ -38,7 +38,8 @@ def main():
     tiles_width = p.tiles_width
     tiles_height = p.tiles_height
     output_path = str(output_path)+"/"+str(tiles_width)
-    num_workers = 28
+    num_workers = cpu_count()-1
+    print(num_workers)
     crop_height = 2300
     crop_width = 2300
 
