@@ -25,7 +25,12 @@ from models.abmil import ABMIL
 from models.amlab_mil import Attention, GatedAttention
 
 
+
 def train_test(classifier_model, optimizer,loader, epoch,train, criterion, model_encoder):
+    #device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    device = torch.device("cuda")
+    print(device)
+    #device = torch.device("cuda:0")
     batch_time = AverageMeter('Time', ':6.3f')
     data_time = AverageMeter('Data', ':6.3f')
     losses = AverageMeter('Loss', ':.20f')
@@ -87,9 +92,12 @@ def train_test(classifier_model, optimizer,loader, epoch,train, criterion, model
 
 
 def main():
+    #device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    device = torch.device("cuda")
+    print(device)
     parser = argparse.ArgumentParser()
     parser.add_argument("--files_path", type=Path,
-                        default="/data/projects/pixel_project/datasets/NKI_project_TMAs/patches/histoprep_embeddings_uni/224/0_0_0")
+                        default="/scratch/project_2003009/NKI_histoprep_patches/224")
     # cores or whole_slide
     parser.add_argument("--data_type", type=str,
                         default="cores")
@@ -143,10 +151,14 @@ def main():
         wholeslide_files = [os.path.join(files_path, d) for d in os.listdir(files_path) if
                              os.path.isfile(os.path.join(files_path, d)) and d.endswith('tif')]
         wholeslide_labels_df = pd.read_csv('data/wholeslide_clinical_data.csv')
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
     best_f1_test = 0
     epochs = 60
-    lr = 0.000001
+    # with image normalizaiton we need a lower lr
+    if image_normalization:
+        lr = 0.00001
+    else:
+        lr = 0.00001
     num_workers = 28
     channels = [0, 25, 28]
     model_path = 'saved_models'
@@ -170,7 +182,7 @@ def main():
         criterion = nn.BCELoss()
 
     # Move model to device
-    classifier_model = classifier_model.to(device)
+    classifier_model = classifier_model.cuda()
     #summary(classifier_model, input_size=(batch_size, in_channels, input_dimensions[0], input_dimensions[1]))
     config = {
         "learning_rate": lr,
@@ -273,25 +285,29 @@ def main():
     # , mode="disabled"
     wandb.init(project='pixel_ai', name="embedding_{0}_classifier_mil_tilescore_{1}_encoder_{2}_filterlowcancercells_{3}_imagenormalization_{4}".format(classification_task,str(files_path).split('/')[-1],model_encoder, filter_cores_lowcancer, image_normalization), resume="allow", config=config)
     if model_encoder == 'trainable':
-        raw_cores_train = [core.replace('histoprep_embeddings_uni','histoprep_generated').replace('/'+'_'.join(str(channel) for channel in channels),'').replace('/10_11_12','') for core in cores_train]
-        raw_cores_test = [core.replace('histoprep_embeddings_uni', 'histoprep_generated').replace('/'+'_'.join(str(channel) for channel in channels), '').replace('/10_11_12','') for core
+        raw_cores_train = [core.replace('histoprep_embeddings_uni','NKI_histoprep_patches').replace('/'+'_'.join(str(channel) for channel in channels),'').replace('/10_11_12','') for core in cores_train]
+        raw_cores_test = [core.replace('histoprep_embeddings_uni', 'NKI_histoprep_patches').replace('/'+'_'.join(str(channel) for channel in channels), '').replace('/10_11_12','') for core
                            in cores_test]
         if image_normalization:
-            percentile_min, percentile_max = get_percentiles_normalize(raw_cores_train+raw_cores_test, channels, min_percentil=1, max_percentil=99)
-            print(percentile_min, percentile_max)
+            percentile_min, percentile_max, mean, std = get_percentiles_normalize(raw_cores_train+raw_cores_test, channels, min_percentil=1, max_percentil=99)
+            print(percentile_min, percentile_max, mean, std)
+            normalize_transform = PercentileNormalize(percentile_min, percentile_max, mean, std, normalization_strategy="min_max")
+            transforms_train = normalize_transform
+            transforms_test = normalize_transform
         else:
-            percentile_min = np.array([0]*len(channels))
-            percentile_max = np.array([65535] * len(channels))
-        normalize_transform = PercentileNormalize(percentile_min, percentile_max)
-        transforms_train = normalize_transform
-        transforms_test = normalize_transform
+            #percentile_min = np.array([0]*len(channels))
+            #percentile_max = np.array([65535] * len(channels))
+            transforms_train = None
+            transforms_test = None
+
+
 
     else:
         raw_cores_train = None
         raw_cores_test = None
         normalize_transform = None
-    tensor_dataset_train = TensorDatasetMIL(slides=cores_train,raw_images=raw_cores_train,transform=transforms_train,labels=labels_train, channels=channels, gigapath=False,multi_channels=multi_channels)
-    tensor_dataset_test = TensorDatasetMIL(slides=cores_test,raw_images=raw_cores_test,transform=transforms_test, labels=labels_test, channels=channels, gigapath=False,multi_channels=multi_channels)
+    tensor_dataset_train = TensorDatasetMIL(slides=cores_train,raw_images=raw_cores_train,transform=transforms_train,labels=labels_train, channels=channels, gigapath=False,multi_channels=multi_channels, image_normalization=image_normalization)
+    tensor_dataset_test = TensorDatasetMIL(slides=cores_test,raw_images=raw_cores_test,transform=transforms_test, labels=labels_test, channels=channels, gigapath=False,multi_channels=multi_channels, image_normalization=image_normalization)
     #tiff_dataset_validate = TiffDataset(files=cores_files_validate, transform=transforms, channels=channels,labels=cores_labels_validate)
     train_sampler = None
     train_loader = MultiEpochsDataLoader(

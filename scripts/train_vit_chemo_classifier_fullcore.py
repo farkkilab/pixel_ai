@@ -108,6 +108,7 @@ def main():
                              os.path.isfile(os.path.join(files_path, d)) and d.endswith('tif')]
         wholeslide_labels_df = pd.read_csv('data/wholeslide_clinical_data.csv')
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    print(device)
     # resized images, this channels correspond actually to 0, 12, 28
     #channels = [0, 1, 2]
     channels = [0, 25, 28]

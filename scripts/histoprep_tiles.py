@@ -2,6 +2,8 @@ import tifffile
 import tqdm
 import numpy as np
 from PIL import Image
+import argparse
+from pathlib import Path
 import os, sys, glob
 import histoprep.functional as F
 from histoprep._data import SpotCoordinates, TileCoordinates
@@ -14,15 +16,36 @@ from utils import get_tissue_mask, save_tile
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output_path", type=Path,
+                        default="/data/projects/sciset/train_tiles/")
+    parser.add_argument("--slides_path", type=Path,
+                        default="/data/projects/sciset/registration/")
+    parser.add_argument("--tiles_width", type=int,
+                        default=224)
+    parser.add_argument("--tiles_height", type=int,
+                        default=224)
+    p = parser.parse_args()
+    output_path = p.output_path
+    slides_path = p.slides_path
+    tiles_width = p.tiles_width
+    tiles_height = p.tiles_height
     # channels, DNA1, Vimentin, CK7 (in that order)
     # 0, 38, 42
     # select certain channels to get the tissue mask
     selected_channels = [0]
-    slides_path = '/data/projects/sciset/registration/'
-    slides_to_process = [file for file in glob.glob(str(slides_path)+"*.tif")]
+    slides_to_process = [file for file in glob.glob(str(slides_path)+"/*.tiff")]
     for slide in slides_to_process:
-        im_tiff = tifffile.imread(slide,level=-1, maxworkers=32)
-        output_dir = "/data/projects/sciset/train_tiles/"+slide.split('/')[-1].split('.')[0]+'/'
+        with tifffile.TiffFile(slide) as tif:
+            page_0 = tif.series[0].levels[0]
+            channels_page_0, height_page_0, width_page_0 = page_0.shape
+            page_3 = tif.series[0].levels[3]
+            channels_page_3, height_page_3, width_page_3 = page_3.shape
+            width_ratio = width_page_3 / width_page_0
+            height_ratio = height_page_3 / height_page_0
+            print(width_ratio, height_ratio)
+        im_tiff = page_3.asarray()#tifffile.imread(slide,level=0, maxworkers=32)
+        output_dir = str(output_path)+'/'+slide.split('/')[-1].split('.')[0]+'/'
         os.makedirs(output_dir, exist_ok=True)
         os.makedirs(output_dir+'tiles', exist_ok=True)
         image_np = im_tiff[selected_channels,:,:].astype(np.uint8).transpose(1, 2, 0)
@@ -31,12 +54,10 @@ def main():
 
         threshold, tissue_mask = get_tissue_mask(image_np)
         # Extract overlapping tile coordinates with less than 50% background.
-        width = 224
-        height = 224
-        num_workers = 28
+        num_workers = cpu_count() - 1
         overlap = 0.1
         tile_coordinates = F.get_tile_coordinates(
-            tissue_mask.shape, height=height,width=width, overlap=0.5
+            tissue_mask.shape, height=int(tiles_height*height_ratio),width=int(tiles_width*width_ratio), overlap=0.5
         )
         max_background = 0.75
         if tissue_mask is not None:
@@ -52,8 +73,8 @@ def main():
             tile_coordinates = filtered_coordinates
             tiles = TileCoordinates(
             coordinates=tile_coordinates,
-            width=width,
-            height=width if height is None else height,
+            width=int(tiles_width*width_ratio),
+            height=int(tiles_width*width_ratio) if tiles_height is None else int(tiles_height*height_ratio),
             overlap=overlap,
             max_background=max_background,
             tissue_mask=tissue_mask,
@@ -72,8 +93,8 @@ def main():
             thumbnail_regions.save(output_dir + f"thumbnail_tiles.tiff")
             Image.fromarray(255 - 255 * tiles.tissue_mask).save(
                 output_dir + "thumbnail_tissue.tiff")
-            with Pool(num_workers) as pool:
-                args = [(tile_coordinates[i], im_tiff, output_dir) for i in range(len(tile_coordinates))]
+            with Pool(cpu_count()//4) as pool:
+                args = [(tile_coordinates[i], tifffile.imread(slide, level=0, maxworkers=32, selection=(slice(0,channels_page_0),slice(int(tile_coordinates[i][1]/width_ratio), int(tile_coordinates[i][1]/width_ratio)+int(tile_coordinates[i][3]/width_ratio)+1),slice(int(tile_coordinates[i][0]/width_ratio), int(tile_coordinates[i][0]/width_ratio)+int(tile_coordinates[i][2]/width_ratio)+1))), output_dir+'/tiles', width_ratio) for i in range(len(tile_coordinates))]
                 pool.starmap(save_tile, args)
 
 
