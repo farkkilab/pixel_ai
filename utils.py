@@ -2,12 +2,15 @@ import tifffile
 import numpy as np
 import os
 import ipdb
+import random
 import shutil
 import torch
 from torch.utils.data import Dataset
 import torchvision
 from PIL import Image
+import openslide
 import cv2
+from torchvision.transforms import v2
 import numpy as np
 from typing import Optional, Union
 
@@ -78,9 +81,11 @@ def pad_image(image, target_size=(224, 224)):
     channels, height, width = image.shape[-3],image.shape[-2], image.shape[-1]
     target_h, target_w = target_size
 
-    if height < target_h or width < target_w:
+    if height < target_h or width < target_w or height > target_h or width > target_w:
         padded_image = np.zeros((channels, target_h, target_w), dtype=image.dtype)
-        padded_image[:,:height, :width] = image
+        max_image_height = min(target_h, height)
+        max_image_width = min(target_w, width)
+        padded_image[:,:height, :width] = image[:,:max_image_height, :max_image_width]
     else:
         padded_image = image
 
@@ -240,7 +245,7 @@ class TensorDataset2D(Dataset):
 class TensorDatasetMIL(Dataset):
     """Face Landmarks dataset."""
 
-    def __init__(self, slides, files_names=None,transform=None, labels=None, raw_images=None,gigapath=None, channels=None, multi_channels=None, image_normalization=None):
+    def __init__(self, slides, files_names=None,transform=None, labels=None, raw_images=None,gigapath=None, channels=None, multi_channels=None, image_normalization=None, sampling=None, resize_img=None):
         """image_normalization
         Args:
             csv_file (string): Path to the csv file with annotations.
@@ -257,6 +262,8 @@ class TensorDatasetMIL(Dataset):
         self.channels = channels
         self.multi_channels = multi_channels
         self.image_normalization = image_normalization
+        self.sampling = sampling
+        self.resize_img = resize_img
     def __len__(self):
         return len(self.slides)
     def get_file_name(self, idx):
@@ -281,6 +288,9 @@ class TensorDatasetMIL(Dataset):
         if self.raw_images:
             patches_images = [(file, (int(file.split('_')[1]), int(file.replace('.tiff','').split('_')[2]))) for i, file in
                                enumerate(os.listdir(self.raw_images[idx])) if file.endswith('.tiff')]
+            if self.sampling:
+                num_samples = min(self.sampling, len(patches_images))
+                patches_images = random.sample(patches_images, num_samples)
             patches_images.sort(key=lambda item: (item[1][1], item[1][0]))  # Sort by Y first, then by X
             patches_images_files = []
             for file in patches_images:
@@ -295,7 +305,98 @@ class TensorDatasetMIL(Dataset):
         output = []
         for i in range(len(patches_tensors)):
             data.append(torch.load(patches_tensors[i][0]))
-        tensor = torch.stack(data)
+        if data:
+            tensor = torch.stack(data)
+        else:
+            tensor = torch.zeros(len(patches_images_files))
+
+        output.append(tensor)
+        if self.raw_images:
+            raw_images_data = []
+            for i in range(len(patches_images_files)):
+                #raw_images_data.append(torch.tensor(tifffile.imread(patches_images_files[i],key=self.channels,maxworkers=32)).float())
+                image = tifffile.imread(patches_images_files[i],key=self.channels,maxworkers=28)
+                if not self.image_normalization:
+                    image = image / 65535
+                # Apply log transformation (add 1 to avoid log(0))
+                #log_transformed_image = torch.from_numpy(np.log1p(normalized_image)).float()
+                if self.resize_img:
+                    image = image[:,::4, ::4]
+                    padded_image = pad_image(image, target_size=(56,56))
+                else:
+                    padded_image = pad_image(image)
+                padded_image = torch.from_numpy(padded_image).float()
+                raw_images_data.append(padded_image)
+            raw_images_data_tensor = torch.stack(raw_images_data)
+            if self.transform:
+                raw_images_data_tensor = self.transform(raw_images_data_tensor)
+            output.append(raw_images_data_tensor)
+        else:
+            if self.transform:
+                tensor = self.transform(tensor)
+
+
+
+
+
+        if self.files_names:
+            output.append(self.files_names[idx])
+        if self.labels:
+            output.append(torch.as_tensor(self.labels[idx], dtype=torch.float32))
+        output.append(patches_files)
+        return tuple(output)
+
+class HETensorDatasetMIL(Dataset):
+    """Face Landmarks dataset."""
+
+    def __init__(self, slides, files_names=None,transform=None, labels=None, raw_images=None,channels=None, image_normalization=None):
+        """image_normalization
+        Args:
+            csv_file (string): Path to the csv file with annotations.
+            root_dir (string): Directory with all the images.
+            transform (callable, optional): Optional transform to be applied
+                on a sample.
+        """
+        self.slides = slides
+        self.files_names = files_names
+        self.transform = transform
+        self.labels = labels
+        self.raw_images = raw_images
+        self.channels = channels
+        self.image_normalization = image_normalization
+    def __len__(self):
+        return len(self.slides)
+    def get_file_name(self, idx):
+        return self.files_names[idx]
+    def __getitem__(self, idx):
+        if torch.is_tensor(idx):
+            idx = idx.tolist()
+        patches_tensors = []
+
+        slides_dirs = [self.slides[idx]]
+        for slide in slides_dirs:
+            patches_tensors.extend([(os.path.join(slide,file), (int(file.split('_')[1]),int(file.split('_')[2]))) for i,file in enumerate(os.listdir(slide)) if file.endswith('_tensor.pt')])
+        patches_tensors.sort(key=lambda item: (item[1][1], item[1][0]))  # Sort by Y first, then by X
+        patches_files = []
+        for file in patches_tensors:
+            patches_files.append(file[0])
+        if self.raw_images:
+            patches_images = [(file, (int(file.split('_')[1]), int(file.replace('.tiff','').split('_')[2]))) for i, file in
+                               enumerate(os.listdir(self.raw_images[idx])) if file.endswith('.tiff')]
+            patches_images.sort(key=lambda item: (item[1][1], item[1][0]))  # Sort by Y first, then by X
+            patches_images_files = []
+            for file in patches_images:
+                patches_images_files.append(os.path.join(self.raw_images[idx], file[0]))
+
+
+        data = []
+        output = []
+        for i in range(len(patches_tensors)):
+            data.append(torch.load(patches_tensors[i][0]))
+        if data:
+            tensor = torch.stack(data)
+        else:
+            tensor = torch.zeros(len(patches_images_files))
 
         output.append(tensor)
         if self.raw_images:
@@ -309,7 +410,7 @@ class TensorDatasetMIL(Dataset):
                 #log_transformed_image = torch.from_numpy(np.log1p(normalized_image)).float()
                 padded_image = pad_image(image)
                 padded_image = torch.from_numpy(padded_image).float()
-
+                padded_image = v2.Resize(size=56)(padded_image)
                 raw_images_data.append(padded_image)
             raw_images_data_tensor = torch.stack(raw_images_data)
             if self.transform:
@@ -504,13 +605,28 @@ def load_tensors_from_directory(tensors_path):
     return multi_dim_tensor, coords_tensor
 
 
-def save_tile(xywh, patch, output_dir, scaling_factor=1):
+def save_tile(xywh, slide_path, channels, output_dir, scaling_factor=1):
     x, y, w, h = xywh
-    #patch = page.asarray(key=(slice(y, h), slice(x, w)))
+    patch = tifffile.imread(slide_path, level=0, maxworkers=8,selection=(slice(0,channels),slice(int(y/scaling_factor), int(y/scaling_factor)+int(h/scaling_factor)+1),slice(int(x/scaling_factor), int(x/scaling_factor)+int(w/scaling_factor)+1)))
+
     #patch = im_tiff[:, y:y + h, x:x + w]
     # Save the patch as a new TIFF file
     patch_filename = f"{output_dir}/patch_{int(y/scaling_factor)}_{int(x/scaling_factor)}.tiff"
     tifffile.imwrite(patch_filename, patch)
+
+
+def save_tile_he(xywh, slide, output_dir, scaling_factor=1):
+    x, y, w, h = xywh
+    slide_data = openslide.OpenSlide(slide)
+    region = slide_data.read_region((x, y), -1, (w, h))
+
+    region_rgb = region.convert("RGB")
+
+    #patch = im_tiff[:, y:y + h, x:x + w]
+    # Save the patch as a new TIFF file
+    patch_filename = f"{output_dir}/patch_{int(y/scaling_factor)}_{int(x/scaling_factor)}.png"
+    region_rgb.save(patch_filename)
+
 
 
 def remove_part_by_negative_index(path, negative_index):
@@ -519,7 +635,7 @@ def remove_part_by_negative_index(path, negative_index):
         parts.pop(negative_index)
     return '/'.join(parts)
 
-def get_percentiles_normalize(directories_path, channels, min_percentil=1, max_percentil=99):
+def get_percentiles_normalize(directories_path, channels, min_percentil=1, max_percentil=99, min_method='min_value'):
     images = []
     for dir_path in directories_path:
         for file_path in os.listdir(dir_path):
@@ -530,13 +646,16 @@ def get_percentiles_normalize(directories_path, channels, min_percentil=1, max_p
 
     images = np.stack(images)  # Shape will be (500, 224, 224, channel_number)
     reshaped_images = images.reshape(images.shape[0], images.shape[1], -1)
-    percentile_1 = np.percentile(reshaped_images, min_percentil, axis=(0, 2))
     percentile_99 = np.percentile(reshaped_images, max_percentil, axis=(0, 2))
-
+    #instead of percentile 1, just get the minimum of of each channel
+    if min_method == 'min_value':
+        min_result = np.min(reshaped_images, axis=(0, 2))
+    elif min_method == 'percentile_1':
+        min_result = np.percentile(reshaped_images, min_percentil, axis=(0, 2))
     # Calculate mean and std, ignoring NaNs
     mean = np.nanmean(reshaped_images, axis=(0, 2))
     std = np.nanstd(reshaped_images, axis=(0, 2))
-    return percentile_1, percentile_99, mean, std
+    return min_result, percentile_99, mean, std
 class PercentileNormalize(object):
     def __init__(self, percentile_min, percentile_max, mean, std, normalization_strategy="min_max"):
         self.percentile_min = torch.tensor(percentile_min, dtype=torch.float32).view(1, -1, 1, 1)

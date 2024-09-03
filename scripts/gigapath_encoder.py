@@ -27,7 +27,7 @@ def main():
                         default="/data/projects/pixel_project/huggingface/cache")
     # cores or whole_slide
     parser.add_argument("--data_type", type=str,
-                        default="cores")
+                        default="mhcii_whole_slide")
     p = parser.parse_args()
     files_path = p.files_path
     tiles_embedding_path = p.tiles_embedding_path
@@ -36,7 +36,7 @@ def main():
     os.environ["HUGGINGFACE_HUB_CACHE"] = str(hf_cache_path)
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     import timm
-    tile_encoder = timm.create_model("hf_hub:prov-gigapath/prov-gigapath", pretrained=True).cuda()
+    tile_encoder = timm.create_model("hf_hub:prov-gigapath/prov-gigapath", pretrained=True).to(device)
     #tile_encoder = nn.DataParallel(tile_encoder)
     transform = transforms.Compose(
         [
@@ -68,11 +68,19 @@ def main():
                                     for r, ds, fs in os.walk(os.path.join(cores_files_path,core))
                                     for fn in fs if fn.endswith('.tiff')])
         cores_chemo_labels_df = pd.read_csv('data/cores_labels_chemotherapy.csv')
+    elif data_type == 'mhcii_whole_slide':
+        cores_files = []
+        slides_directories = [d for d in os.listdir(files_path) if
+                              os.path.isdir(os.path.join(files_path, d)) and d.startswith('S')]
+        for i, slide in enumerate(slides_directories):
+            slide_files_path = str(files_path) + "/" + slide +"/tiles"
+            for r, ds, fs in os.walk(slide_files_path):
+                for fn in fs:
+                    cores_files.append(os.path.join(slide_files_path, fn))
     elif data_type == 'whole_slide':
         wholeslide_files = [files_path+slide_dir+'/tiles/'+file for slide_dir in os.listdir(files_path) for file in os.listdir(files_path+'/'+slide_dir+'/tiles') if
                                      os.path.isfile(files_path+slide_dir+'/tiles/'+file) and file.endswith('tiff')]
         wholeslide_labels_df = pd.read_csv('data/wholeslide_clinical_data.csv')
-
     tiff_dataset = TiffDataset(files=cores_files, files_names=cores_files, transform=transform, channels=channels)
     tile_encoder.eval()
     sampler = None
