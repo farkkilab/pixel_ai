@@ -14,14 +14,14 @@ class InstanceEncoder(nn.Module):
         x = self.relu(x)
         return x
 class Attention(nn.Module):
-    def __init__(self, input_dim=1024, hidden_dim=500, encoding='trainable'):
+    def __init__(self, input_dim=1024, hidden_dim=500, encoding='trainable', input_size=224):
         super(Attention, self).__init__()
         self.M = 500
         self.L = 128
         self.input_dim = input_dim
         self.hidden_dim = hidden_dim
         self.encoding = encoding
-        if self.input_dim:
+        if self.encoding != 'trainable':
             self.instance_encoder = InstanceEncoder(self.input_dim, self.hidden_dim)
         self.ATTENTION_BRANCHES = 1
 
@@ -33,12 +33,16 @@ class Attention(nn.Module):
             nn.ReLU(),
             nn.MaxPool2d(2, stride=2)
         )
-
-        self.feature_extractor_part2 = nn.Sequential(
-            nn.Linear(50 * 53 * 53, self.M),
-            nn.ReLU(),
-        )
-
+        if self.input_dim == 224:
+            self.feature_extractor_part2 = nn.Sequential(
+                nn.Linear(50 * 53 * 53, self.M),
+                nn.ReLU(),
+            )
+        elif self.input_dim == 56:
+            self.feature_extractor_part2 = nn.Sequential(
+                nn.Linear(50 * 11 * 11, self.M),
+                nn.ReLU(),
+            )
         self.attention = nn.Sequential(
             nn.Linear(self.M, self.L), # matrix V
             nn.Tanh(),
@@ -54,7 +58,10 @@ class Attention(nn.Module):
         x = x.squeeze(0)
         if self.encoding == 'trainable':
             H = self.feature_extractor_part1(x)
-            H = H.view(-1, 50 * 53 * 53)
+            if self.input_dim == 224:
+                H = H.view(-1, 50 * 53 * 53)
+            elif self.input_dim == 56:
+                H = H.view(-1, 50 * 11 * 11)
             H = self.feature_extractor_part2(H)  # KxM
         else:
             H = torch.stack([self.instance_encoder(instance) for instance in x])

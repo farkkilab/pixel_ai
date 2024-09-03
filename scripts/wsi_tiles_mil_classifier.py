@@ -93,20 +93,13 @@ def train_test(classifier_model, optimizer,loader, epoch,train, criterion, model
 
 def main():
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    #device = torch.device("cuda")
+    #device = torch.to(device)
     print(device)
     parser = argparse.ArgumentParser()
     parser.add_argument("--files_path", type=Path,
-                        default="/scratch/project_2003009/NKI_histoprep_patches/224")
-    # cores or whole_slide
-    parser.add_argument("--data_type", type=str,
-                        default="cores")
-    parser.add_argument("--classification_task", type=str,
-                        default="nact")
+                        default="/scratch/project_2003009/NKI_wsi_MHCII_histoprep_patches/")
     parser.add_argument("--architecture", type=str,
                         default="amlab_attention")
-    parser.add_argument("--filter_cores_lowcancer", type=str,
-                        default=False)
     parser.add_argument("--image_normalization", type=str,
                         default=False)
     #use more than 3 channels, look for other channel images of same core and slide
@@ -117,15 +110,7 @@ def main():
 
     p = parser.parse_args()
     files_path = p.files_path
-    data_type = p.data_type
-    classification_task = p.classification_task
     architecture = p.architecture
-    filter_cores_lowcancer = p.filter_cores_lowcancer
-    if filter_cores_lowcancer == 'true':
-        filter_cores_lowcancer = True
-    else:
-        filter_cores_lowcancer = False
-
     image_normalization = p.image_normalization
     if image_normalization == 'true':
         image_normalization = True
@@ -134,36 +119,26 @@ def main():
     multi_channels = p.multi_channels
     model_encoder = p.model_encoder
 
-    if data_type == 'cores':
-        cores_directories = []
-        slides_directories = [d for d in os.listdir(files_path) if
-                             os.path.isdir(os.path.join(files_path, d)) and d.startswith('TMA')]
-        for i, slide in enumerate(slides_directories):
-            slide_files_path = str(files_path) + "/" + slide
-            for r, ds, fs in os.walk(slide_files_path):
-                for dn in ds:
-                    if dn.startswith('core'):
-                        cores_directories.append(os.path.join(r, dn))
-        cores_chemo_labels_df = pd.read_csv('data/cores_labels_chemotherapy.csv')
-        if filter_cores_lowcancer:
-            cores_stats_df = pd.read_csv('data/cores_stats_ncancer_cells.csv')
-    elif data_type == 'whole_slide':
-        wholeslide_files = [os.path.join(files_path, d) for d in os.listdir(files_path) if
-                             os.path.isfile(os.path.join(files_path, d)) and d.endswith('tif')]
-        wholeslide_labels_df = pd.read_csv('data/wholeslide_clinical_data.csv')
+    wsi_directories = []
+    slides_directories = [d for d in os.listdir(files_path) if
+                          os.path.isdir(os.path.join(files_path, d)) and d.startswith('S')]
+    for i, slide in enumerate(slides_directories):
+        slide_files_path = str(files_path) + "/" + slide
+        for r, ds, fs in os.walk(slide_files_path):
+            for dn in ds:
+                wsi_directories.append(os.path.join(r, dn))
+    wholeslide_labels_df = pd.read_csv('data/mhcii_data.csv')
 
     best_f1_test = 0
     epochs = 60
-    # with image normalizaiton we need a lower lr
-    if image_normalization:
-        lr = 0.00001
-    else:
-        lr = 0.00001
+    num_samples = 40000
+    lr = 0.0001
     num_workers = 28
-    channels = [0, 25, 28]
+    #DNA1, CK7, Vimentin
+    channels = [0, 2, 4]
     model_path = 'saved_models'
     if model_encoder == 'trainable':
-        input_dimensions = 224
+        input_dimensions = 56
     elif model_encoder == 'uni':
         input_dimensions = (1024)
     elif model_encoder == 'gigapath':
@@ -198,70 +173,42 @@ def main():
     #classifier_model = nn.DataParallel(classifier_model)
     labels_train = []
     labels_test = []
-    labels_validate = []
     # Only files that we have a label for
-    cores_train = []
-    cores_test = []
-    cores_validate = []
+    wsi_train = []
+    wsi_test = []
     # list to keep only patches with labels
-    if data_type == 'cores':
-        for i, core_directory in enumerate(cores_directories):
-            patch_file_label_df = cores_chemo_labels_df[(cores_chemo_labels_df['cycif.slide']==core_directory.split('/')[-2])&(cores_chemo_labels_df['cycif.core.id']==core_directory.split('/')[-1])]
-            if filter_cores_lowcancer:
-                core_file_stats_row = cores_stats_df[(cores_stats_df['cycif.slide'] == core_directory.split('/')[-2]) & (
-                        cores_stats_df['cycif.core.id'] == core_directory.split('/')[-1])]
-            if classification_task == "nact":
-                # if core_file_stats is empty, we assume that there is no cancer cells in the core and we should skip it
-                # Ignore labels with PDS followed by NACT
-                if not patch_file_label_df.empty and str(patch_file_label_df.iloc[0]['therapy_sequence']).lower()!='na' and not pd.isnull(patch_file_label_df.iloc[0]['therapy_sequence'])\
-                        and not patch_file_label_df.iloc[0]['therapy_sequence'] == 'PDS followed by NACT':
-                    # skip the rows if filter_cores_lowcancer is set to true and the core don't have enough cancer cells
-                    if filter_cores_lowcancer and (core_file_stats_row.empty or core_file_stats_row['N.cancer.cells'].iloc[0] < 500):
-                        continue
-                    if core_directory.split('/')[-2]=='TMA_45_312' or core_directory.split('/')[-2]=='TMA_46_325':
-                        cores_test.append(core_directory)
-                        # If contains NACT, is a sample collected after chemotherapy exposure
-                        if 'nact' in str(patch_file_label_df.iloc[0]['therapy_sequence']).lower():
-                            labels_test.append(1)
-                        else:
-                            labels_test.append(0)
-                    else:
-                        cores_train.append(core_directory)
-                        # If contains NACT, is a sample collected after chemotherapy exposure
-                        if 'nact' in str(patch_file_label_df.iloc[0]['therapy_sequence']).lower():
-                            labels_train.append(1)
-                        else:
-                            labels_train.append(0)
+
+    for i, wsi_directory in enumerate(wsi_directories):
+        patch_file_label_df = wholeslide_labels_df[(wholeslide_labels_df['imageid']==wsi_directory.split('/')[-2])]
+
+        if not patch_file_label_df.empty and not pd.isnull(patch_file_label_df.iloc[0]['PFS']):
+            if wsi_directory.split('/')[-2]=='S065_iOme' or wsi_directory.split('/')[-2]=='S072_iOme':
+                wsi_test.append(wsi_directory)
+                # If contains NACT, is a sample collected after chemotherapy exposure
+                if str(patch_file_label_df.iloc[0]['PFS']).lower()=='long':
+                    labels_test.append(1)
                 else:
-                    print('Missing label for:'+core_directory)
-            elif classification_task == "progression":
-                if not patch_file_label_df.empty and str(
-                        patch_file_label_df.iloc[0]['progression']).lower() != 'na' and not pd.isnull(
-                        patch_file_label_df.iloc[0]['progression']):
-                    # skip the rows if filter_cores_lowcancer is set to true and the core don't have enough cancer cells
-                    if filter_cores_lowcancer and (
-                            core_file_stats_row.empty or core_file_stats_row['N.cancer.cells'].iloc[0] < 500):
-                        continue
-                    # ignore images with nan
-                    if core_directory.split('/')[-2]=='TMA_45_312' or core_directory.split('/')[-2]=='TMA_46_325':
-                        cores_test.append(core_directory)
-                        labels_test.append(patch_file_label_df.iloc[0]['progression'])
-                    else:  # if core_file.split('/')[-3]=='TMA_44_810' or core_file.split('/')[-3]=='TMA_45_312':
-                        cores_train.append(core_directory)
-                        # If contains NACT, is a sample collected after chemotherapy exposure
-                        labels_train.append(patch_file_label_df.iloc[0]['progression'])
-    if data_type == 'cores':
-        config['total_cores'] = len(cores_directories)
-    else:
-        config['total_patches'] = len(wholeslide_files)
-    config['train_images'] = len(cores_train)
-    config['test_images'] = len(cores_test)
+                    labels_test.append(0)
+            else:
+                wsi_train.append(wsi_directory)
+                # If contains NACT, is a sample collected after chemotherapy exposure
+                if str(patch_file_label_df.iloc[0]['PFS']).lower()=='long':
+                    labels_train.append(1)
+                else:
+                    labels_train.append(0)
+        else:
+            print('Missing label for:'+wsi_directory)
+
+
+    config['total_wsi'] = len(wsi_directories)
+    config['train_images'] = len(wsi_train)
+    config['test_images'] = len(wsi_test)
     # , mode="disabled"
-    wandb.init(project='pixel_ai', name="embedding_{0}_classifier_mil_tilescore_{1}_encoder_{2}_filterlowcancercells_{3}_imagenormalization_{4}".format(classification_task,str(files_path).split('/')[-1],model_encoder, filter_cores_lowcancer, image_normalization), resume="allow", config=config)
+    wandb.init(project='pixel_ai', name="wsimhcii_embedding_classifier_mil_tilescore_{0}_encoder_{1}_imagenormalization_{2}".format(str(files_path).split('/')[-1],model_encoder, image_normalization), resume="allow", config=config)
     if model_encoder == 'trainable':
-        raw_cores_train = [core.replace('histoprep_embeddings_uni','NKI_histoprep_patches').replace('/'+'_'.join(str(channel) for channel in channels),'').replace('/0_0_0_normalization_False','') for core in cores_train]
-        raw_cores_test = [core.replace('histoprep_embeddings_uni', 'NKI_histoprep_patches').replace('/'+'_'.join(str(channel) for channel in channels), '').replace('/0_0_0_normalization_False','') for core
-                           in cores_test]
+        raw_cores_train = [core.replace('histoprep_embeddings_uni','NKI_histoprep_patches').replace('/'+'_'.join(str(channel) for channel in channels),'').replace('/10_11_12','') for core in wsi_train]
+        raw_cores_test = [core.replace('histoprep_embeddings_uni', 'NKI_histoprep_patches').replace('/'+'_'.join(str(channel) for channel in channels), '').replace('/10_11_12','') for core
+                           in wsi_test]
         if image_normalization:
             percentile_min, percentile_max, mean, std = get_percentiles_normalize(raw_cores_train+raw_cores_test, channels, min_percentil=1, max_percentil=99)
             print(percentile_min, percentile_max, mean, std)
@@ -280,8 +227,8 @@ def main():
         raw_cores_train = None
         raw_cores_test = None
         normalize_transform = None
-    tensor_dataset_train = TensorDatasetMIL(slides=cores_train,raw_images=raw_cores_train,transform=transforms_train,labels=labels_train, channels=channels, gigapath=False,multi_channels=multi_channels, image_normalization=image_normalization)
-    tensor_dataset_test = TensorDatasetMIL(slides=cores_test,raw_images=raw_cores_test,transform=transforms_test, labels=labels_test, channels=channels, gigapath=False,multi_channels=multi_channels, image_normalization=image_normalization)
+    tensor_dataset_train = TensorDatasetMIL(slides=wsi_train,raw_images=raw_cores_train,transform=transforms_train,labels=labels_train, channels=channels, gigapath=False,multi_channels=multi_channels, image_normalization=image_normalization, sampling=num_samples, resize_img=True)
+    tensor_dataset_test = TensorDatasetMIL(slides=wsi_test,raw_images=raw_cores_test,transform=transforms_test, labels=labels_test, channels=channels, gigapath=False,multi_channels=multi_channels, image_normalization=image_normalization, sampling=num_samples, resize_img=True)
     #tiff_dataset_validate = TiffDataset(files=cores_files_validate, transform=transforms, channels=channels,labels=cores_labels_validate)
     train_sampler = None
     train_loader = MultiEpochsDataLoader(
@@ -317,7 +264,7 @@ def main():
             'state_dict': classifier_model.state_dict(),
             'best_f1_test': best_f1_test,
             'optimizer': optimizer.state_dict(),
-        }, is_best, 'embedding_{0}_mil_fullcore_{1}_encoder_{2}_filterlowcancercells_{3}_imagenormalization_{4}.pth.tar'.format(classification_task,str(files_path).split('/')[-1],model_encoder,filter_cores_lowcancer, image_normalization))
+        }, is_best, 'wsimhcii_embedding_mil_fullcore_{0}_encoder_{1}_imagenormalization_{2}.pth.tar'.format(str(files_path).split('/')[-1],model_encoder, image_normalization))
 
 
 

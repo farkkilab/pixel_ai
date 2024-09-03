@@ -38,7 +38,7 @@ def main():
     tiles_width = p.tiles_width
     tiles_height = p.tiles_height
     output_path = str(output_path)+"/"+str(tiles_width)
-    num_workers = cpu_count()-1
+    num_workers = cpu_count()//4
     print(num_workers)
     crop_height = 2300
     crop_width = 2300
@@ -52,15 +52,17 @@ def main():
     selected_channels = [0]
     if str(slides_path) == "/data/data_cloud_mount/farkkila/Data/TMA1/data_cores/TMA1":
         slides_directories = ["/data/data_cloud_mount/farkkila/Data/TMA1/data_cores/TMA1"]
+    elif str(slides_path) == "/scratch/project_2003009/Launonen_TMA":
+        slides_directories = ["/scratch/project_2003009/Launonen_TMA"]
     else:
         slides_directories = [d for d in os.listdir(slides_path) if
                                      os.path.isdir(os.path.join(slides_path, d)) and d.startswith('TMA')]
     for slide in slides_directories:
-        if str(slides_path) == "/data/data_cloud_mount/farkkila/Data/TMA1/data_cores/TMA1":
-            files_to_process = [file for file in glob.glob(str(slides_path) + "/*.tif")]
+        if str(slides_path) == "/data/data_cloud_mount/farkkila/Data/TMA1/data_cores/TMA1" or str(slides_path) == "/scratch/project_2003009/Launonen_TMA":
+            files_to_process = [file for file in glob.glob(str(slides_path) + "/*.tif*")]
             output_path_core = str(output_path) + "/TMA1/"
         else:
-            files_to_process = [file for file in glob.glob(str(slides_path) + '/' + slide + "/Channels_all/*.tif")]
+            files_to_process = [file for file in glob.glob(str(slides_path) + '/' + slide + "/Channels_all/*.tif*")]
             output_path_core = str(output_path) + '/' + slide + "/"
         for file_name in files_to_process:
             pathlib.Path(output_path_core + pathlib.Path(file_name).stem).mkdir(parents=True, exist_ok=True)
