@@ -281,7 +281,10 @@ class TensorDatasetMIL(Dataset):
             slides_dirs = [self.slides[idx]]
         for slide in slides_dirs:
             patches_tensors.extend([(os.path.join(slide,file), (int(file.split('_')[1]),int(file.split('_')[2]))) for i,file in enumerate(os.listdir(slide)) if file.endswith('_tensor.pt')])
-        patches_tensors.sort(key=lambda item: (item[1][1], item[1][0]))  # Sort by Y first, then by X
+        #patches_tensors.sort(key=lambda item: (item[1][1], item[1][0]))  # Sort by Y first, then by X
+        if self.sampling:
+            num_samples = min(self.sampling, len(patches_tensors))
+            patches_tensors = random.sample(patches_tensors, num_samples)
         patches_files = []
         for file in patches_tensors:
             patches_files.append(file[0])
@@ -296,21 +299,19 @@ class TensorDatasetMIL(Dataset):
             for file in patches_images:
                 patches_images_files.append(os.path.join(self.raw_images[idx], file[0]))
 
-        if self.gigapath:
-            embedding_dim = 1536
-        else:
-            embedding_dim = 1024
-
         data = []
         output = []
-        for i in range(len(patches_tensors)):
-            data.append(torch.load(patches_tensors[i][0]))
-        if data:
-            tensor = torch.stack(data)
-        else:
-            tensor = torch.zeros(len(patches_images_files))
 
-        output.append(tensor)
+
+
+        #for i in range(len(patches_tensors)):
+        #    data.append(torch.load(patches_tensors[i][0]))
+        #if data:
+        #    tensor = torch.stack(data)
+        #else:
+        #    tensor = torch.zeros(len(patches_images_files))
+
+        #output.append(tensor)
         if self.raw_images:
             raw_images_data = []
             for i in range(len(patches_images_files)):
@@ -331,12 +332,9 @@ class TensorDatasetMIL(Dataset):
             if self.transform:
                 raw_images_data_tensor = self.transform(raw_images_data_tensor)
             output.append(raw_images_data_tensor)
-        else:
-            if self.transform:
-                tensor = self.transform(tensor)
-
-
-
+        #else:
+        #    if self.transform:
+        #        tensor = self.transform(tensor)
 
 
         if self.files_names:
