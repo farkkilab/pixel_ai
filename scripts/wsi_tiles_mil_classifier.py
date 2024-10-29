@@ -50,42 +50,58 @@ def train_test(classifier_model, optimizer,loader, epoch,train, criterion, model
         prefix=prefix + " [{}]".format(epoch))
     binary_predictions_list = []
     labels_predictions = []
-
     for i, item in enumerate(loader):
         optimizer.zero_grad()
 
         if model_encoder == 'trainable':
-            bag_tensor, raw_images, labels, files_names = item
+            raw_images, labels, files_names = item
             raw_images = raw_images.to(device)
             input_variable = raw_images
         else:
-            bag_tensor, labels, files_names = item
-            bag_tensor = bag_tensor.to(device)
-            input_variable = bag_tensor
+            labels, files_names = item
+            #bag_tensor = bag_tensor.to(device)
+            #input_variable = bag_tensor
         labels = labels.to(device)
         data_time.update(time.time() - end)
         #predictions, attention_weights = classifier_model(bag_tensor, mask)
         #predictions, attention_weights, A = classifier_model(bag_tensor)
-        if not train:
-            with torch.no_grad():
-                loss, attention_weights = classifier_model.calculate_objective(input_variable, labels, eval_mode=True)
-                error, binary_predictions = classifier_model.calculate_classification_error(input_variable, labels,eval_mode=True)
-        else:
-            loss, attention_weights = classifier_model.calculate_objective(input_variable, labels)
-            error, binary_predictions = classifier_model.calculate_classification_error(input_variable, labels)
-        binary_predictions = binary_predictions.cpu().tolist()
+
+        chunk_size = 8000
+        patches_data = []
+        for i_chunk in range(0, len(files_names), chunk_size):
+            chunk = files_names[i_chunk:i_chunk + chunk_size]
+            for patch_i in range(len(chunk)):
+                patches_data.append(torch.load(chunk[patch_i][0]))
+            if patches_data:
+                input_variable = torch.stack(patches_data)
+            else:
+                input_variable = torch.zeros(len(chunk))
+            input_variable = input_variable.to(device)
+            if not train:
+                with torch.no_grad():
+                    loss, attention_weights = classifier_model.calculate_objective(input_variable, labels, eval_mode=True)
+                    error, binary_predictions = classifier_model.calculate_classification_error(input_variable, labels,eval_mode=True)
+            else:
+                loss, attention_weights = classifier_model.calculate_objective(input_variable, labels)
+                error, binary_predictions = classifier_model.calculate_classification_error(input_variable, labels)
+            binary_predictions_list.extend(binary_predictions.cpu().tolist())
+            labels_predictions.extend(labels.cpu())
+            if train:
+                loss.backward()
+            losses.update(loss.item(), 1)
+            batch_time.update(time.time() - end)
+            progress.display(i_chunk)
         # Compute loss
 
 
         if train:
-            loss.backward()
+            #loss.backward()
             optimizer.step()
-        losses.update(loss.item(), 1)
-        binary_predictions_list.extend(binary_predictions)
-        labels_predictions.extend(labels.cpu())
-        batch_time.update(time.time() - end)
+
+
+
         #if i % 100 == 0:
-        progress.display(i)
+        #progress.display(i)
     accuracy_value = accuracy_score(labels_predictions, binary_predictions_list)
     f1_value = f1_score(labels_predictions, binary_predictions_list, average='macro')
     return losses.avg, accuracy_value, f1_value
@@ -118,7 +134,6 @@ def main():
         image_normalization = False
     multi_channels = p.multi_channels
     model_encoder = p.model_encoder
-
     wsi_directories = []
     slides_directories = [d for d in os.listdir(files_path) if
                           os.path.isdir(os.path.join(files_path, d)) and d.startswith('S')]
@@ -131,9 +146,9 @@ def main():
 
     best_f1_test = 0
     epochs = 60
-    num_samples = 40000
     lr = 0.0001
     num_workers = 28
+    sampling_n = 5000
     #DNA1, CK7, Vimentin
     channels = [0, 2, 4]
     model_path = 'saved_models'
@@ -180,7 +195,6 @@ def main():
 
     for i, wsi_directory in enumerate(wsi_directories):
         patch_file_label_df = wholeslide_labels_df[(wholeslide_labels_df['imageid']==wsi_directory.split('/')[-2])]
-
         if not patch_file_label_df.empty and not pd.isnull(patch_file_label_df.iloc[0]['PFS']):
             if wsi_directory.split('/')[-2]=='S065_iOme' or wsi_directory.split('/')[-2]=='S072_iOme':
                 wsi_test.append(wsi_directory)
@@ -227,8 +241,8 @@ def main():
         raw_cores_train = None
         raw_cores_test = None
         normalize_transform = None
-    tensor_dataset_train = TensorDatasetMIL(slides=wsi_train,raw_images=raw_cores_train,transform=transforms_train,labels=labels_train, channels=channels, gigapath=False,multi_channels=multi_channels, image_normalization=image_normalization, sampling=num_samples, resize_img=True)
-    tensor_dataset_test = TensorDatasetMIL(slides=wsi_test,raw_images=raw_cores_test,transform=transforms_test, labels=labels_test, channels=channels, gigapath=False,multi_channels=multi_channels, image_normalization=image_normalization, sampling=num_samples, resize_img=True)
+    tensor_dataset_train = TensorDatasetMIL(slides=wsi_train,raw_images=raw_cores_train,transform=transforms_train,labels=labels_train, channels=channels, gigapath=False,multi_channels=multi_channels, image_normalization=image_normalization, resize_img=True, sampling=sampling_n)
+    tensor_dataset_test = TensorDatasetMIL(slides=wsi_test,raw_images=raw_cores_test,transform=transforms_test, labels=labels_test, channels=channels, gigapath=False,multi_channels=multi_channels, image_normalization=image_normalization, resize_img=True, sampling=sampling_n)
     #tiff_dataset_validate = TiffDataset(files=cores_files_validate, transform=transforms, channels=channels,labels=cores_labels_validate)
     train_sampler = None
     train_loader = MultiEpochsDataLoader(

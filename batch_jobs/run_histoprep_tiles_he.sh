@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=histoprep_tiles_TMA
+#SBATCH --job-name=histoprep_tiles_HE
 #SBATCH --account=project_2003009
-#SBATCH --time=24:00:00
+#SBATCH --time=36:00:00
 #SBATCH --partition=medium
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=64

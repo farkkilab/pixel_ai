@@ -94,7 +94,11 @@ def main():
             output = tile_encoder(images)
         output = output.cpu()
         with Pool(num_workers) as pool:
-           args = [(output[i], file_names[i], tiles_embedding_path) for i in range(len(output))]
+           args = [(output[i], file_names[i], tiles_embedding_path) for i in range(len(output))
+                   if not os.path.exists(os.path.join(tiles_embedding_path,
+                                                      '/'.join(file_names[i].split('/')[-3:]).replace('.tiff',
+                                                                                                      '') + '_tensor.pt'))
+                   ]
            pool.starmap(save_embedding, args)
     #args = [(transform, image_path, tiles_embedding_path, tile_encoder) for image_path in files_train]
     #with Pool(32) as pool:
