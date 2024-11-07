@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=slideflow_spacehe
 #SBATCH --account=project_2003009
-#SBATCH --time=1:00:00
+#SBATCH --time=4:00:00
 #SBATCH --partition=gpusmall
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=64
@@ -18,5 +18,5 @@ export APPTAINERENV_LD_LIBRARY_PATH=/usr/local/lib/lib/x86_64-linux-gnu:/usr/loc
 
 source venv/bin/activate
 
-srun apptainer exec -B /scratch:/scratch slideflow.sif python scripts/slide_flow_test.py
+srun apptainer exec -B /scratch:/scratch slideflow.sif python scripts/slide_flow_create_project.py
 

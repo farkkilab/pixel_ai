@@ -304,18 +304,18 @@ class TensorDatasetMIL(Dataset):
 
 
 
-        #for i in range(len(patches_tensors)):
-        #    data.append(torch.load(patches_tensors[i][0]))
-        #if data:
-        #    tensor = torch.stack(data)
-        #else:
-        #    tensor = torch.zeros(len(patches_images_files))
+        for i in range(len(patches_tensors)):
+            data.append(torch.load(patches_tensors[i][0]))
+        if data:
+            tensor = torch.stack(data)
+        else:
+            tensor = torch.zeros(len(patches_images_files))
 
-        #output.append(tensor)
+        output.append(tensor)
         if self.raw_images:
             raw_images_data = []
             for i in range(len(patches_images_files)):
-                #raw_images_data.append(torch.tensor(tifffile.imread(patches_images_files[i],key=self.channels,maxworkers=32)).float())
+                raw_images_data.append(torch.tensor(tifffile.imread(patches_images_files[i],key=self.channels,maxworkers=32)).float())
                 image = tifffile.imread(patches_images_files[i],key=self.channels,maxworkers=28)
                 if not self.image_normalization:
                     image = image / 65535
@@ -332,9 +332,9 @@ class TensorDatasetMIL(Dataset):
             if self.transform:
                 raw_images_data_tensor = self.transform(raw_images_data_tensor)
             output.append(raw_images_data_tensor)
-        #else:
-        #    if self.transform:
-        #        tensor = self.transform(tensor)
+        else:
+            if self.transform:
+                tensor = self.transform(tensor)
 
 
         if self.files_names:
