@@ -146,36 +146,8 @@ def main():
         lr = 0.00001
     num_workers = 28
     channels = [0, 25, 28]
-    model_path = 'saved_models'
-    if model_encoder == 'trainable':
-        input_dimensions = 224
-    elif model_encoder == 'uni':
-        input_dimensions = (1024)
-    elif model_encoder == 'gigapath':
-        input_dimensions = (1536)
-    if architecture == 'ABMIL':
-        batch_size = 1
-        classifier_model = ABMIL(input_dim=input_dimensions)
-        criterion = nn.BCELoss()
-    elif architecture == 'amlab_attention':
-        batch_size = 1
-        classifier_model = Attention(encoding=model_encoder, input_dim=input_dimensions)
-        criterion = nn.BCELoss()
-    elif architecture == 'amlab_gated_attention':
-        batch_size = 1
-        classifier_model = GatedAttention(input_dim=input_dimensions)
-        criterion = nn.BCELoss()
-
-    # Move model to device
-    classifier_model = classifier_model.to(device)
     #summary(classifier_model, input_size=(batch_size, in_channels, input_dimensions[0], input_dimensions[1]))
-    config = {
-        "learning_rate": lr,
-        "epochs": epochs,
-        "batch_size": batch_size,
-        "input_dimensions": input_dimensions,
-        "model": architecture
-    }
+
 
     transforms_train = None
     transforms_test = None
@@ -193,12 +165,40 @@ def main():
     slides_directories = [d for d in os.listdir(files_path) if
                           os.path.isdir(os.path.join(files_path, d)) and d.startswith('TMA')]
     slide_combinations = list(itertools.combinations(slides_directories, 2))
-    limited_combinations = slide_combinations[:2]
+    limited_combinations = slide_combinations[:10]
     best_fold_accuracies = []
     best_fold_f1_scores = []
     min_fold_test_losses = []
 
     for fold_num, test_slides in enumerate(limited_combinations):
+        model_path = 'saved_models'
+        if model_encoder == 'trainable':
+            input_dimensions = 224
+        elif model_encoder == 'uni':
+            input_dimensions = (1024)
+        elif model_encoder == 'gigapath':
+            input_dimensions = (1536)
+        if architecture == 'ABMIL':
+            batch_size = 1
+            classifier_model = ABMIL(input_dim=input_dimensions)
+            criterion = nn.BCELoss()
+        elif architecture == 'amlab_attention':
+            batch_size = 1
+            classifier_model = Attention(encoding=model_encoder, input_dim=input_dimensions)
+            criterion = nn.BCELoss()
+        elif architecture == 'amlab_gated_attention':
+            batch_size = 1
+            classifier_model = GatedAttention(input_dim=input_dimensions)
+            criterion = nn.BCELoss()
+        config = {
+            "learning_rate": lr,
+            "epochs": epochs,
+            "batch_size": batch_size,
+            "input_dimensions": input_dimensions,
+            "model": architecture
+        }
+        # Move model to device
+        classifier_model = classifier_model.to(device)
         # Define training slides as those not in the current test pair
         train_slides = [slide for slide in slides_directories if slide not in test_slides]
 
@@ -338,6 +338,10 @@ def main():
     print(f"Average CV Accuracy: {avg_cv_accuracy}")
     print(f"Average CV F1 Score: {avg_cv_f1_score}")
     print(f"Average Minimum CV Test Loss: {avg_min_cv_test_loss}")
+    wandb.init(project='pixel_ai',
+               name="cv_summary_embedding_{0}_classifier_mil_cv_tilescore_{1}_encoder_{2}_filterlowcancercells_{3}_imagenormalization_{4}".format(
+                   classification_task, str(files_path).split('/')[-1], model_encoder, filter_cores_lowcancer,
+                   image_normalization), resume="never", config=config)
 
     # Log final cross-validation scores to W&B
     wandb.log({"avg_cv_accuracy": avg_cv_accuracy, "avg_cv_f1_score": avg_cv_f1_score,
