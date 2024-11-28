@@ -16,6 +16,6 @@ tcga_main_df = tcga_main_df[~((tcga_main_df['PFI'] == 0) & (tcga_main_df['PFI.ti
 tcga_aux_df = tcga_aux_df[tcga_aux_df['bcr_patient_barcode'].isin(tcga_main_df["bcr_patient_barcode"])]
 tcga_main_df = tcga_main_df.merge(tcga_aux_df, on='bcr_patient_barcode', how='left')
 tcga_main_df['pfs_label'] = tcga_main_df['PFI.time'].apply(lambda x: 'short' if x < 356 else 'long')
-export_labels = tcga_main_df[['bcr_patient_uuid','pfs_label']]
+export_labels = tcga_main_df[['bcr_patient_barcode','pfs_label']]
 # slide,patient,er_status_by_ihc
 
