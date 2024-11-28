@@ -11,7 +11,11 @@ with open("data/TCGA_tp53mut.txt", "r") as file:
 tcga_main_df["platin_receivers"] = tcga_main_df["bcr_patient_barcode"].apply(lambda x: x in tcga_platin_receivers)
 tcga_main_df["tp53mut"] = tcga_main_df["bcr_patient_barcode"].apply(lambda x: x in tcga_tp53_mut)
 tcga_main_df = tcga_main_df[(tcga_main_df['platin_receivers']==True)&(tcga_main_df['tp53mut']==True)]
-tcga_aux_df = tcga_aux_df[tcga_aux_df['bcr_patient_barcode'].isin(tcga_main_df["bcr_patient_barcode"])]
 tcga_main_df = tcga_main_df[tcga_main_df['clinical_stage'].isin(['Stage IIIC', 'Stage IIIB', 'Stage IV','Stage IIIA'])]
-tcga_main_df = tcga_main_df[~((tcga_main_df['PFI'] == 0) & (tcga_main_df['PFI.time'] < 400))]
+tcga_main_df = tcga_main_df[~((tcga_main_df['PFI'] == 0) & (tcga_main_df['PFI.time'] < 356))]
+tcga_aux_df = tcga_aux_df[tcga_aux_df['bcr_patient_barcode'].isin(tcga_main_df["bcr_patient_barcode"])]
 tcga_main_df = tcga_main_df.merge(tcga_aux_df, on='bcr_patient_barcode', how='left')
+tcga_main_df['pfs_label'] = tcga_main_df['PFI.time'].apply(lambda x: 'short' if x < 356 else 'long')
+export_labels = tcga_main_df[['bcr_patient_uuid','pfs_label']]
+# slide,patient,er_status_by_ihc
+

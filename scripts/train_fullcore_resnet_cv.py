@@ -116,7 +116,7 @@ def main():
     slides_directories = [d for d in os.listdir(files_path) if
                           os.path.isdir(os.path.join(files_path, d)) and d.startswith('TMA')]
     slide_combinations = list(itertools.combinations(slides_directories, 2))
-    limited_combinations = slide_combinations[:10]
+    limited_combinations = slide_combinations[:5]
     best_fold_accuracies = []
     best_fold_f1_scores = []
     min_fold_test_losses = []
