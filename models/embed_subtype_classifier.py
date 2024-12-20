@@ -1,10 +1,10 @@
 import torch.nn as nn
-
+import ipdb
 class EmbedSubtypeClassifier(nn.Module):
     def __init__(self, input_dim, output_dim):
         super(EmbedSubtypeClassifier, self).__init__()
         self.conv_layers = nn.Sequential(
-            nn.Conv1d(in_channels=14, out_channels=32, kernel_size=3, padding=1),
+            nn.Conv1d(in_channels=1, out_channels=32, kernel_size=3, padding=1),
             nn.ReLU(),
             nn.Conv1d(in_channels=32, out_channels=64, kernel_size=3, padding=1),
             nn.ReLU(),
@@ -20,7 +20,7 @@ class EmbedSubtypeClassifier(nn.Module):
         )
 
     def forward(self, x):
-        x = x.squeeze(2)  # Shape: (batch size, 14, 768)
+        x = x.unsqueeze(1)  # Shape: (batch size, 14, 768)
         # Pass through convolutional layers
         x = self.conv_layers(x)
         # Flatten the output from convolutional layers

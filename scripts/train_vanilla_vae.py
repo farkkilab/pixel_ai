@@ -71,15 +71,15 @@ def main():
 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     epochs = 200
-    batch_size = 32
-    lr = 0.00001
-    latent_dims = 32
+    batch_size = 4
+    lr = 0.0001
+    latent_dims = 16
     channels = [0, 1, 2]
     #channels = [0, 1, 2, 25, 27, 29]
     in_channels = len(channels)
-    hidden_dims = [ 32, 64, 128, 256, 512]
+    hidden_dims = [ 16, 32, 64, 128, 256]
     best_loss_val = 99999999
-    kld_weight = 0.00025
+    kld_weight = 0.0025
     transform_to_image = T.ToPILImage()
     patches_statistics_df = pd.read_csv('data/patch_size_128_stat_channel0.csv')
     model_name = "vae_allcores_randomcores_{0}".format(str(channels))
@@ -111,20 +111,27 @@ def main():
                 for r, ds, fs in os.walk(files_path)
                 for fn in fs if fn.endswith('.tif')])
 
-
-    patches_files_train, patches_files_test = train_test_split(patches_files, test_size=0.1, random_state=42)
+    patches_files_train, patches_files_test = train_test_split(patches_files[:5], test_size=0.1, random_state=42)
     config['total_patches'] = len(patches_files)
     config['train_patches'] = len(patches_files_train)
     config['test_patches'] = len(patches_files_test)
     wandb.init(project='pixel_ai', name=model_name, resume="allow",config=config)
 
     model = VanillaVAE(in_channels=in_channels,latent_dim=latent_dims,input_dimensions=input_dimensions,hidden_dims=hidden_dims).to(device) # GPU
+
+    def init_weights(m):
+        if isinstance(m, nn.Conv2d) or isinstance(m, nn.ConvTranspose2d):
+            nn.init.kaiming_normal_(m.weight)
+            if m.bias is not None:
+                nn.init.constant_(m.bias, 0)
+
+    model.apply(init_weights)
     model = nn.DataParallel(model)
 
     optimizer = torch.optim.Adam(model.parameters(),lr=lr)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.1)
     transform = T.Compose([
-        T.CenterCrop(1024),
+        T.CenterCrop(1536),
         T.Resize([1024,1024]),
     ])
     tiff_dataset_train = TiffDataset(files=patches_files_train,files_names=patches_files_train, channels=channels,transform=transform)
@@ -133,11 +140,11 @@ def main():
     train_sampler = None
     train_loader = torch.utils.data.DataLoader(
             tiff_dataset_train, batch_size=batch_size, shuffle=(train_sampler is None),
-             pin_memory=True, sampler=train_sampler, num_workers=64)
+             pin_memory=True, sampler=train_sampler, num_workers=4)
     test_sampler = None
     test_loader = torch.utils.data.DataLoader(
             tiff_dataset_test, batch_size=batch_size, shuffle=(test_sampler is None),
-             pin_memory=True, sampler=test_sampler, num_workers=64)
+             pin_memory=True, sampler=test_sampler, num_workers=4)
     for epoch in range(epochs):
         loss_train = train_test(model,optimizer, train_loader,epoch,train=True, kld_weight=kld_weight)
         loss_test = train_test(model,optimizer, test_loader, epoch, train=False, kld_weight=kld_weight)
@@ -167,6 +174,7 @@ def main():
             x_hat = model(images)
             x_hat[0] = x_hat[0].cpu()
             for i_batch, test_image in enumerate(x_hat[0]):
+                #normalized_tensor = (test_image[0,:,:] + 1) / 2
                 img_reconstructed = transform_to_image(test_image[0,:,:])
                 train_image_reconstructed_list.append(img_reconstructed)
                 if i_batch >10:

@@ -1,12 +1,12 @@
 import slideflow as sf
 from slideflow.mil import mil_config
 
-config = mil_config('attention_mil', lr=1e-3)
+config = mil_config('attention_mil', lr=1e-3, batch_size=2)
 
 
 
 if __name__ == '__main__':
-    P = sf.load_project('/scratch/project_2003009/public_he')
+    P = sf.load_project('/scratch/project_2003009/he_space_slideflow_cropped')
 
     full_dataset = dataset = P.dataset(tile_px=256, tile_um=128)
     print(dataset.summary())
@@ -14,7 +14,7 @@ if __name__ == '__main__':
     retccl = sf.build_feature_extractor('retccl',resize=256)
 
     # Generate features for a dataset
-    dataset.generate_feature_bags(retccl, outdir='/scratch/project_2003009/public_he/retccl_features')
+    dataset.generate_feature_bags(retccl, outdir='/scratch/project_2003009/he_space_slideflow_cropped/retccl_features')
 
     # Split the dataset using three-fold, site-preserved cross-validation
     splits = full_dataset.kfold_split(
@@ -30,5 +30,5 @@ if __name__ == '__main__':
             train_dataset=train,
             attention_heatmaps=True,
             val_dataset=val,
-            bags='/scratch/project_2003009/public_he/retccl_features'
+            bags='/scratch/project_2003009/he_space_slideflow_cropped/retccl_features'
         )
