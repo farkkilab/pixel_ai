@@ -18,5 +18,5 @@ export APPTAINERENV_LD_LIBRARY_PATH=/usr/local/lib/lib/x86_64-linux-gnu:/usr/loc
 
 source venv/bin/activate
 
-srun apptainer exec -B /scratch:/scratch slideflow.sif python scripts/slide_flow_create_project.py
+srun apptainer exec -B /scratch:/scratch /scratch/project_2003009/slideflow.sif python scripts/slide_flow_create_project.py
 

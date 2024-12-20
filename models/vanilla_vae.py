@@ -75,7 +75,7 @@ class VanillaVAE(BaseVAE):
                             nn.LeakyReLU(),
                             nn.Conv2d(hidden_dims[-1], out_channels= initial_in_channels,
                                       kernel_size= 3, padding= 1),
-                            nn.Tanh())
+                            nn.Sigmoid())
 
     def encode(self, input: Tensor) -> List[Tensor]:
         """
@@ -121,6 +121,8 @@ class VanillaVAE(BaseVAE):
 
     def forward(self, input: Tensor, **kwargs) -> List[Tensor]:
         mu, log_var = self.encode(input)
+        print("Mean of mu:", mu.mean().item(), "Std of mu:", mu.std().item())
+        print("Mean of log_var:", log_var.mean().item(), "Std of log_var:", log_var.std().item())
         z = self.reparameterize(mu, log_var)
         return  [self.decode(z), input, mu, log_var, z]
 
@@ -145,6 +147,9 @@ class VanillaVAE(BaseVAE):
         kld_loss = torch.mean(-0.5 * torch.sum(1 + log_var - mu ** 2 - log_var.exp(), dim = 1), dim = 0)
 
         loss = recons_loss + kld_weight * kld_loss
+        print(f"Input range: {input.min().item()} to {input.max().item()}")
+        print(f"Reconstruction range: {recons.min().item()} to {recons.max().item()}")
+
         return {'loss': loss, 'Reconstruction_Loss':recons_loss.detach(), 'KLD':kld_loss.detach()}
 
     def sample(self,
