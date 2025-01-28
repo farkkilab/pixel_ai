@@ -37,7 +37,7 @@ def get_microns_per_pixel(image_path):
         return None, None
 
 
-def crop_and_save_pyramidal_tiff(image_path, x, y, width, height, output_file, microns_per_pixel):
+def crop_resize_and_save_pyramidal_tiff(image_path, x, y, width, height, output_file, microns_per_pixel):
     try:
         # Load the image using VIPS
         slide = pyvips.Image.new_from_file(image_path, access="sequential")
@@ -47,30 +47,45 @@ def crop_and_save_pyramidal_tiff(image_path, x, y, width, height, output_file, m
 
         # Crop the region
         cropped_region = slide.crop(x, y, width, height)
-        dpi = 10000 / microns_per_pixel
+
+        # Calculate new dimensions (25% of original)
+        new_width = int(width * 0.25)
+        new_height = int(height * 0.25)
+
+        # Resize the image to 25% of original size
+        # Using 'cubic' interpolation for better quality
+        resized_region = cropped_region.resize(0.25, kernel="cubic")
+
+        # Adjust the DPI to reflect the new resolution
+        # Since we're reducing resolution by 4x, we need to multiply microns_per_pixel by 4
+        new_microns_per_pixel = microns_per_pixel * 4
+        pixels_per_cm = 10000 / new_microns_per_pixel
 
         # Ensure the output file has .tiff extension
         output_file = output_file.replace('.svs', '.tiff')
 
         # Save as pyramidal TIFF with basic properties
-        cropped_region.write_to_file(
+        resized_region.tiffsave(
             output_file,
             compression="jpeg",
-            Q=90,  # Higher quality for medical images
+            Q=90,
             tile=True,
             tile_width=256,
             tile_height=256,
             pyramid=True,
             bigtiff=True,
-            xres=dpi,
-            yres=dpi,
-            predictor="horizontal"
+            predictor="horizontal",
+            xres=4000.0,
+            yres=4000.0,
+            resunit='cm',
+            properties=True
         )
 
-        print(f"Successfully saved cropped region as pyramidal TIFF: {output_file}")
+        print(f"Successfully saved resized cropped region as pyramidal TIFF: {output_file}")
+        print(f"Original size: {width}x{height}, New size: {new_width}x{new_height}")
 
     except Exception as e:
-        print(f"Error cropping {image_path}: {e}")
+        print(f"Error processing {image_path}: {e}")
 
 
 # Read the CSV and process each entry
@@ -94,13 +109,13 @@ with open(csv_file, mode="r") as file:
 
             microns_x, microns_y = get_microns_per_pixel(image_path)
             if microns_x and microns_y:
-                crop_and_save_pyramidal_tiff(image_path, x, y, width, height, output_file, microns_x)
+                crop_resize_and_save_pyramidal_tiff(image_path, x, y, width, height, output_file, microns_x)
             else:
                 print("Using default microns per pixel value.")
-                crop_and_save_pyramidal_tiff(image_path, x, y, width, height, output_file,
-                                             microns_per_pixel=0.25)  # 40x default
+                crop_resize_and_save_pyramidal_tiff(image_path, x, y, width, height, output_file,
+                                                    microns_per_pixel=0.25)  # 40x default
 
         except Exception as e:
             print(f"Error processing row: {row}, Error: {e}")
 
-print("Cropping process complete.")
+print("Cropping and resizing process complete.")

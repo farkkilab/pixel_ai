@@ -93,7 +93,7 @@ def main():
     batch_size = 4
     num_workers = 28
     latent_dims = 16
-    channels = [0, 1, 2]
+    channels = [0, 25, 28]
     in_channels = len(channels)
     hidden_dims = [16, 32, 64, 128, 256]
     input_dimensions = (1024, 1024)
@@ -111,7 +111,7 @@ def main():
         cores_stats_df = pd.read_csv('data/cores_stats_ncancer_cells.csv')
 
     model_path = 'saved_models'
-    model_name = "model_best_vae_allcores_randomcores_[0, 1, 2]_vae"
+    model_name = "model_best_vae_allcores_randomcores_[0, 25, 28]_vae"
 
     # Load pre-trained VAE model
     vae_model = VanillaVAE(in_channels=in_channels, latent_dim=latent_dims, input_dimensions=input_dimensions,

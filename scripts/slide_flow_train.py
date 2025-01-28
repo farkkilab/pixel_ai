@@ -11,10 +11,10 @@ if __name__ == '__main__':
     full_dataset = dataset = P.dataset(tile_px=256, tile_um=128)
     print(dataset.summary())
 
-    retccl = sf.build_feature_extractor('retccl',resize=256)
+    retccl = sf.build_feature_extractor('uni',weights='/scratch/project_2003009/transformers_cache/uni/pytorch_model.bin',resize=224)
 
     # Generate features for a dataset
-    dataset.generate_feature_bags(retccl, outdir='/scratch/project_2003009/he_space_slideflow_cropped/retccl_features')
+    dataset.generate_feature_bags(retccl, outdir='/scratch/project_2003009/he_space_slideflow_cropped/uni_features')
 
     # Split the dataset using three-fold, site-preserved cross-validation
     splits = full_dataset.kfold_split(
@@ -30,5 +30,5 @@ if __name__ == '__main__':
             train_dataset=train,
             attention_heatmaps=True,
             val_dataset=val,
-            bags='/scratch/project_2003009/he_space_slideflow_cropped/retccl_features'
+            bags='/scratch/project_2003009/he_space_slideflow_cropped/uni_features',
         )
