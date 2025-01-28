@@ -70,11 +70,11 @@ def main():
     cores_path = p.cores_path
 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    epochs = 200
+    epochs = 100
     batch_size = 4
-    lr = 0.0001
+    lr = 0.00001
     latent_dims = 16
-    channels = [0, 1, 2]
+    channels = [0, 25, 28]
     #channels = [0, 1, 2, 25, 27, 29]
     in_channels = len(channels)
     hidden_dims = [ 16, 32, 64, 128, 256]
@@ -111,7 +111,7 @@ def main():
                 for r, ds, fs in os.walk(files_path)
                 for fn in fs if fn.endswith('.tif')])
 
-    patches_files_train, patches_files_test = train_test_split(patches_files[:5], test_size=0.1, random_state=42)
+    patches_files_train, patches_files_test = train_test_split(patches_files, test_size=0.1, random_state=42)
     config['total_patches'] = len(patches_files)
     config['train_patches'] = len(patches_files_train)
     config['test_patches'] = len(patches_files_test)
@@ -140,11 +140,11 @@ def main():
     train_sampler = None
     train_loader = torch.utils.data.DataLoader(
             tiff_dataset_train, batch_size=batch_size, shuffle=(train_sampler is None),
-             pin_memory=True, sampler=train_sampler, num_workers=4)
+             pin_memory=True, sampler=train_sampler, num_workers=28)
     test_sampler = None
     test_loader = torch.utils.data.DataLoader(
             tiff_dataset_test, batch_size=batch_size, shuffle=(test_sampler is None),
-             pin_memory=True, sampler=test_sampler, num_workers=4)
+             pin_memory=True, sampler=test_sampler, num_workers=28)
     for epoch in range(epochs):
         loss_train = train_test(model,optimizer, train_loader,epoch,train=True, kld_weight=kld_weight)
         loss_test = train_test(model,optimizer, test_loader, epoch, train=False, kld_weight=kld_weight)
