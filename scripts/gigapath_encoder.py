@@ -27,7 +27,7 @@ def main():
                         default="/data/projects/pixel_project/huggingface/cache")
     # cores or whole_slide
     parser.add_argument("--data_type", type=str,
-                        default="mhcii_whole_slide")
+                        default="cores")
     p = parser.parse_args()
     files_path = p.files_path
     tiles_embedding_path = p.tiles_embedding_path
@@ -47,7 +47,7 @@ def main():
 
     #channels = [0, 25, 28]
     #channels = [10, 11, 12]
-    channels = [0, 0, 0]
+    channels = [0, 11, 24]
     channels_directory_output = '_'.join(map(str, channels))
     tiles_embedding_path = os.path.join(tiles_embedding_path, channels_directory_output)
     batch_size = 128
