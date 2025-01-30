@@ -18,7 +18,8 @@ source venv/bin/activate
 #srun python scripts/cores_tiles_mil_classifier.py --files_path /scratch/project_2003009/gigapath_tiles_embeddings/224/0_0_0 --filter_cores_lowcancer true --model_encoder gigapath --image_normalization false
 
 #srun python scripts/cores_tiles_mil_classifier.py --files_path /scratch/project_2003009/histoprep_embeddings_uni/224/0_25_28_normalization_True --filter_cores_lowcancer false --model_encoder uni --image_normalization true
-srun python scripts/cores_tiles_mil_classifier_cv.py --files_path /scratch/project_2003009/histoprep_embeddings_uni/224/0_25_28 --filter_cores_lowcancer false --model_encoder uni --image_normalization false
+srun python scripts/cores_tiles_mil_classifier_cv.py --files_path /scratch/project_2003009/histoprep_embeddings_uni/224/11_24_30_normalization_False --filter_cores_lowcancer false --model_encoder uni --image_normalization false
+srun python scripts/cores_tiles_mil_classifier_cv.py --files_path /scratch/project_2003009/gigapath_tiles_embeddings/224/11_24_30 --filter_cores_lowcancer false --model_encoder gigapath --image_normalization false
 #srun python scripts/cores_tiles_mil_classifier.py --files_path /scratch/project_2003009/histoprep_embeddings_uni/224/0_0_0_normalization_False --filter_cores_lowcancer false --model_encoder uni --image_normalization false
 #srun python scripts/cores_tiles_mil_classifier.py --files_path /scratch/project_2003009/histoprep_embeddings_uni/224/0_25_28 --filter_cores_lowcancer false --model_encoder trainable --image_normalization true
 #srun python scripts/cores_tiles_mil_classifier.py --files_path /scratch/project_2003009/histoprep_embeddings_uni/224/0_25_28 --filter_cores_lowcancer false --model_encoder trainable --image_normalization false
