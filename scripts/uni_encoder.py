@@ -58,7 +58,7 @@ def main():
     model.eval()
     #channels = [0, 25, 28]
     #channels = [10, 11, 12]
-    channels = [0, 11, 24]
+    channels = [11, 24, 30]
     # Launonen tma
     #channels = [0, 30, 34]
     channels_directory_output = '_'.join(map(str, channels))+'_normalization_'+str(image_normalization)

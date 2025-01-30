@@ -47,7 +47,7 @@ def main():
 
     #channels = [0, 25, 28]
     #channels = [10, 11, 12]
-    channels = [0, 11, 24]
+    channels = [11, 24, 30]
     channels_directory_output = '_'.join(map(str, channels))
     tiles_embedding_path = os.path.join(tiles_embedding_path, channels_directory_output)
     batch_size = 128
