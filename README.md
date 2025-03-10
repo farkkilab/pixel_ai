@@ -8,7 +8,7 @@ Install packages listed in requirements.txt. I personally prefer to use a virtua
 
 ### Folder structure
 * batch_jobs: scripts to run jobs in CSC supercomputers. In most cases, consist of defining hardware resources required in CSC and then calls a script in the `scripts` folder. For example, to run a job inside Mahti, this scripts could be called with "sbatch batch_jobs/run_uniencoder.sh"
-* data: miscellaneous data required for models logic. For example, channels list for a dataset.
+* data: miscellaneous data required for models logic. For example, channels list for a dataset. NOTE: this data is not tracked in GitHub, please request it if needed.  
 * models: models architecture definition
 * notebooks: Jupyter notebooks for exploring data
 * scripts: This includes logic to train model, crop images into tiles, encode tiles, etc. 
