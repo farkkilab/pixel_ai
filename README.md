@@ -1,7 +1,6 @@
 # Pixel_AI
 
-This repository contains scripts designed for image analysis at a pixel/patch-level resolution using deep learning methods.
-
+This repository contains scripts designed for image analysis at a pixel/patch-level resolution using deep learning methods, specifically for histopathological images, including H&E and immunofluorescence imaging.
 
 ### Installation
 Install packages listed in requirements.txt. I personally prefer to use a virtualenv to install the packages, but that is up to you.
