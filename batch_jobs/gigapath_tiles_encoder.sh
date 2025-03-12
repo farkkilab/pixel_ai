@@ -7,7 +7,6 @@
 #SBATCH --cpus-per-task=64
 #SBATCH --gres=gpu:a100:1
 
-export HUGGING_FACE_HUB_TOKEN=***REMOVED***
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 module load pytorch/2.3
